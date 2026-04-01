@@ -18,7 +18,7 @@ export default function Login() {
             <div className="left">
                 <div className="brand">
                     <img
-                        src="logo-removebg-preview-effect.png"
+                        src="/logo-removebg-preview-effect.png"
                         className="logo"
                         alt="RythMe Logo"
                     />
