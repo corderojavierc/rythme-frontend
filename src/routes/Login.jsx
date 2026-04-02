@@ -38,7 +38,7 @@ export default function Login() {
             console.log("RESPONSE:", data);
 
             if (!response.ok) {
-                setError(data.message || "Error al iniciar sesión");
+                setError(data.message || "Login failed");
                 return;
             }
 
@@ -49,7 +49,7 @@ export default function Login() {
             navigate("/");
         } catch (err) {
             console.error(err);
-            setError("Error de conexión con el servidor");
+            setError("Server error");
         }
     };
 
