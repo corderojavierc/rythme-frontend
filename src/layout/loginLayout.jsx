@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./login.css";
 
-export default function Login() {
+export default function LoginLayout({ title, children, linkText, linkHref }) {
     const [isLight, setIsLight] = useState(false);
 
     const toggleTheme = () => {
@@ -27,30 +27,21 @@ export default function Login() {
                         <span className="pink">Me</span>
                     </h2>
                 </div>
+
                 <p className="slogan">Conecta con la música</p>
+
                 <button className="theme-toggle" onClick={toggleTheme}>
                     {isLight ? "Oscuro" : "Claro"}
                 </button>
             </div>
 
             <div className="right">
-                <h2 className="title">
-                    <span className="blue">Iniciar</span>
-                    <span className="pink"> sesión</span>
-                </h2>
-                <form>
-                    <input
-                        type="text"
-                        placeholder="Nombre de usuario"
-                        required
-                    />
-                    <input type="password" placeholder="Contraseña" required />
-                    <button type="submit" className="btn">
-                        Iniciar sesión
-                    </button>
-                </form>
+                <h2 className="title">{title}</h2>
+
+                {children}
+
                 <p className="register">
-                    ¿No tienes cuenta? <a href="/register">Regístrate</a>
+                    {linkText} <a href={linkHref}>Aquí</a>
                 </p>
             </div>
         </div>
