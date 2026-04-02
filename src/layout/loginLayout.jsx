@@ -1,17 +1,8 @@
-import { useState } from "react";
 import "./login.css";
+import { useTheme } from "../hooks/useTheme";
 
 export default function LoginLayout({ title, children, linkText, linkHref }) {
-    const [isLight, setIsLight] = useState(false);
-
-    const toggleTheme = () => {
-        setIsLight(!isLight);
-        if (!isLight) {
-            document.body.classList.add("light");
-        } else {
-            document.body.classList.remove("light");
-        }
-    };
+    const { isLight, toggleTheme } = useTheme();
 
     return (
         <div className="card">
