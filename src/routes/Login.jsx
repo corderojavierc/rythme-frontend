@@ -11,7 +11,6 @@ export default function Login() {
     const auth = useAuth();
     const navigate = useNavigate();
 
-    // Si ya está autenticado, redirige
     if (auth.isAuthenticated) {
         return <Navigate to="/" replace />;
     }
@@ -49,7 +48,7 @@ export default function Login() {
             navigate("/");
         } catch (err) {
             console.error(err);
-            setError("Server error");
+            setError("Server connection error");
         }
     };
 
