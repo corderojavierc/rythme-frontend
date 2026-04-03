@@ -7,7 +7,7 @@ export default function asideLayout() {
     const auth = useAuth();
     const navigate = useNavigate();
     const { toggleTheme } = useTheme();
-    let webLocation = "feed";
+    let webLocation = window.location.pathname;
 
     const handleLogout = async () => {
         try {
@@ -44,35 +44,35 @@ export default function asideLayout() {
             </Link>
 
             <Link
-                className={`nav-item ${webLocation === "feed" ? "active" : ""}`}
+                className={`nav-item ${webLocation === "/" ? "active" : ""}`}
                 to="/"
             >
                 <span className="material-symbols-outlined">home</span>
                 Feed
             </Link>
             <Link
-                className={`nav-item ${webLocation === "followed" ? "active" : ""}`}
+                className={`nav-item ${webLocation === "/followed" ? "active" : ""}`}
                 to="/followed"
             >
                 <span className="material-symbols-outlined">group</span>
                 Seguidos
             </Link>
             <Link
-                className={`nav-item ${webLocation === "rate" ? "active" : ""}`}
+                className={`nav-item ${webLocation === "/rate" ? "active" : ""}`}
                 to="/rate"
             >
                 <span className="material-symbols-outlined">add_ad</span>
                 Valorar
             </Link>
             <Link
-                className={`nav-item ${webLocation === "search" ? "active" : ""}`}
+                className={`nav-item ${webLocation === "/search" ? "active" : ""}`}
                 to="/search"
             >
                 <span className="material-symbols-outlined">search</span>
                 Búscar
             </Link>
             <Link
-                className={`nav-item ${webLocation === "events" ? "active" : ""}`}
+                className={`nav-item ${webLocation === "/events" ? "active" : ""}`}
                 to="/events"
             >
                 <span className="material-symbols-outlined">
@@ -81,14 +81,14 @@ export default function asideLayout() {
                 Eventos
             </Link>
             <Link
-                className={`nav-item ${webLocation === "request" ? "active" : ""}`}
+                className={`nav-item ${webLocation === "/request" ? "active" : ""}`}
                 to="/request"
             >
                 <span className="material-symbols-outlined">pan_tool_alt</span>
                 Solicitar
             </Link>
             <Link
-                className={`nav-item ${webLocation === "profile" ? "active" : ""}`}
+                className={`nav-item ${webLocation === "/profile" ? "active" : ""}`}
                 to="/profile"
             >
                 <span className="material-symbols-outlined">person</span>
