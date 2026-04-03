@@ -1,92 +1,10 @@
-import { useAuth } from "./auth/AuthProvider";
-import { useNavigate, Link } from "react-router-dom";
-import { useTheme } from "./hooks/useTheme";
+import AsideLayout from "./layout/asideLayout";
 import "./App.css";
 
 export default function App() {
-    const auth = useAuth();
-    const navigate = useNavigate();
-    const { toggleTheme } = useTheme();
-
-    const handleLogout = async () => {
-        try {
-            const token = localStorage.getItem("token");
-
-            await fetch("http://127.0.0.1:8000/api/logout", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            localStorage.removeItem("token");
-            auth.setIsAuthenticated(false);
-            navigate("/login");
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
     return (
         <div className="app-container">
-            <aside className="sidebar">
-                <Link className="brand-link" to="/">
-                    <div className="logo">
-                        <img
-                            src="/logo-removebg-preview-effect.png"
-                            alt="Logo RythMe"
-                        />
-                    </div>
-                    <div className="brand-text">
-                        <span className="blue">Ryth</span>
-                        <span className="pink">Me</span>
-                    </div>
-                </Link>
-
-                <Link className="nav-item active" to="/">
-                    <span className="material-symbols-outlined">home</span>
-                    Feed
-                </Link>
-                <Link className="nav-item" to="/">
-                    <span className="material-symbols-outlined">group</span>
-                    Seguidos
-                </Link>
-                <Link className="nav-item" to="/">
-                    <span className="material-symbols-outlined">add_ad</span>
-                    Valorar
-                </Link>
-                <Link className="nav-item" to="/">
-                    <span className="material-symbols-outlined">search</span>
-                    Búscar
-                </Link>
-                <Link className="nav-item" to="/">
-                    <span className="material-symbols-outlined">calendar_today</span>
-                    Eventos
-                </Link>
-                <Link className="nav-item" to="/">
-                    <span className="material-symbols-outlined">pan_tool_alt</span>
-                    Solicitar
-                </Link>
-                <Link className="nav-item" to="/">
-                    <span className="material-symbols-outlined">person</span>
-                    Perfil
-                </Link>
-
-                <div className="nav-spacer"></div>
-
-                <button onClick={handleLogout} className="nav-item action-btn logout-btn">
-                    <span className="material-symbols-outlined">logout</span>
-                    Cerrar sesión
-                </button>
-
-                <button
-                    className="theme-toggle"
-                    onClick={toggleTheme}
-                >
-                    Cambiar tema
-                </button>
-            </aside>
+            <AsideLayout />
 
             <main className="main">
                 <h2 className="feed-header">Valoraciones</h2>
@@ -133,11 +51,15 @@ export default function App() {
                     </p>
                     <div className="actions">
                         <button className="action-btn liked">
-                            <span className="material-symbols-outlined">favorite</span>
+                            <span className="material-symbols-outlined">
+                                favorite
+                            </span>
                             48
                         </button>
                         <button className="action-btn">
-                            <span className="material-symbols-outlined">chat_bubble</span>
+                            <span className="material-symbols-outlined">
+                                chat_bubble
+                            </span>
                             12
                         </button>
                     </div>
@@ -170,7 +92,9 @@ export default function App() {
                         <div className="event-body">
                             <div className="event-name">Rock in Rio Madrid</div>
                             <div className="event-loc">
-                                <span className="material-symbols-outlined">location_on</span>
+                                <span className="material-symbols-outlined">
+                                    location_on
+                                </span>
                                 IFEMA, Madrid
                             </div>
                         </div>
@@ -185,7 +109,9 @@ export default function App() {
                                 Festival Primavera Sound
                             </div>
                             <div className="event-loc">
-                                <span className="material-symbols-outlined">location_on</span>
+                                <span className="material-symbols-outlined">
+                                    location_on
+                                </span>
                                 Parc del Fòrum, Barcelona
                             </div>
                         </div>
@@ -200,7 +126,9 @@ export default function App() {
                                 Noches de Jazz en Sevilla
                             </div>
                             <div className="event-loc">
-                                <span className="material-symbols-outlined">location_on</span>
+                                <span className="material-symbols-outlined">
+                                    location_on
+                                </span>
                                 Teatro Lope de Vega, Sevilla
                             </div>
                         </div>
@@ -212,7 +140,8 @@ export default function App() {
                         <div
                             className="person-avatar"
                             style={{
-                                background: "linear-gradient(135deg, #5c8fff, #a066ff)"
+                                background:
+                                    "linear-gradient(135deg, #5c8fff, #a066ff)",
                             }}
                         >
                             JL
@@ -229,7 +158,8 @@ export default function App() {
                         <div
                             className="person-avatar"
                             style={{
-                                background: "linear-gradient(135deg, #ff5da2, #ff9566)"
+                                background:
+                                    "linear-gradient(135deg, #ff5da2, #ff9566)",
                             }}
                         >
                             SG
@@ -246,7 +176,8 @@ export default function App() {
                         <div
                             className="person-avatar"
                             style={{
-                                background: "linear-gradient(135deg, #00c9a7, #5c8fff)"
+                                background:
+                                    "linear-gradient(135deg, #00c9a7, #5c8fff)",
                             }}
                         >
                             DM
