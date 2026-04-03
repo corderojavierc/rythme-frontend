@@ -43,7 +43,7 @@ export default function App() {
                         <span className="pink">Me</span>
                     </div>
                 </Link>
-                
+
                 <Link className="nav-item active" to="/">
                     <span className="material-symbols-outlined">home</span>
                     Feed
@@ -72,7 +72,7 @@ export default function App() {
                     <span className="material-symbols-outlined">person</span>
                     Perfil
                 </Link>
-                
+
                 <div className="nav-spacer"></div>
 
                 <button onClick={handleLogout} className="nav-item action-btn logout-btn">
