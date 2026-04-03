@@ -20,8 +20,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 40px; /* más aire */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* profundidad */
+    gap: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .left {
