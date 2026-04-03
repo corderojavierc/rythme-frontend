@@ -4,7 +4,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #0f141f; /* base dark background from login.css */
+    background: #0f141f;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -13,7 +13,7 @@
 }
 
 body.light .loader-container {
-    background: #e2e6eb; /* base light background from login.css */
+    background: #e2e6eb;
 }
 
 .loader {
@@ -33,7 +33,7 @@ body.light .loader-container {
 }
 
 body.light .ball {
-    background-color: #5a6278; /* muted text color for light mode */
+    background-color: #5a6278;
 }
 
 .ball:nth-child(1) {
@@ -43,7 +43,7 @@ body.light .ball {
 @keyframes bounce-1 {
     50% {
         transform: translateY(-22px);
-        background-color: #5c8fff; /* RythMe Blue */
+        background-color: #5c8fff;
         box-shadow: 0 4px 12px rgba(92, 143, 255, 0.4);
     }
 }
@@ -55,7 +55,7 @@ body.light .ball {
 @keyframes bounce-2 {
     50% {
         transform: translateY(-22px);
-        background-color: #a066ff; /* RythMe Purple gradient mid-step */
+        background-color: #a066ff;
         box-shadow: 0 4px 12px rgba(160, 102, 255, 0.4);
     }
 }
@@ -67,7 +67,7 @@ body.light .ball {
 @keyframes bounce-3 {
     50% {
         transform: translateY(-22px);
-        background-color: #ff5da2; /* RythMe Pink */
+        background-color: #ff5da2;
         box-shadow: 0 4px 12px rgba(255, 93, 162, 0.4);
     }
 }
