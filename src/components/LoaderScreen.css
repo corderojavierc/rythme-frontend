@@ -74,7 +74,7 @@ body.light .ball {
 
 .loading-text {
     margin-top: 36px;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-size: 16px;
     font-weight: 600;
     letter-spacing: 1.5px;
@@ -88,11 +88,15 @@ body.light .loading-text {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
 }
 
-/* Inline variant — used inside feed, not full-screen */
 .loader-inline {
     position: static;
     width: 100%;
@@ -101,4 +105,3 @@ body.light .loading-text {
     background: transparent;
     z-index: auto;
 }
-

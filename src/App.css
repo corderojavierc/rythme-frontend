@@ -235,6 +235,76 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card);
+    transition: all 0.2s;
+}
+
+.user-card:hover {
+    border-color: var(--border-highlight);
+    background: var(--card2);
+}
+
+.user-card-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--pink));
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    overflow: hidden;
+}
+
+.user-card-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-card-name {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-card-handle {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+}
+
+.user-card-chevron {
+    font-size: 18px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+
 .main {
     padding: 40px 50px;
     border-right: 1px solid var(--border);
@@ -457,18 +527,21 @@ body {
 
 /* ── Skeleton cards ─────────────────────────────────────────────────── */
 @keyframes shimmer {
-    0%   { background-position: -600px 0; }
-    100% { background-position:  600px 0; }
+    0% {
+        background-position: -600px 0;
+    }
+
+    100% {
+        background-position: 600px 0;
+    }
 }
 
 .skeleton {
     border-radius: 8px;
-    background: linear-gradient(
-        90deg,
-        var(--card2) 25%,
-        var(--bg-secondary) 50%,
-        var(--card2) 75%
-    );
+    background: linear-gradient(90deg,
+            var(--card2) 25%,
+            var(--bg-secondary) 50%,
+            var(--card2) 75%);
     background-size: 600px 100%;
     animation: shimmer 1.4s ease-in-out infinite;
 }
