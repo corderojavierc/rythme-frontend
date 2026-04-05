@@ -1,5 +1,6 @@
 import AsideLayout from "./layout/asideLayout";
 import "./App.css";
+import PostComponent from "./components/postComponent";
 
 export default function App() {
     return (
@@ -8,62 +9,7 @@ export default function App() {
 
             <main className="main">
                 <h2 className="feed-header">Valoraciones</h2>
-                <div className="rating-card">
-                    <div className="rating-header">
-                        <div className="avatar">MR</div>
-                        <div className="user-info">
-                            <div className="user-name">Marina Ruiz</div>
-                            <div className="user-handle">@marina_escucha</div>
-                        </div>
-                        <div className="timestamp">hace 23 min</div>
-                    </div>
-                    <div className="song-block">
-                        <div className="cover">
-                            <span className="cover-emoji">🎸</span>
-                        </div>
-                        <div className="song-info">
-                            <div className="song-title">Bohemian Rhapsody</div>
-                            <div className="song-artist">
-                                Queen · 1975 · A Night at the Opera
-                            </div>
-                            <div className="song-meta">
-                                <span className="tag genre">Rock clásico</span>
-                                <span className="tag">6:07</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="stars-row">
-                        <div className="stars">
-                            <span className="star">★</span>
-                            <span className="star">★</span>
-                            <span className="star">★</span>
-                            <span className="star">★</span>
-                            <span className="star half">★</span>
-                        </div>
-                        <span className="rating-score">4.5</span>
-                        <span className="rating-max">/ 5</span>
-                    </div>
-                    <p className="comment">
-                        Un absoluto clásico. La progresión operística del puente
-                        sigue siendo una de las cosas más audaces que se han
-                        grabado en un estudio. Freddie Mercury en su máxima
-                        expresión. Imposible no cantarla entera.
-                    </p>
-                    <div className="actions">
-                        <button className="action-btn liked">
-                            <span className="material-symbols-outlined">
-                                favorite
-                            </span>
-                            48
-                        </button>
-                        <button className="action-btn">
-                            <span className="material-symbols-outlined">
-                                chat_bubble
-                            </span>
-                            12
-                        </button>
-                    </div>
-                </div>
+                <PostComponent />
             </main>
 
             <aside className="right-sidebar">

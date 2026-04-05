@@ -421,6 +421,82 @@ body {
     opacity: 0.4;
 }
 
+.star.empty {
+    opacity: 0.15;
+}
+
+/* Feed states */
+.feed-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 60px 24px;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.feed-error {
+    color: var(--pink);
+}
+
+.feed-end {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 32px 24px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.6;
+}
+
+/* ── Skeleton cards ─────────────────────────────────────────────────── */
+@keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position:  600px 0; }
+}
+
+.skeleton {
+    border-radius: 8px;
+    background: linear-gradient(
+        90deg,
+        var(--card2) 25%,
+        var(--bg-secondary) 50%,
+        var(--card2) 75%
+    );
+    background-size: 600px 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-card {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.skeleton-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.skeleton-cover {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.skeleton-line {
+    display: block;
+}
+
+
 .rating-score {
     font-family: "Poppins", sans-serif;
     font-size: 20px;

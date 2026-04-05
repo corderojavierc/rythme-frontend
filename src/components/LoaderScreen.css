@@ -91,3 +91,14 @@ body.light .loading-text {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }
 }
+
+/* Inline variant — used inside feed, not full-screen */
+.loader-inline {
+    position: static;
+    width: 100%;
+    min-height: 260px;
+    height: auto;
+    background: transparent;
+    z-index: auto;
+}
+
