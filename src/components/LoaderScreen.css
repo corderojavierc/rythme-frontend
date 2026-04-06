@@ -17,7 +17,7 @@ body.light .loader-container {
 }
 
 .loader {
-    width: 70px;
+    width: 900px;
     display: flex;
     justify-content: space-evenly;
     padding: 0;
@@ -92,6 +92,7 @@ body.light .loading-text {
     100% {
         opacity: 0.5;
     }
+
     50% {
         opacity: 1;
     }
