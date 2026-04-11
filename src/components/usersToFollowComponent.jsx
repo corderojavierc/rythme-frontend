@@ -132,7 +132,7 @@ export default function UsersToFollow() {
                     onClick={() => handleFollow(user.id)}
                     style={{
                         opacity: isFollowed === true ? 0.7 : 1,
-                        cursor: isFollowed === true ? "default" : "pointer",
+                        cursor: "pointer",
                     }}
                 >
                     {isFollowed === true ? "Siguiendo" : "Seguir"}
