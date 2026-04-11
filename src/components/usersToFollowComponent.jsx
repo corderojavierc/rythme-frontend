@@ -5,6 +5,7 @@ const API_USERS_URL = "http://localhost:8000/api/users";
 const API_FOLLOWS_URL = "http://localhost:8000/api/follows";
 
 export default function UsersToFollow() {
+    const [textBotton, setTextBotton] = useState();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [followedMap, setFollowedMap] = useState({});
@@ -128,14 +129,16 @@ export default function UsersToFollow() {
                     <div className="person-handle">@{user.username}</div>
                 </div>
                 <button
-                    className="follow-btn"
+                    className={`${isFollowed ? "followed follow-btn" : "follow-btn"}`}
+                    onMouseEnter={() => setTextBotton("Dejar de seguir")}
+                    onMouseLeave={() => setTextBotton("Siguiendo")}
                     onClick={() => handleFollow(user.id)}
                     style={{
                         opacity: isFollowed === true ? 0.7 : 1,
                         cursor: "pointer",
                     }}
                 >
-                    {isFollowed === true ? "Siguiendo" : "Seguir"}
+                    {isFollowed === true ? textBotton : "Seguir"}
                 </button>
             </div>,
         );

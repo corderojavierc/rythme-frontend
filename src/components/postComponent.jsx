@@ -141,7 +141,7 @@ function PostCard({ post }) {
             {post.title && <p className="comment">{post.title}</p>}
 
             <div className="actions">
-                <button className="action-btn liked">
+                <button className="action-btn">
                     <span className="material-symbols-outlined">favorite</span>
                     {countLiked}
                 </button>
