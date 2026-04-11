@@ -35,7 +35,7 @@ export default function Login() {
         console.log("login response:", data);
 
         if (response.ok == false) {
-            setError(data.message ? data.message : "Login failed");
+            setError(data.message ? data.message : "Error al iniciar sesión");
             setIsLoading(false);
             return;
         }

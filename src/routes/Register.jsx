@@ -46,7 +46,7 @@ export default function Register() {
         console.log("REGISTER RESPONSE:", data);
 
         if (response.ok == false) {
-            setError(data.message ? data.message : "Registration failed");
+            setError(data.message ? data.message : "Error al registrarse");
             return;
         }
 

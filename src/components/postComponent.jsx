@@ -72,6 +72,9 @@ function PostCard({ post }) {
         return "Hace " + days + " días";
     }
 
+    const rating = post.rating ? post.rating : 0;
+    const countLiked = post.count_liked ? post.count_liked : 0;
+
     return (
         <div className="rating-card">
             <div className="rating-header">
@@ -128,9 +131,9 @@ function PostCard({ post }) {
             </div>
 
             <div className="stars-row">
-                <StarRating rating={post.rating} />
+                <StarRating rating={rating} />
                 <span className="rating-score">
-                    {parseFloat(post.rating ? post.rating : 0).toFixed(1)}
+                    {parseFloat(rating).toFixed(1)}
                 </span>
                 <span className="rating-max">/ 5</span>
             </div>
@@ -140,7 +143,7 @@ function PostCard({ post }) {
             <div className="actions">
                 <button className="action-btn liked">
                     <span className="material-symbols-outlined">favorite</span>
-                    {post.count_liked ? post.count_liked : 0}
+                    {countLiked}
                 </button>
                 <button className="action-btn">
                     <span className="material-symbols-outlined">
@@ -176,7 +179,7 @@ export default function PostComponent() {
         console.log("posts response:", json);
 
         let allPosts = [];
-        if (Array.isArray(json)) {
+        if (Array.isArray(json) === true) {
             allPosts = json;
         } else {
             allPosts = json.data;
@@ -266,11 +269,14 @@ export default function PostComponent() {
         }
     }
 
+    const cards = [];
+    visiblePosts.forEach(function (post, i) {
+        cards.push(<PostCard key={i} post={post} />);
+    });
+
     return (
         <div>
-            {visiblePosts.map(function (post, i) {
-                return <PostCard key={i} post={post} />;
-            })}
+            {cards}
 
             {hasMore == true && (
                 <div ref={sentinelRef} style={{ height: 10 }} />

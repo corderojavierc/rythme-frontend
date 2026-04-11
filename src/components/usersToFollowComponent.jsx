@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import LoaderScreen from "./LoaderScreen";
 
 const API_USERS_URL = "http://localhost:8000/api/users";
@@ -27,8 +27,8 @@ export default function UsersToFollow() {
         const token = localStorage.getItem("token");
         const isFollowed = followedMap[followedId] === true;
 
-        if (isFollowed) {
-            setFollowedMap((prev) => ({ ...prev, [followedId]: false }));
+        if (isFollowed === true) {
+            setFollowedMap({ ...followedMap, [followedId]: false });
 
             const response = await fetch(API_FOLLOWS_URL, {
                 method: "DELETE",
@@ -41,13 +41,15 @@ export default function UsersToFollow() {
                 }),
             });
 
-            if (!response.ok) {
-                setFollowedMap((prev) => ({ ...prev, [followedId]: true }));
-            } else {
-                setFollows((prev) => prev.filter((f) => f.id != followedId));
+            if (response.ok === false) {
+                setFollowedMap({ ...followedMap, [followedId]: true });
+                return;
             }
+
+            const newFollows = follows.filter((f) => f.id !== followedId);
+            setFollows(newFollows);
         } else {
-            setFollowedMap((prev) => ({ ...prev, [followedId]: true }));
+            setFollowedMap({ ...followedMap, [followedId]: true });
 
             const response = await fetch(API_FOLLOWS_URL, {
                 method: "POST",
@@ -61,8 +63,11 @@ export default function UsersToFollow() {
                 }),
             });
 
-            if (!response.ok) {
-                setFollowedMap((prev) => ({ ...prev, [followedId]: false }));
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok === false) {
+                setFollowedMap({ ...followedMap, [followedId]: false });
             }
         }
     };
@@ -79,7 +84,7 @@ export default function UsersToFollow() {
 
     useEffect(() => {
         if (follows.length > 0) {
-            const map = {};
+            let map = {};
             follows.forEach((f) => {
                 map[f.id] = true;
             });
@@ -87,49 +92,59 @@ export default function UsersToFollow() {
         }
     }, [follows]);
 
-    if (loading) {
+    if (loading === true) {
         return <LoaderScreen inline small text="Loading users..." />;
     }
 
-    const filteredUsers = users.filter((user) => user.id != currentUser.id);
+    const filteredUsers = users.filter((user) => user.id !== currentUser.id);
 
     const notFollowedUsers = filteredUsers.filter((user) => {
-        return !follows.some((f) => f.id == user.id);
+        let isFollowed = false;
+        follows.forEach((f) => {
+            if (f.id === user.id) {
+                isFollowed = true;
+            }
+        });
+        return isFollowed === false;
     });
 
     const usersToShow = notFollowedUsers.slice(0, 3);
 
+    const cards = [];
+    usersToShow.forEach((user) => {
+        const isFollowed = followedMap[user.id] === true;
+        cards.push(
+            <div className="person-card" key={user.id}>
+                <img
+                    className="person-avatar"
+                    src={user.profile_image}
+                    alt={user.username}
+                    style={{ objectFit: "cover" }}
+                />
+                <div className="person-info">
+                    <div className="person-name">
+                        {user.name} {user.second_name}
+                    </div>
+                    <div className="person-handle">@{user.username}</div>
+                </div>
+                <button
+                    className="follow-btn"
+                    onClick={() => handleFollow(user.id)}
+                    style={{
+                        opacity: isFollowed === true ? 0.7 : 1,
+                        cursor: isFollowed === true ? "default" : "pointer",
+                    }}
+                >
+                    {isFollowed === true ? "Siguiendo" : "Seguir"}
+                </button>
+            </div>,
+        );
+    });
+
     return (
         <div>
             <div className="section-title">A quién seguir</div>
-            {usersToShow.map((user, index) => (
-                <div className="person-card" key={index}>
-                    <img
-                        className="person-avatar"
-                        src={user.profile_image}
-                        alt={user.username}
-                        style={{ objectFit: "cover" }}
-                    />
-                    <div className="person-info">
-                        <div className="person-name">
-                            {user.name} {user.second_name}
-                        </div>
-                        <div className="person-handle">@{user.username}</div>
-                    </div>
-                    <button
-                        className="follow-btn"
-                        onClick={() => handleFollow(user.id)}
-                        style={{
-                            opacity: followedMap[user.id] ? 0.7 : 1,
-                            cursor: followedMap[user.id]
-                                ? "default"
-                                : "pointer",
-                        }}
-                    >
-                        {followedMap[user.id] ? "Siguiendo" : "Seguir"}
-                    </button>
-                </div>
-            ))}
+            {cards}
         </div>
     );
 }
