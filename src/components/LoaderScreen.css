@@ -106,3 +106,21 @@ body.light .loading-text {
     background: transparent;
     z-index: auto;
 }
+
+.loader-small.loader-inline {
+    min-height: 120px;
+}
+
+.loader-small .loader {
+    width: 80px;
+}
+
+.loader-small .ball {
+    width: 8px;
+    height: 8px;
+}
+
+.loader-small .loading-text {
+    margin-top: 20px;
+    font-size: 11px;
+}

@@ -4,6 +4,8 @@ import LoginLayout from "../layout/loginLayout";
 import { useState } from "react";
 import LoaderScreen from "../components/LoaderScreen";
 
+const API_URL = "http://localhost:8000/api/login";
+
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -13,50 +15,44 @@ export default function Login() {
     const auth = useAuth();
     const navigate = useNavigate();
 
-    if (auth.isAuthenticated && !isLoading) {
-        return <Navigate to="/" replace />;
-    }
-
-    if (isLoading) {
-        return <LoaderScreen text="Cargando..." />;
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setIsLoading(true);
 
-        try {
-            const response = await fetch("http://localhost:8000/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username,
-                    password,
-                }),
-            });
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+        });
 
-            const data = await response.json();
+        const data = await response.json();
+        console.log("login response:", data);
 
-            if (!response.ok) {
-                setError(data.message || "Login failed");
-                setIsLoading(false);
-                return;
-            }
-
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
-
-            auth.setIsAuthenticated(true);
-            navigate("/");
-        } catch (err) {
-            console.error(err);
-            setError("Server connection error");
+        if (response.ok == false) {
+            setError(data.message ? data.message : "Error al iniciar sesión");
             setIsLoading(false);
+            return;
         }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        auth.setIsAuthenticated(true);
+        navigate("/");
     };
+
+    if (auth.isAuthenticated == true && isLoading == false) {
+        return <Navigate to="/" replace />;
+    }
+
+    if (isLoading == true) {
+        return <LoaderScreen text="Cargando..." />;
+    }
 
     return (
         <LoginLayout
@@ -77,7 +73,6 @@ export default function Login() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
-
                 <input
                     type="password"
                     placeholder="Contraseña"
@@ -85,9 +80,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-
-                {error && <p style={{ color: "red" }}>{error}</p>}
-
+                {error != "" && <p style={{ color: "red" }}>{error}</p>}
                 <button type="submit" className="btn">
                     Iniciar sesión
                 </button>
