@@ -17,54 +17,47 @@ export default function Register() {
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [error, setError] = useState("");
 
-    if (auth.isAuthenticated) {
-        return <Navigate to="/" replace />;
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
-        if (password !== passwordConfirm) {
+        if (password != passwordConfirm) {
             setError("The passwords do not match");
             return;
         }
 
-        try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username,
-                    name,
-                    second_name: secondName,
-                    email,
-                    password,
-                    password_confirmation: passwordConfirm,
-                }),
-            });
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username,
+                name: name,
+                second_name: secondName,
+                email: email,
+                password: password,
+                password_confirmation: passwordConfirm,
+            }),
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            console.log("REGISTER RESPONSE:", data);
+        console.log("REGISTER RESPONSE:", data);
 
-            if (!response.ok) {
-                setError(data.message || "Registration failed");
-                return;
-            }
-
-            localStorage.setItem("token", data.token);
-
-            auth.setIsAuthenticated(true);
-
-            navigate("/");
-        } catch (err) {
-            console.error(err);
-            setError("Server connection error");
+        if (response.ok == false) {
+            setError(data.message ? data.message : "Registration failed");
+            return;
         }
+
+        localStorage.setItem("token", data.token);
+        auth.setIsAuthenticated(true);
+        navigate("/");
     };
+
+    if (auth.isAuthenticated == true) {
+        return <Navigate to="/" replace />;
+    }
 
     return (
         <LoginLayout
@@ -85,7 +78,6 @@ export default function Register() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
-
                 <input
                     type="text"
                     placeholder="Nombre"
@@ -93,7 +85,6 @@ export default function Register() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-
                 <input
                     type="text"
                     placeholder="Apellido"
@@ -101,7 +92,6 @@ export default function Register() {
                     value={secondName}
                     onChange={(e) => setSecondName(e.target.value)}
                 />
-
                 <input
                     type="email"
                     placeholder="Correo electrónico"
@@ -109,7 +99,6 @@ export default function Register() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-
                 <input
                     type="password"
                     placeholder="Contraseña"
@@ -117,7 +106,6 @@ export default function Register() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-
                 <input
                     type="password"
                     placeholder="Repetir contraseña"
@@ -126,7 +114,7 @@ export default function Register() {
                     onChange={(e) => setPasswordConfirm(e.target.value)}
                 />
 
-                {error && <p style={{ color: "red" }}>{error}</p>}
+                {error != "" && <p style={{ color: "red" }}>{error}</p>}
 
                 <button type="submit" className="btn">
                     Registrarme

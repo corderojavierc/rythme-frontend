@@ -5,13 +5,18 @@ const API_URL = "http://localhost:8000/api/posts";
 const STEP = 5;
 
 function StarRating({ rating }) {
-    const value = parseFloat(rating) || 0;
+    const value = parseFloat(rating);
     const stars = [];
 
     for (let i = 1; i <= 5; i++) {
         let className = "star";
-        if (value < i - 0.5) className = "star empty";
-        else if (value < i) className = "star half";
+        if (value < i - 0.5) {
+            className = "star empty";
+        } else if (value < i) {
+            className = "star half";
+        } else {
+            className = "star";
+        }
         stars.push(
             <span key={i} className={className}>
                 ★
@@ -23,22 +28,48 @@ function StarRating({ rating }) {
 }
 
 function PostCard({ post }) {
-    const fullName =
-        post.name && post.second_name
-            ? `${post.name} ${post.second_name}`
-            : post.name || post.user_name || "User";
+    let fullName = "";
+    if (post.name && post.second_name) {
+        fullName = post.name + " " + post.second_name;
+    } else if (post.name) {
+        fullName = post.name;
+    } else if (post.user_name) {
+        fullName = post.user_name;
+    } else {
+        fullName = "User";
+    }
 
-    const initials =
-        `${post.name?.[0] || ""}${post.second_name?.[0] || ""}`.toUpperCase() ||
-        "?";
+    let initials = "";
+    if (post.name) {
+        initials = initials + post.name[0];
+    }
+    if (post.second_name) {
+        initials = initials + post.second_name[0];
+    }
+    initials = initials.toUpperCase();
+    if (initials == "") {
+        initials = "?";
+    }
 
     function timeAgo(date) {
-        if (!date) return "";
-        const seconds = (Date.now() - new Date(date)) / 1000;
-        if (seconds < 60) return "just now";
-        if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)} h ago`;
-        return `${Math.floor(seconds / 86400)} days ago`;
+        const now = Date.now();
+        const then = new Date(date);
+        const diff = now - then;
+        const seconds = diff / 1000;
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(seconds / 3600);
+        const days = Math.floor(seconds / 86400);
+
+        if (seconds < 60) {
+            return "Ahora mismo";
+        }
+        if (minutes < 60) {
+            return "Hace " + minutes + " minutos";
+        }
+        if (hours < 24) {
+            return "Hace " + hours + " horas";
+        }
+        return "Hace " + days + " días";
     }
 
     return (
@@ -63,7 +94,7 @@ function PostCard({ post }) {
                 <div className="user-info">
                     <div className="user-name">{fullName}</div>
                     <div className="user-handle">
-                        @{post.user_name || "user"}
+                        @{post.user_name ? post.user_name : "user"}
                     </div>
                 </div>
                 <div className="timestamp">{timeAgo(post.created_at)}</div>
@@ -74,7 +105,7 @@ function PostCard({ post }) {
                     {post.cover_url ? (
                         <img
                             src={post.cover_url}
-                            alt={post.music || "Cover"}
+                            alt={post.music}
                             style={{
                                 width: "100%",
                                 height: "100%",
@@ -88,10 +119,10 @@ function PostCard({ post }) {
                 </div>
                 <div className="song-info">
                     <div className="song-title">
-                        {post.music || "Unknown song"}
+                        {post.music ? post.music : "Cancion desconocida"}
                     </div>
                     <div className="song-artist">
-                        {post.artist || "Unknown artist"}
+                        {post.artist ? post.artist : "Artista desconocido"}
                     </div>
                 </div>
             </div>
@@ -99,7 +130,7 @@ function PostCard({ post }) {
             <div className="stars-row">
                 <StarRating rating={post.rating} />
                 <span className="rating-score">
-                    {parseFloat(post.rating || 0).toFixed(1)}
+                    {parseFloat(post.rating ? post.rating : 0).toFixed(1)}
                 </span>
                 <span className="rating-max">/ 5</span>
             </div>
@@ -109,7 +140,7 @@ function PostCard({ post }) {
             <div className="actions">
                 <button className="action-btn liked">
                     <span className="material-symbols-outlined">favorite</span>
-                    {post.count_liked ?? 0}
+                    {post.count_liked ? post.count_liked : 0}
                 </button>
                 <button className="action-btn">
                     <span className="material-symbols-outlined">
@@ -131,34 +162,32 @@ export default function PostComponent() {
     const postsRef = useRef([]);
     const visibleRef = useRef(STEP);
     const isBusyRef = useRef(false);
-
     const sentinelRef = useRef(null);
 
     async function fetchPosts() {
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(API_URL, {
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-                },
-            });
+        const token = localStorage.getItem("token");
+        const response = await fetch(API_URL, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+        });
+        const json = await response.json();
+        console.log("posts response:", json);
 
-            if (!response.ok) throw new Error(`Error ${response.status}`);
-
-            const json = await response.json();
-            const allPosts = Array.isArray(json) ? json : (json.data ?? []);
-
-            postsRef.current = allPosts;
-            setPosts(allPosts);
-        } catch (err) {
-            console.error(err);
-            setError("Could not connect to the API.");
+        let allPosts = [];
+        if (Array.isArray(json)) {
+            allPosts = json;
+        } else {
+            allPosts = json.data;
         }
+
+        postsRef.current = allPosts;
+        setPosts(allPosts);
     }
 
     function showMore() {
-        if (isBusyRef.current) return;
+        if (isBusyRef.current == true) return;
         if (visibleRef.current >= postsRef.current.length) return;
 
         isBusyRef.current = true;
@@ -169,32 +198,35 @@ export default function PostComponent() {
     }
 
     useEffect(() => {
-        async function init() {
+        async function loadData() {
             setLoading(true);
             await fetchPosts();
             setLoading(false);
         }
-        init();
+        loadData();
     }, []);
 
     useEffect(() => {
         const el = sentinelRef.current;
-        if (!el) return;
+        if (el == null) return;
 
         const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) showMore();
+            function (entries) {
+                if (entries[0].isIntersecting == true) {
+                    showMore();
+                }
             },
             { rootMargin: "180px" },
         );
 
         observer.observe(el);
-        return () => observer.disconnect();
     });
 
-    if (loading) return <LoaderScreen inline text="Loading posts..." />;
+    if (loading == true) {
+        return <LoaderScreen inline text="Cargando posts..." />;
+    }
 
-    if (error) {
+    if (error != "") {
         return (
             <div className="feed-state feed-error">
                 <span
@@ -208,7 +240,7 @@ export default function PostComponent() {
         );
     }
 
-    if (posts.length === 0) {
+    if (posts.length == 0) {
         return (
             <div className="feed-state">
                 <span
@@ -222,17 +254,29 @@ export default function PostComponent() {
         );
     }
 
-    const hasMore = visible < posts.length;
+    let hasMore = false;
+    if (visible < posts.length) {
+        hasMore = true;
+    }
+
+    const visiblePosts = [];
+    for (let i = 0; i < posts.length; i++) {
+        if (i < visible) {
+            visiblePosts.push(posts[i]);
+        }
+    }
 
     return (
         <div>
-            {posts.slice(0, visible).map((post, i) => (
-                <PostCard key={post.id ?? i} post={post} />
-            ))}
+            {visiblePosts.map(function (post, i) {
+                return <PostCard key={i} post={post} />;
+            })}
 
-            {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
+            {hasMore == true && (
+                <div ref={sentinelRef} style={{ height: 10 }} />
+            )}
 
-            {!hasMore && (
+            {hasMore == false && (
                 <div className="feed-end">
                     <span className="material-symbols-outlined">
                         music_note
