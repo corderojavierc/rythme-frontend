@@ -3,6 +3,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { useState } from "react";
 
+const API_URL = "http://localhost:8000/api/register";
+
 export default function Register() {
     const auth = useAuth();
     const navigate = useNavigate();
@@ -29,7 +31,7 @@ export default function Register() {
         }
 
         try {
-            const response = await fetch("http://localhost:8000/api/register", {
+            const response = await fetch(API_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

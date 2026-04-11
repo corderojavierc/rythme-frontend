@@ -4,6 +4,8 @@ import LoginLayout from "../layout/loginLayout";
 import { useState } from "react";
 import LoaderScreen from "../components/LoaderScreen";
 
+const API_URL = "http://localhost:8000/api/login";
+
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -27,7 +29,7 @@ export default function Login() {
         setIsLoading(true);
 
         try {
-            const response = await fetch("http://localhost:8000/api/login", {
+            const response = await fetch(API_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
