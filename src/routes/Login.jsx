@@ -21,30 +21,36 @@ export default function Login() {
         setError("");
         setIsLoading(true);
 
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password,
-            }),
-        });
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                }),
+            });
 
-        const data = await response.json();
-        console.log("login response:", data);
+            const data = await response.json();
+            console.log("login response:", data);
 
-        if (response.ok == false) {
-            setError(data.message ? data.message : "Error al iniciar sesión");
+            if (response.ok == false) {
+                setError(data.message ? data.message : "Login error");
+                setIsLoading(false);
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            auth.setIsAuthenticated(true);
+            navigate("/");
+        } catch (err) {
+            console.error("Login error:", err);
+            setError("Server error");
             setIsLoading(false);
-            return;
         }
-
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        auth.setIsAuthenticated(true);
-        navigate("/");
     };
 
     if (auth.isAuthenticated == true && isLoading == false) {
