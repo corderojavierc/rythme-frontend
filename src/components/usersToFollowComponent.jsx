@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import LoaderScreen from "./LoaderScreen";
+import { getApi } from "../App";
 
-const API_USERS_URL = "http://localhost:8000/api/users";
-const API_FOLLOWS_URL = "http://localhost:8000/api/follows";
+const API_USERS_URL = getApi() + "/users";
+const API_FOLLOWS_URL = getApi() + "/follows";
 
 export default function UsersToFollow() {
     const [textBotton, setTextBotton] = useState();

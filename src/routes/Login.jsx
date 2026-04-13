@@ -3,8 +3,9 @@ import { useAuth } from "../auth/AuthProvider";
 import LoginLayout from "../layout/loginLayout";
 import { useState } from "react";
 import LoaderScreen from "../components/LoaderScreen";
+import { getApi } from "../App";
 
-const API_URL = "http://localhost:8000/api/login";
+const API_URL = getApi() + "/login";
 
 export default function Login() {
     const [username, setUsername] = useState("");

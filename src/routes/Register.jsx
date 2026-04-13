@@ -2,8 +2,9 @@ import LoginLayout from "../layout/loginLayout";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { useState } from "react";
+import { getApi } from "../App";
 
-const API_URL = "http://localhost:8000/api/register";
+const API_URL = getApi() + "/register";
 
 export default function Register() {
     const auth = useAuth();
