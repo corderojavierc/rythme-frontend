@@ -8,6 +8,7 @@ import Register from "./routes/Register";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import { AuthProvider } from "./auth/AuthProvider";
+import CreateCommentLayout from "./layout/CreateCommentLayout";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <App />,
+            },
+            {
+                path: "/posts/:id/comment",
+                element: <CreateCommentLayout />,
             },
         ],
     },
