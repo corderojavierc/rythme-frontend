@@ -1,4 +1,4 @@
-import UsersToFollow from "../components/usersToFollowComponent";
+import UsersToFollow from "../components/UsersToFollowComponent";
 import "../App.css";
 
 export default function RightAsideLayout() {

@@ -1,6 +1,6 @@
-import PostComponent from "./components/post/postComponent";
+import PostComponent from "../components/post/PostComponent";
 
-export default function App() {
+export default function Feed() {
     return (
         <>
             <h2 className="feed-header">Valoraciones</h2>

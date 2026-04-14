@@ -3,15 +3,14 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 
-import App from "./App";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import { AuthProvider } from "./auth/AuthProvider";
-import CreateCommentLayout from "./layout/CreateCommentLayout";
 import FollowedsPosts from "./routes/FollowedsPosts";
-
+import Feed from "./routes/Feed";
+import CommentPage from "./routes/CommentPage";
 import Home from "./routes/Home";
 
 const router = createBrowserRouter([
@@ -24,7 +23,7 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: "/",
-                        element: <App />,
+                        element: <Feed />,
                     },
                     {
                         path: "/followed",
@@ -32,7 +31,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "/posts/:id/comment",
-                        element: <CreateCommentLayout />,
+                        element: <CommentPage />,
                     },
                 ],
             },

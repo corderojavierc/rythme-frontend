@@ -1,6 +1,6 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
-import LoginLayout from "../layout/loginLayout";
+import LoginLayout from "../layout/LoginLayout";
 import { useState } from "react";
 import LoaderScreen from "../components/LoaderScreen";
 import { getApi } from "../config";

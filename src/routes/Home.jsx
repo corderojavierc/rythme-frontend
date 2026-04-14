@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import AsideLayout from "../layout/asideLayout";
-import RightAsideLayout from "../layout/rightAsideLayout";
+import AsideLayout from "../layout/AsideLayout";
+import RightAsideLayout from "../layout/RightAsideLayout";
 
 export default function Home() {
     return (

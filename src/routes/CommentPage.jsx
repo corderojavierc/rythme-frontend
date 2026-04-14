@@ -7,7 +7,7 @@ import { getApi } from "../config";
 
 const API_POST_URL = `${getApi()}/posts`;
 
-export default function CreateCommentLayout() {
+export default function CommentPage() {
     const { id } = useParams();
 
     let token = localStorage.getItem("token");

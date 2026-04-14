@@ -1,4 +1,4 @@
-import PostComponent from "../components/post/postComponent";
+import PostComponent from "../components/post/PostComponent";
 
 export default function FollowedsPosts() {
     return (

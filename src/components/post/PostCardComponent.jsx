@@ -1,4 +1,4 @@
-import { StarRating } from "./postComponent";
+import { StarRating } from "./PostComponent";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
 import { PostProvider } from "../../providers/PostProvider";
