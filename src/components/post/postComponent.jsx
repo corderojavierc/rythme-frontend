@@ -3,7 +3,7 @@ import LoaderScreen from "../LoaderScreen";
 import { PostProvider } from "../../providers/PostProvider";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
-import { getApi } from "../../App";
+import { getApi } from "../../config";
 import PostCardComponent from "./PostCardComponent";
 
 const API_URL = getApi() + "/posts";

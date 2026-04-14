@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AsideLayout from "./asideLayout";
+import AsideLayout from "./AsideLayout";
 import RightAsideLayout from "./rightAsideLayout";
 import PostCardComponent from "../components/post/PostCardComponent";
 import CreateCommentComponent from "../components/comment/CreateCommentComponent";
 import LoaderScreen from "../components/LoaderScreen";
-import { getApi } from "../App";
+import { getApi } from "../config";
 
 const API_POST_URL = `${getApi()}/posts`;
 

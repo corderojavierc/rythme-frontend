@@ -1,6 +1,6 @@
 import { usePostContext } from "../../providers/PostProvider";
 import { useState } from "react";
-import { getApi } from "../../App";
+import { getApi } from "../../config";
 
 const API_LIKES_URL = getApi() + "/likes";
 

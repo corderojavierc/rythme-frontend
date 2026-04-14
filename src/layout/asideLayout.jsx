@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import "../App.css";
 
-export default function asideLayout() {
+export default function AsideLayout() {
     const auth = useAuth();
     const navigate = useNavigate();
     const { toggleTheme } = useTheme();

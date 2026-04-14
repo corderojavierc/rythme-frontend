@@ -4,7 +4,7 @@ import AsideLayout from "./asideLayout";
 import RightAsideLayout from "./rightAsideLayout";
 import PostCardComponent from "../components/post/PostCardComponent";
 import LoaderScreen from "../components/LoaderScreen";
-import { getApi } from "../App";
+import { getApi } from "../config";
 
 const API_POST_URL = `${getApi()}/posts`;
 
