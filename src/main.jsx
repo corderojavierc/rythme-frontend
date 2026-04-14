@@ -10,6 +10,7 @@ import PublicRoute from "./routes/PublicRoute";
 import { AuthProvider } from "./auth/AuthProvider";
 import FollowedsPosts from "./routes/FollowedsPosts";
 import Feed from "./routes/Feed";
+import SearchPage from "./routes/SearchPage";
 import CommentPage from "./routes/CommentPage";
 import Home from "./routes/Home";
 
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
                     {
                         path: "/followed",
                         element: <FollowedsPosts />,
+                    },
+                    {
+                        path: "/search",
+                        element: <SearchPage />,
                     },
                     {
                         path: "/posts/:id/comment",

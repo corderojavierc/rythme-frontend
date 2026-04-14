@@ -40,11 +40,10 @@ export default function CommentPage() {
 
     return (
         <>
-            <h2 className="feed-header">Comentar</h2>
             {post && (
                 <>
                     <PostCardComponent post={post} type="comment" />
-                    <div style={{ margin: "24px 0" }}>
+                    <div>
                         <CreateCommentComponent post={post} />
                     </div>
                 </>
