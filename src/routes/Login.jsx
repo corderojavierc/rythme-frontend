@@ -3,7 +3,7 @@ import { useAuth } from "../auth/AuthProvider";
 import LoginLayout from "../layout/loginLayout";
 import { useState } from "react";
 import LoaderScreen from "../components/LoaderScreen";
-import { getApi } from "../App";
+import { getApi } from "../config";
 
 const API_URL = getApi() + "/login";
 

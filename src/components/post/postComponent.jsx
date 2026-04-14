@@ -1,26 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import LoaderScreen from "../LoaderScreen";
-import { PostProvider } from "../../providers/PostProvider";
-import PostLikeButton from "./PostLikeButton";
-import PostCommentButton from "./PostCommentButton";
-import { getApi } from "../../App";
+import { getApi } from "../../config";
+import PostCardComponent from "./PostCardComponent";
 
 const API_URL = getApi() + "/posts";
-const STEP = 5;
+const STEP = 10;
 
-function StarRating({ rating }) {
+export function StarRating({ rating }) {
     const value = parseFloat(rating);
     const stars = [];
 
     for (let i = 1; i <= 5; i++) {
         let className = "star";
-        if (value < i - 0.5) {
-            className = "star empty";
-        } else if (value < i) {
-            className = "star half";
-        } else {
-            className = "star";
-        }
+        if (value < i - 0.5) className = "star empty";
+        else if (value < i) className = "star half";
+
         stars.push(
             <span key={i} className={className}>
                 ★
@@ -31,170 +25,76 @@ function StarRating({ rating }) {
     return <div className="stars">{stars}</div>;
 }
 
-function PostCard({ post }) {
-    let fullName = "";
-    if (post.name && post.second_name) {
-        fullName = post.name + " " + post.second_name;
-    } else if (post.name) {
-        fullName = post.name;
-    } else if (post.user_name) {
-        fullName = post.user_name;
-    } else {
-        fullName = "User";
-    }
-
-    let initials = "";
-    if (post.name) {
-        initials = initials + post.name[0];
-    }
-    if (post.second_name) {
-        initials = initials + post.second_name[0];
-    }
-    initials = initials.toUpperCase();
-    if (initials == "") {
-        initials = "?";
-    }
-
-    function timeAgo(date) {
-        const now = Date.now();
-        const then = new Date(date);
-        const diff = now - then;
-        const seconds = diff / 1000;
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(seconds / 3600);
-        const days = Math.floor(seconds / 86400);
-
-        if (seconds < 60) {
-            return "Ahora mismo";
-        }
-        if (minutes < 60) {
-            return "Hace " + minutes + " minutos";
-        }
-        if (hours < 24) {
-            return "Hace " + hours + " horas";
-        }
-        return "Hace " + days + " días";
-    }
-
-    const rating = post.rating ? post.rating : 0;
-
-    return (
-        <PostProvider post={post}>
-            <div className="rating-card">
-                <div className="rating-header">
-                    <div className="avatar">
-                        {post.profile_image ? (
-                            <img
-                                src={post.profile_image}
-                                alt={fullName}
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover",
-                                    borderRadius: "50%",
-                                }}
-                            />
-                        ) : (
-                            initials
-                        )}
-                    </div>
-                    <div className="user-info">
-                        <div className="user-name">{fullName}</div>
-                        <div className="user-handle">
-                            @{post.user_name ? post.user_name : "user"}
-                        </div>
-                    </div>
-                    <div className="timestamp">{timeAgo(post.created_at)}</div>
-                </div>
-
-                <div className="song-block">
-                    <div className="cover">
-                        {post.cover_url ? (
-                            <img
-                                src={post.cover_url}
-                                alt={post.music}
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover",
-                                    borderRadius: "12px",
-                                }}
-                            />
-                        ) : (
-                            <span className="cover-emoji">🎵</span>
-                        )}
-                    </div>
-                    <div className="song-info">
-                        <div className="song-title">
-                            {post.music ? post.music : "Cancion desconocida"}
-                        </div>
-                        <div className="song-artist">
-                            {post.artist ? post.artist : "Artista desconocido"}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="stars-row">
-                    <StarRating rating={rating} />
-                    <span className="rating-score">
-                        {parseFloat(rating).toFixed(1)}
-                    </span>
-                    <span className="rating-max">/ 5</span>
-                </div>
-
-                {post.title && <p className="comment">{post.title}</p>}
-
-                <div className="actions">
-                    <PostLikeButton />
-                    <PostCommentButton />
-                </div>
-            </div>
-        </PostProvider>
-    );
-}
-
-export default function PostComponent() {
+export default function PostComponent({ fromFollowed = false }) {
     const [posts, setPosts] = useState([]);
     const [visible, setVisible] = useState(STEP);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const postsRef = useRef([]);
-    const visibleRef = useRef(STEP);
-    const isBusyRef = useRef(false);
     const sentinelRef = useRef(null);
 
     async function fetchPosts() {
-        const token = localStorage.getItem("token");
-        const response = await fetch(API_URL, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + token,
-            },
-        });
-        const json = await response.json();
-        console.log("posts response:", json);
+        try {
+            const token = localStorage.getItem("token");
 
-        let allPosts = [];
-        if (Array.isArray(json) === true) {
-            allPosts = json;
-        } else {
-            allPosts = json.data;
+            const response = await fetch(API_URL, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                },
+            });
+
+            if (!response.ok) throw new Error("Error al cargar posts");
+
+            const json = await response.json();
+            let allPosts = Array.isArray(json) ? json : json.data;
+
+            if (fromFollowed) {
+                try {
+                    const user = JSON.parse(localStorage.getItem("user") || "{}");
+                    const userId = user.id;
+
+                    if (!userId) {
+                        setPosts([]);
+                        return;
+                    }
+
+                    const followsRes = await fetch(`${getApi()}/follows/${userId}`, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + token,
+                        },
+                    });
+
+                    const followsJson = await followsRes.json();
+                    const allFollows = Array.isArray(followsJson)
+                        ? followsJson
+                        : followsJson.data || [];
+
+                    const followIds = allFollows.map((f) => f.id);
+
+                    allPosts = allPosts.filter((post) =>
+                        followIds.includes(post.user_id),
+                    );
+                } catch (err) {
+                    console.error("Error cargando follows:", err);
+                }
+            }
+
+            allPosts.sort((a, b) => {
+                const dateA = a.created_at ? new Date(a.created_at) : 0;
+                const dateB = b.created_at ? new Date(b.created_at) : 0;
+                return dateB - dateA;
+            });
+
+            setPosts(allPosts);
+        } catch (err) {
+            setError(err.message);
         }
-
-        postsRef.current = allPosts;
-        setPosts(allPosts);
     }
 
     function showMore() {
-        if (isBusyRef.current == true) return;
-        if (visibleRef.current >= postsRef.current.length) return;
-
-        isBusyRef.current = true;
-        const next = visibleRef.current + STEP;
-        visibleRef.current = next;
-        setVisible(next);
-        isBusyRef.current = false;
+        setVisible((prev) => prev + STEP);
     }
 
     useEffect(() => {
@@ -207,26 +107,29 @@ export default function PostComponent() {
     }, []);
 
     useEffect(() => {
+        if (loading) return;
         const el = sentinelRef.current;
-        if (el == null) return;
+        if (!el) return;
 
         const observer = new IntersectionObserver(
-            function (entries) {
-                if (entries[0].isIntersecting == true) {
+            (entries) => {
+                if (entries[0].isIntersecting) {
                     showMore();
                 }
             },
-            { rootMargin: "180px" },
+            { rootMargin: "400px" },
         );
 
         observer.observe(el);
-    });
 
-    if (loading == true) {
+        return () => observer.disconnect();
+    }, [loading, posts.length, visible]);
+
+    if (loading) {
         return <LoaderScreen inline text="Cargando posts..." />;
     }
 
-    if (error != "") {
+    if (error) {
         return (
             <div className="feed-state feed-error">
                 <span
@@ -240,7 +143,7 @@ export default function PostComponent() {
         );
     }
 
-    if (posts.length == 0) {
+    if (posts.length === 0) {
         return (
             <div className="feed-state">
                 <span
@@ -254,32 +157,18 @@ export default function PostComponent() {
         );
     }
 
-    let hasMore = false;
-    if (visible < posts.length) {
-        hasMore = true;
-    }
-
-    const visiblePosts = [];
-    for (let i = 0; i < posts.length; i++) {
-        if (i < visible) {
-            visiblePosts.push(posts[i]);
-        }
-    }
-
-    const cards = [];
-    visiblePosts.forEach(function (post, i) {
-        cards.push(<PostCard key={i} post={post} />);
-    });
+    const visiblePosts = posts.slice(0, visible);
+    const hasMore = visible < posts.length;
 
     return (
         <div>
-            {cards}
+            {visiblePosts.map((post) => (
+                <PostCardComponent key={post.id} post={post} />
+            ))}
 
-            {hasMore == true && (
-                <div ref={sentinelRef} style={{ height: 10 }} />
-            )}
+            {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
 
-            {hasMore == false && (
+            {!hasMore && (
                 <div className="feed-end">
                     <span className="material-symbols-outlined">
                         music_note

@@ -1,8 +1,7 @@
 import UsersToFollow from "../components/usersToFollowComponent";
 import "../App.css";
-const API_URL = "http://localhost:8000/api/users";
 
-export default function asideLayout() {
+export default function RightAsideLayout() {
     return (
         <aside className="right-sidebar">
             <div className="search-wrap">
@@ -11,6 +10,7 @@ export default function asideLayout() {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
+                    style={{ width: '18px', height: '18px' }}
                 >
                     <circle cx="11" cy="11" r="8" />
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />

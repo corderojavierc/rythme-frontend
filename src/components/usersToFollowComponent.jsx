@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import LoaderScreen from "./LoaderScreen";
-import { getApi } from "../App";
+import { getApi } from "../config";
 
 export default function UsersToFollow() {
     const [usersToShow, setUsersToShow] = useState([]);

@@ -1,6 +1,6 @@
 import { usePostContext } from "../../providers/PostProvider";
 import { useState } from "react";
-import { getApi } from "../../App";
+import { getApi } from "../../config";
 
 const API_LIKES_URL = getApi() + "/likes";
 
@@ -28,6 +28,7 @@ export default function PostLikeButton() {
     }
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
     async function handleLike() {
         if (currentUser.id == undefined || token == null) {
@@ -41,18 +42,14 @@ export default function PostLikeButton() {
 
         setIsLoading(true);
 
-        let newIsLiked = false;
-        if (isLiked) {
-            newIsLiked = false;
-        } else {
-            newIsLiked = true;
-        }
+        const newIsLiked = !isLiked;
+        const newCount = newIsLiked ? countLikes + 1 : countLikes - 1;
 
-        let newCount = 0;
         if (newIsLiked) {
-            newCount = countLikes + 1;
+            setIsAnimating(true);
+            setTimeout(() => setIsAnimating(false), 600);
         } else {
-            newCount = countLikes - 1;
+            setIsAnimating(false);
         }
 
         updatePost({
@@ -107,7 +104,7 @@ export default function PostLikeButton() {
                 cursor: "pointer",
             }}
         >
-            <div className="like-icon-container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className={`like-icon-container ${isAnimating ? 'animating' : ''}`} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="material-symbols-outlined">favorite</span>
                 <svg
                     className="svg-celebrate"

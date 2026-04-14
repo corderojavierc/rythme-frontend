@@ -2,7 +2,7 @@ import LoginLayout from "../layout/loginLayout";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { useState } from "react";
-import { getApi } from "../App";
+import { getApi } from "../config";
 import LoaderScreen from "../components/LoaderScreen";
 
 const API_URL = getApi() + "/register";

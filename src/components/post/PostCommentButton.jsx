@@ -6,7 +6,7 @@ export default function PostCommentButton() {
     const countComments = post.count_comments ? post.count_comments : 0;
 
     const handleComment = () => {
-        console.log("Abrir comentarios para el post:", post.id);
+        window.location.href = `/posts/${post.id}/comment`;
     };
 
     return (

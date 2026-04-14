@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useAuth } from "../auth/AuthProvider";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import "../App.css";
 
-export default function asideLayout() {
+export default function AsideLayout() {
     const auth = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const { toggleTheme } = useTheme();
     const [showLogout, setShowLogout] = useState(false);
 
-    const webLocation = window.location.pathname;
+    const webLocation = location.pathname;
 
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const fullName =
