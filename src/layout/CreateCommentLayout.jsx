@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AsideLayout from "./AsideLayout";
-import RightAsideLayout from "./rightAsideLayout";
 import PostCardComponent from "../components/post/PostCardComponent";
 import CreateCommentComponent from "../components/comment/CreateCommentComponent";
 import LoaderScreen from "../components/LoaderScreen";
@@ -41,21 +39,16 @@ export default function CreateCommentLayout() {
     if (loading) return <LoaderScreen />;
 
     return (
-        <div className="app-container">
-            <AsideLayout />
-
-            <main className="main">
-                {post && (
-                    <>
-                        <PostCardComponent post={post} type="comment" />
-                        <div style={{ margin: "24px 0" }}>
-                            <CreateCommentComponent post={post} />
-                        </div>
-                    </>
-                )}
-            </main>
-
-            <RightAsideLayout />
-        </div>
+        <>
+            <h2 className="feed-header">Comentar</h2>
+            {post && (
+                <>
+                    <PostCardComponent post={post} type="comment" />
+                    <div style={{ margin: "24px 0" }}>
+                        <CreateCommentComponent post={post} />
+                    </div>
+                </>
+            )}
+        </>
     );
 }

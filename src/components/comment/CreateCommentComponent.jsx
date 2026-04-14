@@ -34,8 +34,6 @@ export default function CreateCommentComponent({ post }) {
                 }),
             });
 
-            const data = await response.json();
-
             if (!response.ok) throw new Error();
 
             e.target.reset();
