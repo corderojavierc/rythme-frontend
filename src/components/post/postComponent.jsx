@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import LoaderScreen from "./LoaderScreen";
-import { PostProvider } from "../providers/PostProvider";
+import LoaderScreen from "../LoaderScreen";
+import { PostProvider } from "../../providers/PostProvider";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
-import { getApi } from "../App";
+import { getApi } from "../../App";
 
 const API_URL = getApi() + "/posts";
 const STEP = 5;

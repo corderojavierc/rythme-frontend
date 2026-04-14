@@ -1,4 +1,4 @@
-import { usePostContext } from "../providers/PostProvider";
+import { usePostContext } from "../../providers/PostProvider";
 
 export default function PostCommentButton() {
     const { post } = usePostContext();

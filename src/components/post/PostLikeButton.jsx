@@ -1,4 +1,4 @@
-import { usePostContext } from "../providers/PostProvider";
+import { usePostContext } from "../../providers/PostProvider";
 import { useState } from "react";
 
 export default function PostLikeButton() {

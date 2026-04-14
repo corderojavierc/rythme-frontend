@@ -135,7 +135,6 @@ export default function UsersToFollow() {
                     onMouseLeave={() => setTextBotton("Siguiendo")}
                     onClick={() => handleFollow(user.id)}
                     style={{
-                        opacity: isFollowed === true ? 0.7 : 1,
                         cursor: "pointer",
                     }}
                 >

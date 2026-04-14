@@ -48,7 +48,7 @@ export default function Login() {
             navigate("/");
         } catch (err) {
             console.error("Login error:", err);
-            setError("Server error");
+            setError("Invalid credentials");
             setIsLoading(false);
         }
     };
