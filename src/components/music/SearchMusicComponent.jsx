@@ -1,4 +1,4 @@
-export default function SearchComponent() {
+export default function SearchMusicComponent() {
     return (
         <div className="search-group">
             <input
