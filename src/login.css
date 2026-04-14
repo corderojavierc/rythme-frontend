@@ -6,9 +6,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    box-sizing: border-box;
+    height: 100vh;
 }
 
 .card {
@@ -20,8 +18,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .left {
@@ -34,7 +30,6 @@ body {
     align-items: center;
     justify-content: center;
     gap: 12px;
-    flex-wrap: wrap;
 }
 
 .logo {
@@ -60,26 +55,18 @@ body {
 
 .slogan {
     font-size: 18px;
-    margin-top: 8px;
+    margin-top: 5px;
     color: #a0a7ba;
 }
 
 .theme-toggle {
-    margin-top: 25px;
-    background: rgba(255, 93, 162, 0.1);
-    border: 1px solid rgba(255, 93, 162, 0.3);
-    border-radius: 12px;
+    margin-top: 20px;
+    background: none;
+    border: none;
     color: #ff5da2;
     cursor: pointer;
     font-weight: 600;
     font-size: 15px;
-    padding: 8px 16px;
-    transition: all 0.2s;
-}
-
-.theme-toggle:hover {
-    opacity: 0.8;
-    transform: translateY(-1px);
 }
 
 .right {
@@ -91,30 +78,24 @@ body {
     font-size: 28px;
     font-weight: 700;
     color: #ff5da2;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 input {
-    width: 92%;
-    padding: 14px;
+    width: 100%;
+    padding: 12px;
     background: #2a3243;
-    border: 1px solid transparent;
+    border: none;
     outline: none;
     border-radius: 14px;
     margin-bottom: 15px;
     color: #e4e7ee;
     font-size: 15px;
-    transition: all 0.2s;
-}
-
-input:focus {
-    border: 1px solid #5c8fff;
-    box-shadow: 0 0 0 2px rgba(92, 143, 255, 0.2);
 }
 
 .btn {
     width: 100%;
-    padding: 14px;
+    padding: 12px;
     border-radius: 14px;
     background: #5c8fff;
     color: white;
@@ -122,16 +103,10 @@ input:focus {
     font-weight: 600;
     cursor: pointer;
     font-size: 15px;
-    transition: all 0.2s;
-}
-
-.btn:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
 }
 
 .register {
-    margin-top: 12px;
+    margin-top: 10px;
     font-size: 14px;
     color: #a0a7ba;
 }
@@ -140,11 +115,6 @@ input:focus {
     color: #5c8fff;
     text-decoration: none;
     font-weight: 600;
-    transition: 0.2s;
-}
-
-.register a:hover {
-    text-decoration: underline;
 }
 
 body.light {
@@ -154,17 +124,11 @@ body.light {
 
 body.light .card {
     background: #f5f7fa;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 body.light input {
     background: #e1e4e8;
     color: #1e2433;
-}
-
-body.light input:focus {
-    border: 1px solid #4f7fff;
-    box-shadow: 0 0 0 2px rgba(79, 127, 255, 0.2);
 }
 
 body.light .btn {
@@ -181,8 +145,6 @@ body.light .register a {
 
 body.light .theme-toggle {
     color: #ff4f8b;
-    border: 1px solid rgba(255, 79, 139, 0.3);
-    background: rgba(255, 79, 139, 0.08);
 }
 
 body.light .blue {
