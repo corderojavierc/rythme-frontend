@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { useAuth } from "../auth/AuthProvider";
 import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useAuth } from "../auth/AuthProvider";
 import { useTheme } from "../hooks/useTheme";
 import "../App.css";
 
 export default function AsideLayout() {
     const auth = useAuth();
-    const navigate = useNavigate();
     const location = useLocation();
+    const navigate = useNavigate();
     const { toggleTheme } = useTheme();
     const [showLogout, setShowLogout] = useState(false);
 
@@ -18,6 +18,7 @@ export default function AsideLayout() {
         user.name && user.second_name
             ? `${user.name} ${user.second_name}`
             : user.name || user.username || "Usuario";
+
     const initials =
         `${user.name?.[0] || ""}${user.second_name?.[0] || ""}`.toUpperCase() ||
         "?";
@@ -39,7 +40,7 @@ export default function AsideLayout() {
             auth.setIsAuthenticated(false);
             navigate("/login");
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Logout Error:", error);
         }
     };
 
@@ -83,7 +84,7 @@ export default function AsideLayout() {
                 className={`nav-item ${webLocation === "/music" ? "active" : ""}`}
                 to="/music"
             >
-                <span className="material-symbols-outlined">music_note</span>
+                <span className="material-symbols-outlined">music_note_2</span>
                 Música
             </Link>
             <Link
