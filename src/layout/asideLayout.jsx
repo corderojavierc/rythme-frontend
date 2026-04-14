@@ -13,10 +13,13 @@ export default function asideLayout() {
     const webLocation = window.location.pathname;
 
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const fullName = user.name && user.second_name
-        ? `${user.name} ${user.second_name}`
-        : user.name || user.username || "Usuario";
-    const initials = `${user.name?.[0] || ""}${user.second_name?.[0] || ""}`.toUpperCase() || "?";
+    const fullName =
+        user.name && user.second_name
+            ? `${user.name} ${user.second_name}`
+            : user.name || user.username || "Usuario";
+    const initials =
+        `${user.name?.[0] || ""}${user.second_name?.[0] || ""}`.toUpperCase() ||
+        "?";
 
     const handleLogout = async () => {
         try {
@@ -108,7 +111,10 @@ export default function asideLayout() {
 
             <div className="nav-spacer"></div>
 
-            <div className="user-card" onClick={() => setShowLogout((prev) => !prev)}>
+            <div
+                className="user-card"
+                onClick={() => setShowLogout((prev) => !prev)}
+            >
                 <div className="user-card-avatar">
                     {user.profile_image ? (
                         <img src={user.profile_image} alt={fullName} />
@@ -118,7 +124,9 @@ export default function asideLayout() {
                 </div>
                 <div className="user-card-info">
                     <div className="user-card-name">{fullName}</div>
-                    <div className="user-card-handle">@{user.username || "usuario"}</div>
+                    <div className="user-card-handle">
+                        @{user.username || "usuario"}
+                    </div>
                 </div>
                 <span className="material-symbols-outlined user-card-chevron">
                     {showLogout ? "expand_less" : "expand_more"}
@@ -126,7 +134,10 @@ export default function asideLayout() {
             </div>
 
             {showLogout && (
-                <button onClick={handleLogout} className="nav-item action-btn logout-btn">
+                <button
+                    onClick={handleLogout}
+                    className="nav-item action-btn logout-btn"
+                >
                     <span className="material-symbols-outlined">logout</span>
                     Cerrar sesión
                 </button>

@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import LoaderScreen from "./LoaderScreen";
+import LoaderScreen from "../LoaderScreen";
+import { PostProvider } from "../../providers/PostProvider";
+import PostLikeButton from "./PostLikeButton";
+import PostCommentButton from "./PostCommentButton";
+import { getApi } from "../../App";
 
-const API_URL = "http://localhost:8000/api/posts";
+const API_URL = getApi() + "/posts";
 const STEP = 5;
 
 function StarRating({ rating }) {
@@ -73,86 +77,79 @@ function PostCard({ post }) {
     }
 
     const rating = post.rating ? post.rating : 0;
-    const countLiked = post.count_liked ? post.count_liked : 0;
 
     return (
-        <div className="rating-card">
-            <div className="rating-header">
-                <div className="avatar">
-                    {post.profile_image ? (
-                        <img
-                            src={post.profile_image}
-                            alt={fullName}
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                                borderRadius: "50%",
-                            }}
-                        />
-                    ) : (
-                        initials
-                    )}
+        <PostProvider post={post}>
+            <div className="rating-card">
+                <div className="rating-header">
+                    <div className="avatar">
+                        {post.profile_image ? (
+                            <img
+                                src={post.profile_image}
+                                alt={fullName}
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    borderRadius: "50%",
+                                }}
+                            />
+                        ) : (
+                            initials
+                        )}
+                    </div>
+                    <div className="user-info">
+                        <div className="user-name">{fullName}</div>
+                        <div className="user-handle">
+                            @{post.user_name ? post.user_name : "user"}
+                        </div>
+                    </div>
+                    <div className="timestamp">{timeAgo(post.created_at)}</div>
                 </div>
-                <div className="user-info">
-                    <div className="user-name">{fullName}</div>
-                    <div className="user-handle">
-                        @{post.user_name ? post.user_name : "user"}
+
+                <div className="song-block">
+                    <div className="cover">
+                        {post.cover_url ? (
+                            <img
+                                src={post.cover_url}
+                                alt={post.music}
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
+                                    borderRadius: "12px",
+                                }}
+                            />
+                        ) : (
+                            <span className="cover-emoji">🎵</span>
+                        )}
+                    </div>
+                    <div className="song-info">
+                        <div className="song-title">
+                            {post.music ? post.music : "Cancion desconocida"}
+                        </div>
+                        <div className="song-artist">
+                            {post.artist ? post.artist : "Artista desconocido"}
+                        </div>
                     </div>
                 </div>
-                <div className="timestamp">{timeAgo(post.created_at)}</div>
-            </div>
 
-            <div className="song-block">
-                <div className="cover">
-                    {post.cover_url ? (
-                        <img
-                            src={post.cover_url}
-                            alt={post.music}
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                                borderRadius: "12px",
-                            }}
-                        />
-                    ) : (
-                        <span className="cover-emoji">🎵</span>
-                    )}
-                </div>
-                <div className="song-info">
-                    <div className="song-title">
-                        {post.music ? post.music : "Cancion desconocida"}
-                    </div>
-                    <div className="song-artist">
-                        {post.artist ? post.artist : "Artista desconocido"}
-                    </div>
-                </div>
-            </div>
-
-            <div className="stars-row">
-                <StarRating rating={rating} />
-                <span className="rating-score">
-                    {parseFloat(rating).toFixed(1)}
-                </span>
-                <span className="rating-max">/ 5</span>
-            </div>
-
-            {post.title && <p className="comment">{post.title}</p>}
-
-            <div className="actions">
-                <button className="action-btn liked">
-                    <span className="material-symbols-outlined">favorite</span>
-                    {countLiked}
-                </button>
-                <button className="action-btn">
-                    <span className="material-symbols-outlined">
-                        chat_bubble
+                <div className="stars-row">
+                    <StarRating rating={rating} />
+                    <span className="rating-score">
+                        {parseFloat(rating).toFixed(1)}
                     </span>
-                    0
-                </button>
+                    <span className="rating-max">/ 5</span>
+                </div>
+
+                {post.title && <p className="comment">{post.title}</p>}
+
+                <div className="actions">
+                    <PostLikeButton />
+                    <PostCommentButton />
+                </div>
             </div>
-        </div>
+        </PostProvider>
     );
 }
 

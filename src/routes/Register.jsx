@@ -2,8 +2,10 @@ import LoginLayout from "../layout/loginLayout";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { useState } from "react";
+import { getApi } from "../App";
+import LoaderScreen from "../components/LoaderScreen";
 
-const API_URL = "http://localhost:8000/api/register";
+const API_URL = getApi() + "/register";
 
 export default function Register() {
     const auth = useAuth();
@@ -16,6 +18,7 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,37 +29,50 @@ export default function Register() {
             return;
         }
 
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: username,
-                name: name,
-                second_name: secondName,
-                email: email,
-                password: password,
-                password_confirmation: passwordConfirm,
-            }),
-        });
+        setIsLoading(true);
 
-        const data = await response.json();
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: username,
+                    name: name,
+                    second_name: secondName,
+                    email: email,
+                    password: password,
+                    password_confirmation: passwordConfirm,
+                }),
+            });
 
-        console.log("REGISTER RESPONSE:", data);
+            const data = await response.json();
 
-        if (response.ok == false) {
-            setError(data.message ? data.message : "Error al registrarse");
-            return;
+            console.log("REGISTER RESPONSE:", data);
+
+            if (response.ok == false) {
+                setError(data.message ? data.message : "Register error");
+                setIsLoading(false);
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
+            auth.setIsAuthenticated(true);
+            navigate("/");
+        } catch (err) {
+            console.error("Register error:", err);
+            setError("Server error");
+            setIsLoading(false);
         }
-
-        localStorage.setItem("token", data.token);
-        auth.setIsAuthenticated(true);
-        navigate("/");
     };
 
-    if (auth.isAuthenticated == true) {
+    if (auth.isAuthenticated == true && isLoading == false) {
         return <Navigate to="/" replace />;
+    }
+
+    if (isLoading == true) {
+        return <LoaderScreen text="Cargando..." />;
     }
 
     return (

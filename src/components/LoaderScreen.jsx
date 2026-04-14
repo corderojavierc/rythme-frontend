@@ -1,7 +1,11 @@
 import React from "react";
 import "./LoaderScreen.css";
 
-export default function LoaderScreen({ text = "Cargando...", inline = false, small = false }) {
+export default function LoaderScreen({
+    text = "Cargando...",
+    inline = false,
+    small = false,
+}) {
     let containerClass = "loader-container";
     if (inline) containerClass += " loader-inline";
     if (small) containerClass += " loader-small";

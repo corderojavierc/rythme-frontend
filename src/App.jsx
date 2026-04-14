@@ -1,7 +1,11 @@
 import AsideLayout from "./layout/asideLayout";
 import RightAsideLayout from "./layout/rightAsideLayout";
 import "./App.css";
-import PostComponent from "./components/postComponent";
+import PostComponent from "./components/post/postComponent";
+
+export function getApi() {
+    return "http://localhost:8000/api";
+}
 
 export default function App() {
     return (
