@@ -270,9 +270,8 @@ body {
 .main {
     padding: 40px 50px;
     border-right: 1px solid rgba(255, 255, 255, 0.06);
-    max-width: 900px;
+    width: 900px;
     margin: 0 auto;
-    width: 100%;
 }
 
 .feed-header {
@@ -489,6 +488,7 @@ body {
     font-weight: 500;
     opacity: 0.6;
 }
+
 .rating-score {
     font-family: "Poppins", sans-serif;
     font-size: 20px;
@@ -567,13 +567,16 @@ body {
     0% {
         transform: scale(0.8);
     }
+
     40% {
         transform: scale(1.2);
         filter: brightness(1.2);
     }
+
     70% {
         transform: scale(0.95);
     }
+
     100% {
         transform: scale(1);
         filter: brightness(1);
@@ -585,10 +588,12 @@ body {
         transform: translate(-50%, -50%) scale(0.2);
         opacity: 0;
     }
+
     50% {
         opacity: 1;
         filter: brightness(1.2);
     }
+
     100% {
         transform: translate(-50%, -50%) scale(0.6);
         opacity: 0;
@@ -915,3 +920,90 @@ body {
         padding: 20px;
     }
 }
+
+.comment-button {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: white;
+    background-color: #4a84ff;
+    padding: 1em 2em;
+    border: none;
+    border-radius: 0.6rem;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    display: block;
+    margin-left: auto;
+    margin-top: 10px;
+}
+
+.comment-button span:not(:nth-child(6)) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 30px;
+    width: 30px;
+    background-color: #ff478e;
+    border-radius: 50%;
+    transition: 0.6s ease;
+}
+
+.comment-button span:nth-child(6) {
+    position: relative;
+}
+
+.comment-button span:nth-child(1) {
+    transform: translate(-3.3em, -4em);
+}
+
+.comment-button span:nth-child(2) {
+    transform: translate(-6em, 1.3em);
+}
+
+.comment-button span:nth-child(3) {
+    transform: translate(-0.2em, 1.8em);
+}
+
+.comment-button span:nth-child(4) {
+    transform: translate(3.5em, 1.4em);
+}
+
+.comment-button span:nth-child(5) {
+    transform: translate(3.5em, -3.8em);
+}
+
+.comment-button:hover span:not(:nth-child(6)) {
+    transform: translate(-50%, -50%) scale(4);
+    transition: 1.5s ease;
+}
+
+.comment-input {
+    width: 100%;
+    min-height: 120px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 16px;
+    color: #f0f2f8;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    resize: none;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+    outline: none;
+    display: block;
+    box-sizing: border-box;
+}
+
+.comment-input:focus {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #4a84ff;
+    box-shadow: 0 0 0 4px rgba(74, 132, 255, 0.1);
+}
+
+.comment-input::placeholder {
+    color: #8b96b0;
+    opacity: 0.6;
+}
+

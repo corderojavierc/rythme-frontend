@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./App.css";
 
 import App from "./App";
 import Login from "./routes/Login";
@@ -9,6 +10,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import { AuthProvider } from "./auth/AuthProvider";
 import CreateCommentLayout from "./layout/CreateCommentLayout";
+import FollowedsPosts from "./routes/FollowedsPosts";
 
 const router = createBrowserRouter([
     {
@@ -18,6 +20,10 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <App />,
+            },
+            {
+                path: "/followed",
+                element: <FollowedsPosts />,
             },
             {
                 path: "/posts/:id/comment",

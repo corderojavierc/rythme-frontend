@@ -3,13 +3,12 @@ import { useParams } from "react-router-dom";
 import AsideLayout from "./asideLayout";
 import RightAsideLayout from "./rightAsideLayout";
 import PostCardComponent from "../components/post/PostCardComponent";
-import CreateCommentComponent from "../components/comment/CreateCommentComponent";
 import LoaderScreen from "../components/LoaderScreen";
 import { getApi } from "../App";
 
 const API_POST_URL = `${getApi()}/posts`;
 
-export default function CreateCommentLayout() {
+export default function CreateCommentComponent() {
     const { id } = useParams();
 
     let token = localStorage.getItem("token");
@@ -45,14 +44,7 @@ export default function CreateCommentLayout() {
             <AsideLayout />
 
             <main className="main">
-                {post && (
-                    <>
-                        <PostCardComponent post={post} type="comment" />
-                        <div style={{ margin: "24px 0" }}>
-                            <CreateCommentComponent post={post} />
-                        </div>
-                    </>
-                )}
+                {post && <PostCardComponent post={post} type="comment" />}
             </main>
 
             <RightAsideLayout />

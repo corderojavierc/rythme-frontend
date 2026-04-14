@@ -60,6 +60,13 @@ export default function PostComponent() {
             allPosts = json.data;
         }
 
+        // Ordenar por fecha de creación (más recientes primero)
+        allPosts.sort((a, b) => {
+            const dateA = a.created_at ? new Date(a.created_at) : 0;
+            const dateB = b.created_at ? new Date(b.created_at) : 0;
+            return dateB - dateA;
+        });
+
         postsRef.current = allPosts;
         setPosts(allPosts);
     }

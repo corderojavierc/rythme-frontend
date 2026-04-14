@@ -3,7 +3,7 @@ import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
 import { PostProvider } from "../../providers/PostProvider";
 
-export default function PostCardComponent({ post }) {
+export default function PostCardComponent({ post, type = "post" }) {
     let fullName = "";
     if (post.name && post.second_name) {
         fullName = post.name + " " + post.second_name;
@@ -116,10 +116,12 @@ export default function PostCardComponent({ post }) {
 
                 {post.title && <p className="comment">{post.title}</p>}
 
-                <div className="actions">
-                    <PostLikeButton />
-                    <PostCommentButton />
-                </div>
+                {type === "post" && (
+                    <div className="actions">
+                        <PostLikeButton />
+                        <PostCommentButton />
+                    </div>
+                )}
             </div>
         </PostProvider>
     );
