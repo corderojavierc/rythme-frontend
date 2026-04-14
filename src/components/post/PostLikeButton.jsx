@@ -98,31 +98,32 @@ export default function PostLikeButton() {
         buttonClass = buttonClass + " liked";
     }
 
-    let cursorStyle = "pointer";
-    if (isLoading == true) {
-        cursorStyle = "wait";
-    }
-
-    let fillStyle = "'FILL' 0";
-    if (isLiked == true) {
-        fillStyle = "'FILL' 1";
-    }
-
     return (
         <button
             className={buttonClass}
             onClick={handleLike}
             disabled={isLoading}
-            style={{ cursor: cursorStyle }}
+            style={{
+                cursor: "pointer",
+            }}
         >
-            <span
-                className="material-symbols-outlined"
-                style={{
-                    fontVariationSettings: fillStyle,
-                }}
-            >
-                favorite
-            </span>
+            <div className="like-icon-container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-symbols-outlined">favorite</span>
+                <svg
+                    className="svg-celebrate"
+                    width="100"
+                    height="100"
+                    viewBox="0 0 100 100"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <line x1="50" y1="20" x2="50" y2="0" strokeWidth="4" />
+                    <line x1="80" y1="30" x2="95" y2="15" strokeWidth="4" />
+                    <line x1="80" y1="70" x2="95" y2="85" strokeWidth="4" />
+                    <line x1="50" y1="80" x2="50" y2="100" strokeWidth="4" />
+                    <line x1="20" y1="70" x2="5" y2="85" strokeWidth="4" />
+                    <line x1="20" y1="30" x2="5" y2="15" strokeWidth="4" />
+                </svg>
+            </div>
             {countLikes}
         </button>
     );
