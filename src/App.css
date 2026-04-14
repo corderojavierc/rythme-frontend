@@ -1007,3 +1007,87 @@ body {
     opacity: 0.6;
 }
 
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+
+.done-notification {
+    background: #1a1d26;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 12px 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    min-width: 320px;
+    backdrop-filter: blur(10px);
+}
+
+.done-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.done-icon-box {
+    background: rgba(43, 152, 117, 0.1);
+    color: #2b9875;
+    padding: 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.done-text-box {
+    flex: 1;
+}
+
+.done-title {
+    color: #f0f2f8;
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0;
+}
+
+.done-subtitle {
+    color: #8b96b0;
+    font-size: 12px;
+    margin: 2px 0 0 0;
+}
+
+.done-close-btn {
+    background: transparent;
+    border: none;
+    color: #8b96b0;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    display: flex;
+    transition: all 0.2s;
+}
+
+.done-close-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #f0f2f8;
+}
+
+
+@keyframes slideDown {
+    from {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+    to {
+        transform: translate(-50%, 150%);
+        opacity: 0;
+    }
+}
+
