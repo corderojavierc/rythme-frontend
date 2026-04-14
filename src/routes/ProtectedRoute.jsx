@@ -1,8 +1,6 @@
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { useEffect, useState } from "react";
-import AsideLayout from "../layout/AsideLayout";
-import RightAsideLayout from "../layout/RightAsideLayout";
 import DoneComponent from "../components/DoneComponent";
 
 export default function ProtectedRoute() {
@@ -42,14 +40,8 @@ export default function ProtectedRoute() {
     }
 
     return (
-        <div className="app-container">
-            <AsideLayout />
-            
-            <main className="main">
-                <Outlet />
-            </main>
-
-            <RightAsideLayout />
+        <>
+            <Outlet />
 
             {showNotification && (
                 <div
@@ -67,6 +59,6 @@ export default function ProtectedRoute() {
                     <DoneComponent onClose={handleClose} />
                 </div>
             )}
-        </div>
+        </>
     );
 }

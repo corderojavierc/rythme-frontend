@@ -80,11 +80,11 @@ export default function AsideLayout() {
                 Valorar
             </Link>
             <Link
-                className={`nav-item ${webLocation === "/search" ? "active" : ""}`}
-                to="/search"
+                className={`nav-item ${webLocation === "/music" ? "active" : ""}`}
+                to="/music"
             >
-                <span className="material-symbols-outlined">search</span>
-                Búscar
+                <span className="material-symbols-outlined">music_note</span>
+                Música
             </Link>
             <Link
                 className={`nav-item ${webLocation === "/events" ? "active" : ""}`}

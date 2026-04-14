@@ -1,4 +1,4 @@
-import "./login.css";
+import "./Auth.css";
 import { useTheme } from "../hooks/useTheme";
 
 export default function LoginLayout({ title, children, linkText, linkHref }) {

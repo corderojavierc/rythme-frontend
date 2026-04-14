@@ -7,7 +7,7 @@ import { getApi } from "../config";
 
 const API_POST_URL = `${getApi()}/posts`;
 
-export default function CreateCommentLayout() {
+export default function CommentPage() {
     const { id } = useParams();
 
     let token = localStorage.getItem("token");
@@ -40,11 +40,10 @@ export default function CreateCommentLayout() {
 
     return (
         <>
-            <h2 className="feed-header">Comentar</h2>
             {post && (
                 <>
                     <PostCardComponent post={post} type="comment" />
-                    <div style={{ margin: "24px 0" }}>
+                    <div>
                         <CreateCommentComponent post={post} />
                     </div>
                 </>

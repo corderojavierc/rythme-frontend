@@ -74,7 +74,7 @@ export default function CreateCommentComponent({ post }) {
                 <textarea
                     type="text"
                     name="text"
-                    className="comment-input"
+                    className="rythme-comment-area"
                     placeholder="Escribe un comentario..."
                 ></textarea>
                 <button className="comment-button" type="submit">

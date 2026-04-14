@@ -1,4 +1,4 @@
-import LoginLayout from "../layout/loginLayout";
+import LoginLayout from "../layout/LoginLayout";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import { useState } from "react";

@@ -94,8 +94,9 @@ body {
     margin-bottom: 25px;
 }
 
-input {
-    width: 92%;
+.right input {
+    width: 100%;
+    box-sizing: border-box;
     padding: 14px;
     background: #2a3243;
     border: 1px solid transparent;
@@ -107,13 +108,14 @@ input {
     transition: all 0.2s;
 }
 
-input:focus {
+.right input:focus {
     border: 1px solid #5c8fff;
     box-shadow: 0 0 0 2px rgba(92, 143, 255, 0.2);
 }
 
-.btn {
+.right .btn {
     width: 100%;
+    box-sizing: border-box;
     padding: 14px;
     border-radius: 14px;
     background: #5c8fff;
@@ -125,7 +127,7 @@ input:focus {
     transition: all 0.2s;
 }
 
-.btn:hover {
+.right .btn:hover {
     opacity: 0.9;
     transform: translateY(-2px);
 }
@@ -157,17 +159,17 @@ body.light .card {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-body.light input {
+body.light .card input {
     background: #e1e4e8;
     color: #1e2433;
 }
 
-body.light input:focus {
+body.light .card input:focus {
     border: 1px solid #4f7fff;
     box-shadow: 0 0 0 2px rgba(79, 127, 255, 0.2);
 }
 
-body.light .btn {
+body.light .card .btn {
     background: #4f7fff;
 }
 
