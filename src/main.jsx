@@ -12,22 +12,29 @@ import { AuthProvider } from "./auth/AuthProvider";
 import CreateCommentLayout from "./layout/CreateCommentLayout";
 import FollowedsPosts from "./routes/FollowedsPosts";
 
+import Home from "./routes/Home";
+
 const router = createBrowserRouter([
     {
         path: "/",
         element: <ProtectedRoute />,
         children: [
             {
-                path: "/",
-                element: <App />,
-            },
-            {
-                path: "/followed",
-                element: <FollowedsPosts />,
-            },
-            {
-                path: "/posts/:id/comment",
-                element: <CreateCommentLayout />,
+                element: <Home />,
+                children: [
+                    {
+                        path: "/",
+                        element: <App />,
+                    },
+                    {
+                        path: "/followed",
+                        element: <FollowedsPosts />,
+                    },
+                    {
+                        path: "/posts/:id/comment",
+                        element: <CreateCommentLayout />,
+                    },
+                ],
             },
         ],
     },

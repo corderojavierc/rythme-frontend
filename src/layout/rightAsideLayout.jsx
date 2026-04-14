@@ -4,19 +4,6 @@ import "../App.css";
 export default function RightAsideLayout() {
     return (
         <aside className="right-sidebar">
-            <div className="search-wrap">
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    style={{ width: '18px', height: '18px' }}
-                >
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <input type="text" placeholder="Buscar artistas, canciones…" />
-            </div>
             <div>
                 <div className="section-title">Podría interesarte</div>
                 <div className="event-card">
