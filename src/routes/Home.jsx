@@ -10,12 +10,10 @@ export default function Home() {
     const [showNotification, setShowNotification] = useState(false);
     const [isExiting, setIsExiting] = useState(false);
 
-    // Lógica de notificaciones global (antes en ProtectedRoute)
     useEffect(() => {
         if (location.state?.fromComment) {
             setShowNotification(true);
             setIsExiting(false);
-            // Limpia el estado de navegación para que no se repita
             navigate(location.pathname, { replace: true, state: {} });
         }
     }, [location.state?.fromComment, location.pathname, navigate]);
@@ -39,17 +37,14 @@ export default function Home() {
 
     return (
         <div className="app-container">
-            {/* El sidebar izquierdo permanece montado y no se reinicia */}
             <AsideLayout />
-            
+
             <main className="main">
                 <Outlet />
             </main>
 
-            {/* El sidebar derecho permanece montado */}
             <RightAsideLayout />
 
-            {/* Notificaciones globales */}
             {showNotification && (
                 <div
                     style={{
