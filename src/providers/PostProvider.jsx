@@ -1,13 +1,9 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const PostContext = createContext(null);
 
 export function PostProvider({ post, children, onUpdate }) {
     const [currentPost, setCurrentPost] = useState(post);
-
-    useEffect(() => {
-        setCurrentPost(post);
-    }, [post]);
 
     const updatePost = (updatedData) => {
         const newData = { ...currentPost, ...updatedData };

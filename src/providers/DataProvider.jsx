@@ -27,43 +27,7 @@ export function DataProvider({ children }) {
             const data = await response.json();
 
             const rawPosts = data.data ? data.data : data;
-            let newPosts = Array.isArray(rawPosts) ? rawPosts : [];
-
-            const userJson = localStorage.getItem("user");
-            const user = userJson ? JSON.parse(userJson) : null;
-
-            // Marcar posts como liked si el usuario ha dado like (sincronización manual)
-            if (user && token) {
-                try {
-                    const likesResponse = await fetch(
-                        getApi() + "/likes/" + user.id,
-                        {
-                            headers: { Authorization: "Bearer " + token },
-                        },
-                    );
-                    const likesData = await likesResponse.json();
-                    const rawLikes = likesData.data
-                        ? likesData.data
-                        : likesData;
-
-                    const likedPostIds = Array.isArray(rawLikes)
-                        ? rawLikes
-                              .filter(
-                                  (l) =>
-                                      l.type &&
-                                      l.type.toLowerCase().includes("post"),
-                              )
-                              .map((l) => l.id.toString())
-                        : [];
-
-                    newPosts = newPosts.map((p) => ({
-                        ...p,
-                        is_liked: p.is_liked || likedPostIds.includes(p.id.toString()),
-                    }));
-                } catch (e) {
-                    console.error("Error fetching likes:", e);
-                }
-            }
+            const newPosts = Array.isArray(rawPosts) ? rawPosts : [];
 
             if (data.links && data.links.next) {
                 setNextPageUrl(data.links.next);

@@ -1,10 +1,8 @@
 import { getApi } from "../../config";
-import { useData } from "../../providers/DataProvider";
 const API_COMMENT_URL = `${getApi()}/comments`;
 import { useNavigate } from "react-router-dom";
 
 export default function CreateCommentComponent({ post }) {
-    const { updatePost } = useData();
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     let token = localStorage.getItem("token");
     const fullName =
@@ -37,11 +35,6 @@ export default function CreateCommentComponent({ post }) {
             });
 
             if (!response.ok) throw new Error();
-
-            updatePost({
-                ...post,
-                count_comments: (parseInt(post.count_comments) || 0) + 1,
-            });
 
             e.target.reset();
 
