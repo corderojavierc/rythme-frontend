@@ -12,6 +12,7 @@ import FollowedsPosts from "./routes/FollowedsPosts";
 import Feed from "./routes/Feed";
 import MusicPage from "./routes/MusicPage";
 import CommentPage from "./routes/CommentPage";
+import { DataProvider } from "./providers/DataProvider";
 import Home from "./routes/Home";
 
 const router = createBrowserRouter([
@@ -63,7 +64,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
     <StrictMode>
         <AuthProvider>
-            <RouterProvider router={router} />
+            <DataProvider>
+                <RouterProvider router={router} />
+            </DataProvider>
         </AuthProvider>
     </StrictMode>,
 );

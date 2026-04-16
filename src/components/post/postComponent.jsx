@@ -1,132 +1,65 @@
-import { useEffect, useRef, useState } from "react";
-import LoaderScreen from "../LoaderScreen";
-import { getApi } from "../../config";
+import { useState, useEffect, useRef } from "react";
 import PostCardComponent from "./PostCardComponent";
+import LoaderScreen from "../LoaderScreen";
+import { useData } from "../../providers/DataProvider";
 
-const API_URL = getApi() + "/posts";
 const STEP = 10;
 
-export function StarRating({ rating }) {
-    const value = parseFloat(rating);
-    const stars = [];
-
-    for (let i = 1; i <= 5; i++) {
-        let className = "star";
-        if (value < i - 0.5) className = "star empty";
-        else if (value < i) className = "star half";
-
-        stars.push(
-            <span key={i} className={className}>
-                ★
-            </span>,
-        );
-    }
-
-    return <div className="stars">{stars}</div>;
-}
-
 export default function PostComponent({ fromFollowed = false }) {
-    const [posts, setPosts] = useState([]);
-    const [visible, setVisible] = useState(STEP);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const {
+        posts,
+        follows,
+        loadingPosts,
+        loadingUsers,
+        error,
+        hasMorePages,
+        loadMorePosts,
+    } = useData();
 
+    const [visibleCount, setVisibleCount] = useState(STEP);
     const sentinelRef = useRef(null);
 
-    async function fetchPosts() {
-        try {
-            const token = localStorage.getItem("token");
-
-            const response = await fetch(API_URL, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + token,
-                },
-            });
-
-            if (!response.ok) throw new Error("Error al cargar posts");
-
-            const json = await response.json();
-            let allPosts = Array.isArray(json) ? json : json.data;
-
-            if (fromFollowed) {
-                try {
-                    const user = JSON.parse(localStorage.getItem("user") || "{}");
-                    const userId = user.id;
-
-                    if (!userId) {
-                        setPosts([]);
-                        return;
-                    }
-
-                    const followsRes = await fetch(`${getApi()}/follows/${userId}`, {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: "Bearer " + token,
-                        },
-                    });
-
-                    const followsJson = await followsRes.json();
-                    const allFollows = Array.isArray(followsJson)
-                        ? followsJson
-                        : followsJson.data || [];
-
-                    const followIds = allFollows.map((f) => f.id);
-
-                    allPosts = allPosts.filter((post) =>
-                        followIds.includes(post.user_id),
-                    );
-                } catch (err) {
-                    console.error("Error cargando follows:", err);
-                }
-            }
-
-            allPosts.sort((a, b) => {
-                const dateA = a.created_at ? new Date(a.created_at) : 0;
-                const dateB = b.created_at ? new Date(b.created_at) : 0;
-                return dateB - dateA;
-            });
-
-            setPosts(allPosts);
-        } catch (err) {
-            setError(err.message);
-        }
-    }
-
     function showMore() {
-        setVisible((prev) => prev + STEP);
+        setVisibleCount((prev) => prev + STEP);
     }
 
-    useEffect(() => {
-        async function loadData() {
-            setLoading(true);
-            await fetchPosts();
-            setLoading(false);
-        }
-        loadData();
-    }, []);
+    const displayedPosts = fromFollowed
+        ? posts.filter((post) => follows.includes(post.user_id))
+        : posts;
 
     useEffect(() => {
-        if (loading) return;
-        const el = sentinelRef.current;
-        if (!el) return;
+        if (loadingPosts || (fromFollowed && loadingUsers)) return;
+
+        const element = sentinelRef.current;
+        if (!element) return;
 
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    showMore();
+                    if (visibleCount >= displayedPosts.length && hasMorePages) {
+                        loadMorePosts();
+                    } else {
+                        showMore();
+                    }
                 }
             },
             { rootMargin: "400px" },
         );
 
-        observer.observe(el);
-
+        observer.observe(element);
         return () => observer.disconnect();
-    }, [loading, posts.length, visible]);
+    }, [
+        loadingPosts,
+        loadingUsers,
+        displayedPosts.length,
+        visibleCount,
+        hasMorePages,
+    ]);
 
-    if (loading) {
-        return <LoaderScreen inline text="Cargando posts..." />;
+    const isLoading = loadingPosts || (fromFollowed && loadingUsers);
+
+    if (isLoading && displayedPosts.length === 0) {
+        return <LoaderScreen inline text="Cargando opiniones..." />;
     }
 
     if (error) {
@@ -143,7 +76,7 @@ export default function PostComponent({ fromFollowed = false }) {
         );
     }
 
-    if (posts.length === 0) {
+    if (displayedPosts.length === 0) {
         return (
             <div className="feed-state">
                 <span
@@ -152,13 +85,17 @@ export default function PostComponent({ fromFollowed = false }) {
                 >
                     music_off
                 </span>
-                <span>Aun no hay opiniones. Se el primero en crear una!</span>
+                <span>
+                    {fromFollowed
+                        ? "No hay novedades de los artistas que sigues."
+                        : "Aun no hay opiniones. Se el primero en crear una!"}
+                </span>
             </div>
         );
     }
 
-    const visiblePosts = posts.slice(0, visible);
-    const hasMore = visible < posts.length;
+    const visiblePosts = displayedPosts.slice(0, visibleCount);
+    const hasMore = visibleCount < displayedPosts.length || hasMorePages;
 
     return (
         <div>
@@ -168,12 +105,18 @@ export default function PostComponent({ fromFollowed = false }) {
 
             {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
 
-            {!hasMore && (
+            {loadingPosts && displayedPosts.length > 0 && (
+                <div style={{ textAlign: "center", padding: "20px" }}>
+                    <LoaderScreen inline small text="Cargando más..." />
+                </div>
+            )}
+
+            {!hasMore && !loadingPosts && (
                 <div className="feed-end">
                     <span className="material-symbols-outlined">
                         music_note
                     </span>
-                    Has llegado al final.
+                    Has llegado al final de todas las opiniones.
                 </div>
             )}
         </div>
