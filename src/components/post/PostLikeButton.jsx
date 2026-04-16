@@ -24,9 +24,11 @@ export default function PostLikeButton() {
 
         if (isLoading) return;
 
+        const currentIsLiked = !!post.is_liked;
+        const newIsLiked = !currentIsLiked;
+
         setIsLoading(true);
 
-        const newIsLiked = !isLiked;
         const newCount = newIsLiked ? likeCount + 1 : likeCount - 1;
 
         if (newIsLiked) {
@@ -35,13 +37,12 @@ export default function PostLikeButton() {
         }
 
         updatePost({
-            ...post,
             is_liked: newIsLiked,
             count_likes: newCount,
         });
 
         try {
-            await fetch(API_LIKES_URL, {
+            const response = await fetch(API_LIKES_URL, {
                 method: newIsLiked ? "POST" : "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -53,11 +54,14 @@ export default function PostLikeButton() {
                     likeable_id: post.id.toString(),
                 }),
             });
+
+            if (!response.ok) {
+                throw new Error("Petición fallida");
+            }
         } catch (error) {
             console.error(error);
             updatePost({
-                ...post,
-                is_liked: isLiked,
+                is_liked: currentIsLiked,
                 count_likes: likeCount,
             });
         } finally {
