@@ -32,7 +32,6 @@ export function DataProvider({ children }) {
             const userJson = localStorage.getItem("user");
             const user = userJson ? JSON.parse(userJson) : null;
 
-            // Marcar posts como liked si el usuario ha dado like (sincronización manual)
             if (user && token) {
                 try {
                     const likesResponse = await fetch(
@@ -58,7 +57,9 @@ export function DataProvider({ children }) {
 
                     newPosts = newPosts.map((p) => ({
                         ...p,
-                        is_liked: p.is_liked || likedPostIds.includes(p.id.toString()),
+                        is_liked:
+                            p.is_liked ||
+                            likedPostIds.includes(p.id.toString()),
                     }));
                 } catch (e) {
                     console.error("Error fetching likes:", e);
