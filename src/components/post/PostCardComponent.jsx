@@ -14,7 +14,26 @@ export default function PostCardComponent({ post, type = "post" }) {
         fullName = post.name || post.user_name || "Usuario";
     }
 
-    const rating = post.rating ? post.rating : 0;
+    const rating = post.rating ? parseFloat(post.rating) : 0;
+
+    const renderStars = () => {
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+            if (rating >= i) {
+                stars.push(<span key={i} className="material-symbols-outlined star-filled">star</span>);
+            } else if (rating > i - 0.51) {
+                stars.push(
+                    <div key={i} className="star-half-wrapper">
+                        <span className="material-symbols-outlined star-empty">star</span>
+                        <span className="material-symbols-outlined star-filled star-half-overlay">star</span>
+                    </div>
+                );
+            } else {
+                stars.push(<span key={i} className="material-symbols-outlined star-empty">star</span>);
+            }
+        }
+        return stars;
+    };
 
     return (
         <PostProvider post={post} onUpdate={updatePost}>
@@ -48,22 +67,9 @@ export default function PostCardComponent({ post, type = "post" }) {
                 </div>
 
                 <div className="rating-content">
-                    <div className="stars-row">
-                        <div className="stars">
-                            {[1, 2, 3, 4, 5].map((i) => (
-                                <span
-                                    key={i}
-                                    className={
-                                        i <= Math.round(rating)
-                                            ? "star"
-                                            : "star empty"
-                                    }
-                                >
-                                    ★
-                                </span>
-                            ))}
-                        </div>
-                        <span className="rating-score">{rating}</span>
+                    <div className="stars-display-row">
+                        <div className="stars-container">{renderStars()}</div>
+                        <span className="rating-score-display">{rating.toFixed(2)}</span>
                     </div>
                     <div className="comment">{post.title}</div>
                 </div>

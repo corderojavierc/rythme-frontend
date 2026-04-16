@@ -8,7 +8,7 @@ export default function PostLikeButton() {
     const userJson = localStorage.getItem("user");
     const currentUser = userJson ? JSON.parse(userJson) : {};
     const token = localStorage.getItem("token");
-    
+
     const { post, updatePost } = usePostContext();
     const isLiked = !!post.is_liked;
     const likeCount = post.count_likes || 0;
@@ -74,7 +74,15 @@ export default function PostLikeButton() {
             disabled={isLoading}
             style={{ cursor: "pointer" }}
         >
-            <div className={`like-icon-container ${isAnimating ? 'animating' : ''}`} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div
+                className={`like-icon-container ${isAnimating ? "animating" : ""}`}
+                style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
                 <span className="material-symbols-outlined">favorite</span>
                 <svg
                     className="svg-celebrate"

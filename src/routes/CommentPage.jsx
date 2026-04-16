@@ -16,8 +16,8 @@ export default function CommentPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const cachedPost = posts.find(p => p.id == id);
-        
+        const cachedPost = posts.find((p) => p.id == id);
+
         if (cachedPost) {
             setPost(cachedPost);
             setIsLoading(false);

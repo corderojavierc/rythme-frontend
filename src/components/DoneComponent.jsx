@@ -22,7 +22,9 @@ const DoneComponent = ({ onClose }) => {
                 </div>
                 <div className="done-text-box">
                     <p className="done-title">Enviado correctamente</p>
-                    <p className="done-subtitle">Tu comentario ha sido publicado</p>
+                    <p className="done-subtitle">
+                        Tu comentario ha sido publicado
+                    </p>
                 </div>
                 <button className="done-close-btn" onClick={onClose}>
                     <svg

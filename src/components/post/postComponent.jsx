@@ -6,16 +6,16 @@ import { useData } from "../../providers/DataProvider";
 const STEP = 10;
 
 export default function PostComponent({ fromFollowed = false }) {
-    const { 
-        posts, 
-        follows, 
-        loadingPosts, 
-        loadingUsers, 
-        error, 
-        hasMorePages, 
-        loadMorePosts 
+    const {
+        posts,
+        follows,
+        loadingPosts,
+        loadingUsers,
+        error,
+        hasMorePages,
+        loadMorePosts,
     } = useData();
-    
+
     const [visibleCount, setVisibleCount] = useState(STEP);
     const sentinelRef = useRef(null);
 
@@ -23,13 +23,13 @@ export default function PostComponent({ fromFollowed = false }) {
         setVisibleCount((prev) => prev + STEP);
     }
 
-    const displayedPosts = fromFollowed 
-        ? posts.filter(post => follows.includes(post.user_id))
+    const displayedPosts = fromFollowed
+        ? posts.filter((post) => follows.includes(post.user_id))
         : posts;
 
     useEffect(() => {
         if (loadingPosts || (fromFollowed && loadingUsers)) return;
-        
+
         const element = sentinelRef.current;
         if (!element) return;
 
@@ -48,7 +48,13 @@ export default function PostComponent({ fromFollowed = false }) {
 
         observer.observe(element);
         return () => observer.disconnect();
-    }, [loadingPosts, loadingUsers, displayedPosts.length, visibleCount, hasMorePages]);
+    }, [
+        loadingPosts,
+        loadingUsers,
+        displayedPosts.length,
+        visibleCount,
+        hasMorePages,
+    ]);
 
     const isLoading = loadingPosts || (fromFollowed && loadingUsers);
 
@@ -59,7 +65,10 @@ export default function PostComponent({ fromFollowed = false }) {
     if (error) {
         return (
             <div className="feed-state feed-error">
-                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 32 }}
+                >
                     wifi_off
                 </span>
                 <span>{error}</span>
@@ -70,7 +79,10 @@ export default function PostComponent({ fromFollowed = false }) {
     if (displayedPosts.length === 0) {
         return (
             <div className="feed-state">
-                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 32 }}
+                >
                     music_off
                 </span>
                 <span>

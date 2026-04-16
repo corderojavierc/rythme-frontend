@@ -24,7 +24,10 @@ export default function UsersToFollow() {
 
                 if (isFollowing) {
                     buttonClass = "followed follow-btn";
-                    buttonText = hoveredUserId === user.id ? "Dejar de seguir" : "Siguiendo";
+                    buttonText =
+                        hoveredUserId === user.id
+                            ? "Dejar de seguir"
+                            : "Siguiendo";
                 }
 
                 return (

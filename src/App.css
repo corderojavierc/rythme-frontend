@@ -442,21 +442,54 @@ body {
     color: #ff478e;
 }
 
-.stars-row {
+.stars-display-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
-.stars {
+.stars-container {
     display: flex;
-    gap: 4px;
+    gap: 2px;
 }
 
-.star {
-    font-size: 18px;
+.stars-container .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.star-filled {
     color: #f5c842;
+    font-variation-settings: 'FILL' 1;
+}
+
+.star-half-wrapper {
+    position: relative;
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+}
+
+.star-half-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.star-empty {
+    color: #8b96b0;
+    opacity: 0.3;
+}
+
+.rating-score-display {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: #ff478e;
 }
 
 .star.half {
