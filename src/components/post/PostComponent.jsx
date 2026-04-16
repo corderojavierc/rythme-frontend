@@ -87,7 +87,7 @@ export default function PostComponent({ fromFollowed = false }) {
                 </span>
                 <span>
                     {fromFollowed
-                        ? "No hay novedades de los artistas que sigues."
+                        ? "No existen opiniones de los usuarios que sigues."
                         : "Aun no hay opiniones. Se el primero en crear una!"}
                 </span>
             </div>
