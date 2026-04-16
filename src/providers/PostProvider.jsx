@@ -2,11 +2,13 @@ import { createContext, useContext, useState } from "react";
 
 const PostContext = createContext(null);
 
-export function PostProvider({ post, children }) {
+export function PostProvider({ post, children, onUpdate }) {
     const [currentPost, setCurrentPost] = useState(post);
 
     const updatePost = (updatedData) => {
-        setCurrentPost((prev) => ({ ...prev, ...updatedData }));
+        const newData = { ...currentPost, ...updatedData };
+        setCurrentPost(newData);
+        if (onUpdate) onUpdate(newData);
     };
 
     return (

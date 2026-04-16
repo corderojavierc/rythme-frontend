@@ -5,51 +5,33 @@ import { getApi } from "../../config";
 const API_LIKES_URL = getApi() + "/likes";
 
 export default function PostLikeButton() {
-    let userString = localStorage.getItem("user");
-    let currentUser = {};
-
-    if (userString != null) {
-        currentUser = JSON.parse(userString);
-    }
-
-    let token = localStorage.getItem("token");
-    const context = usePostContext();
-    let post = context.post;
-    let updatePost = context.updatePost;
-
-    let isLiked = false;
-    if (post.is_liked == true) {
-        isLiked = true;
-    }
-
-    let countLikes = 0;
-    if (post.count_likes) {
-        countLikes = post.count_likes;
-    }
+    const userJson = localStorage.getItem("user");
+    const currentUser = userJson ? JSON.parse(userJson) : {};
+    const token = localStorage.getItem("token");
+    
+    const { post, updatePost } = usePostContext();
+    const isLiked = !!post.is_liked;
+    const likeCount = post.count_likes || 0;
 
     const [isLoading, setIsLoading] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
 
     async function handleLike() {
-        if (currentUser.id == undefined || token == null) {
+        if (!currentUser.id || !token) {
             alert("¡Debes iniciar sesión para dar like!");
             return;
         }
 
-        if (isLoading) {
-            return;
-        }
+        if (isLoading) return;
 
         setIsLoading(true);
 
         const newIsLiked = !isLiked;
-        const newCount = newIsLiked ? countLikes + 1 : countLikes - 1;
+        const newCount = newIsLiked ? likeCount + 1 : likeCount - 1;
 
         if (newIsLiked) {
             setIsAnimating(true);
             setTimeout(() => setIsAnimating(false), 600);
-        } else {
-            setIsAnimating(false);
         }
 
         updatePost({
@@ -58,16 +40,9 @@ export default function PostLikeButton() {
             count_likes: newCount,
         });
 
-        let fetchMethod = "";
-        if (newIsLiked == true) {
-            fetchMethod = "POST";
-        } else {
-            fetchMethod = "DELETE";
-        }
-
         try {
             await fetch(API_LIKES_URL, {
-                method: fetchMethod,
+                method: newIsLiked ? "POST" : "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: "Bearer " + token,
@@ -79,30 +54,25 @@ export default function PostLikeButton() {
                 }),
             });
         } catch (error) {
-            console.error("Error al actualizar el like:", error);
+            console.error(error);
             updatePost({
                 ...post,
                 is_liked: isLiked,
-                count_likes: countLikes,
+                count_likes: likeCount,
             });
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     }
 
-    let buttonClass = "action-btn";
-    if (isLiked == true) {
-        buttonClass = buttonClass + " liked";
-    }
+    const buttonClass = `action-btn ${isLiked ? "liked" : ""}`;
 
     return (
         <button
             className={buttonClass}
             onClick={handleLike}
             disabled={isLoading}
-            style={{
-                cursor: "pointer",
-            }}
+            style={{ cursor: "pointer" }}
         >
             <div className={`like-icon-container ${isAnimating ? 'animating' : ''}`} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="material-symbols-outlined">favorite</span>
@@ -121,7 +91,7 @@ export default function PostLikeButton() {
                     <line x1="20" y1="30" x2="5" y2="15" strokeWidth="4" />
                 </svg>
             </div>
-            {countLikes}
+            {likeCount}
         </button>
     );
 }
