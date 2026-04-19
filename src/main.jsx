@@ -13,6 +13,7 @@ import Feed from "./routes/Feed";
 import MusicPage from "./routes/MusicPage";
 import CommentPage from "./routes/CommentPage";
 import { DataProvider } from "./providers/DataProvider";
+import CreatePost from "./routes/CreatePost";
 import Home from "./routes/Home";
 
 const router = createBrowserRouter([
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
                     {
                         path: "/posts/:id/comment",
                         element: <CommentPage />,
+                    },
+                    {
+                        path: "/rate",
+                        element: <CreatePost />,
                     },
                 ],
             },

@@ -460,7 +460,7 @@ body {
 
 .star-filled {
     color: #f5c842;
-    font-variation-settings: 'FILL' 1;
+    font-variation-settings: "FILL" 1;
 }
 
 .star-half-wrapper {
@@ -1011,6 +1011,7 @@ body {
         transform: translate(-50%, 100%);
         opacity: 0;
     }
+
     to {
         transform: translate(-50%, 0);
         opacity: 1;
@@ -1081,6 +1082,7 @@ body {
         transform: translate(-50%, 0);
         opacity: 1;
     }
+
     to {
         transform: translate(-50%, 150%);
         opacity: 0;
@@ -1131,8 +1133,74 @@ body {
     pointer-events: none;
 }
 
-.rythme-search-field:focus ~ .search-icon,
 .search-group:hover .search-icon {
     fill: #4a84ff;
     opacity: 1;
+}
+
+.music-search-integrated {
+    background: #151a26;
+    border: 1px solid #333;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.music-search-integrated .search-group {
+    margin: 0;
+}
+
+.music-search-integrated .rythme-search-field {
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    height: 40px;
+    width: 100%;
+}
+
+.music-search-integrated .rythme-search-field:focus {
+    outline: none;
+}
+
+.music-search-integrated.has-content .search-group {
+    border-bottom: 1px solid #333;
+}
+
+.search-results-panel {
+    background: #1a202f;
+}
+
+.search-status-inline {
+    padding: 10px;
+    color: #4a84ff;
+    font-size: 12px;
+}
+
+.search-status-inline.external {
+    color: #ff478e;
+}
+
+.music-results-list .song-block {
+    margin: 0;
+    padding: 10px;
+    border-bottom: 1px solid #222;
+    display: flex;
+    align-items: center;
+}
+
+.music-results-list .song-block:last-child {
+    border-bottom: none;
+}
+
+.music-results-list .song-block:hover {
+    background: #252a36;
+}
+
+.no-music-found-inline {
+    padding: 20px;
+    text-align: center;
+    color: #888;
+}
+
+.rotating {
+    animation: rotate 2s linear infinite;
 }
