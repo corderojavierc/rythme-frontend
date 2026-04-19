@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import MusicCardComponent from "./MusicCardComponent";
 import { getApi } from "../../config";
 
 export default function SearchMusicComponent({ onSelect }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [message, setMessage] = useState("");
@@ -84,7 +85,10 @@ export default function SearchMusicComponent({ onSelect }) {
                 const checkData = await checkResponse.json();
 
                 if (checkData.exists) {
-                    setError("Ya has valorado esta canción anteriormente");
+                    navigate(location.pathname, {
+                        state: { from: "error-song-exists" },
+                        replace: true,
+                    });
                     return;
                 }
             }
@@ -153,9 +157,6 @@ export default function SearchMusicComponent({ onSelect }) {
                             ))}
                         </div>
 
-                        {error && (
-                            <div className="search-error-inline">{error}</div>
-                        )}
 
                         {!loading && results.length === 0 && (
                             <div className="no-music-found-inline">

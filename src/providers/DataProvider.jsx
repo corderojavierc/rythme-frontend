@@ -198,6 +198,7 @@ export function DataProvider({ children }) {
                 toggleFollow,
                 hasMorePages: nextPageUrl !== null,
                 loadMorePosts,
+                refreshPosts: () => fetchPosts(),
                 refreshAll: () => {
                     fetchPosts();
                     fetchRecommendedUsers();

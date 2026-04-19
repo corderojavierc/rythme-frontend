@@ -49,8 +49,6 @@ export default function Register() {
 
             const data = await response.json();
 
-            console.log("REGISTER RESPONSE:", data);
-
             if (response.ok == false) {
                 setError(data.message ? data.message : "Register error");
                 setIsLoading(false);

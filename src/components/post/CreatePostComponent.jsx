@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SearchMusicComponent from "../music/SearchMusicComponent";
 import MusicCardComponent from "../music/MusicCardComponent";
 import { getApi } from "../../config";
 import { useNavigate, useLocation } from "react-router-dom";
+
 const API_POST_URL = getApi() + "/posts";
 
 export default function CreatePostComponent() {
@@ -14,6 +15,7 @@ export default function CreatePostComponent() {
         location.state?.selectedMusic || null,
     );
     const [rating, setRating] = useState(5);
+    const [hoverRating, setHoverRating] = useState(0);
     const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
@@ -59,15 +61,68 @@ export default function CreatePostComponent() {
         }
     };
 
+    const handleMouseMove = (e, index) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const isHalf = x < rect.width * 0.45;
+        setHoverRating(index + (isHalf ? 0.5 : 1));
+    };
+
+    const handleMouseLeave = () => {
+        setHoverRating(0);
+    };
+
+    const handleClick = (e, index) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const isHalf = x < rect.width * 0.45;
+        setRating(index + (isHalf ? 0.5 : 1));
+    };
+
+    const currentRating = hoverRating || rating;
+
+    const renderInteractiveStars = () => {
+        const stars = [];
+        for (let i = 0; i < 5; i++) {
+            const starValue = i + 1;
+            const isFull = currentRating >= starValue;
+            const isHalf = !isFull && currentRating >= starValue - 0.5;
+
+            stars.push(
+                <div
+                    key={i}
+                    className="star-input-wrapper"
+                    onMouseMove={(e) => handleMouseMove(e, i)}
+                    onMouseLeave={handleMouseLeave}
+                    onClick={(e) => handleClick(e, i)}
+                >
+                    <span className="material-symbols-outlined star-empty">
+                        star
+                    </span>
+                    {isFull ? (
+                        <span
+                            className="material-symbols-outlined star-filled star-half-overlay"
+                            style={{ width: "100%" }}
+                        >
+                            star
+                        </span>
+                    ) : isHalf ? (
+                        <span className="material-symbols-outlined star-filled star-half-overlay">
+                            star
+                        </span>
+                    ) : null}
+                </div>,
+            );
+        }
+        return stars;
+    };
+
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="rating-card">
+        <form onSubmit={handleSubmit} className="create-post-form">
+            <div className="rating-card create-post-card">
                 {selectedMusic ? (
                     <div className="selected-music-container">
                         <div className="selected-music-header">
-                            <span className="selection-label">
-                                Canción seleccionada:
-                            </span>
                             <button
                                 type="button"
                                 className="remove-selection"
@@ -81,38 +136,41 @@ export default function CreatePostComponent() {
                         </div>
                         <MusicCardComponent music={selectedMusic} />
                         <div className="rating-selector">
-                            <label>Tu valoración:</label>
-                            <input
-                                type="range"
-                                min="0"
-                                max="5"
-                                step="0.5"
-                                value={rating}
-                                onChange={(e) => setRating(e.target.value)}
-                            />
-                            <span className="rating-value">{rating} ★</span>
+                            <div className="interactive-stars-container">
+                                <div className="interactive-stars">
+                                    {renderInteractiveStars()}
+                                </div>
+                                <span className="interactive-rating-score">
+                                    {currentRating.toFixed(1)}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 ) : (
                     <SearchMusicComponent onSelect={setSelectedMusic} />
                 )}
 
-                {error && <div className="post-error-message">{error}</div>}
+                {error && (
+                    <div className="post-error-message">
+                        <span className="material-symbols-outlined">error</span>
+                        {error}
+                    </div>
+                )}
 
                 <textarea
-                    type="text"
                     name="text"
                     className="rythme-comment-area"
-                    placeholder="Escribe un comentario..."
+                    placeholder="Escribe tu opinión aquí..."
                     required
                 ></textarea>
+
                 <button className="comment-button" type="submit">
                     <span className="circle1"></span>
                     <span className="circle2"></span>
                     <span className="circle3"></span>
                     <span className="circle4"></span>
                     <span className="circle5"></span>
-                    <span className="text">Valorar</span>
+                    <span className="text">Publicar</span>
                 </button>
             </div>
         </form>

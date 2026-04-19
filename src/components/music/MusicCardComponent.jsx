@@ -1,11 +1,7 @@
 export default function MusicCardComponent({ music, onClick }) {
-    const isStored = Number.isInteger(music.id);
 
     return (
-        <div
-            className={`song-block ${isStored ? "in-db" : "external-click"}`}
-            onClick={() => onClick && onClick(music)}
-        >
+        <div className="song-block" onClick={() => onClick && onClick(music)}>
             <div className="cover">
                 <img
                     src={music.cover_url}

@@ -34,7 +34,6 @@ export default function Login() {
             });
 
             const data = await response.json();
-            console.log("login response:", data);
 
             if (response.ok == false) {
                 setError(data.message ? data.message : "Login error");

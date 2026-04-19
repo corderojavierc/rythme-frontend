@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { PostProvider } from "../../providers/PostProvider";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";

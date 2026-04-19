@@ -24,8 +24,21 @@ export default function PostComponent({ fromFollowed = false }) {
     }
 
     const displayedPosts = fromFollowed
-        ? posts.filter((post) => follows.includes(post.user_id))
+        ? posts.filter((post) =>
+              follows.some((f) => String(f) === String(post.user_id)),
+          )
         : posts;
+
+    useEffect(() => {
+        if (
+            fromFollowed &&
+            !loadingPosts &&
+            hasMorePages &&
+            displayedPosts.length < STEP
+        ) {
+            loadMorePosts();
+        }
+    }, [fromFollowed, loadingPosts, hasMorePages, displayedPosts.length]);
 
     useEffect(() => {
         if (loadingPosts || (fromFollowed && loadingUsers)) return;
@@ -38,7 +51,7 @@ export default function PostComponent({ fromFollowed = false }) {
                 if (entries[0].isIntersecting) {
                     if (visibleCount >= displayedPosts.length && hasMorePages) {
                         loadMorePosts();
-                    } else {
+                    } else if (visibleCount < displayedPosts.length) {
                         showMore();
                     }
                 }
@@ -76,7 +89,7 @@ export default function PostComponent({ fromFollowed = false }) {
         );
     }
 
-    if (displayedPosts.length === 0) {
+    if (displayedPosts.length === 0 && !hasMorePages && !isLoading) {
         return (
             <div className="feed-state">
                 <span
