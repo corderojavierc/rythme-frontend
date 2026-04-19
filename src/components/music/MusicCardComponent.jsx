@@ -4,7 +4,7 @@ export default function MusicCardComponent({ music, onClick }) {
     return (
         <div
             className={`song-block ${isStored ? "in-db" : "external-click"}`}
-            onClick={() => !isStored && onClick && onClick(music)}
+            onClick={() => onClick && onClick(music)}
         >
             <div className="cover">
                 <img

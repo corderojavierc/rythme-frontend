@@ -45,7 +45,7 @@ export default function CreateCommentComponent({ post }) {
 
             e.target.reset();
 
-            navigate("/", { state: { fromComment: true } });
+            navigate("/", { state: { from: "comment" } });
         } catch (error) {
             console.error(error);
         }

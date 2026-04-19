@@ -11,12 +11,15 @@ export default function Home() {
     const [isExiting, setIsExiting] = useState(false);
 
     useEffect(() => {
-        if (location.state?.fromComment) {
+        if (
+            location.state?.from === "comment" ||
+            location.state?.from === "post"
+        ) {
             setShowNotification(true);
             setIsExiting(false);
             navigate(location.pathname, { replace: true, state: {} });
         }
-    }, [location.state?.fromComment, location.pathname, navigate]);
+    }, [location.state?.from, location.pathname, navigate]);
 
     useEffect(() => {
         if (showNotification && !isExiting) {
@@ -58,7 +61,10 @@ export default function Home() {
                             : "slideUp 0.3s ease-out forwards",
                     }}
                 >
-                    <DoneComponent onClose={handleClose} />
+                    <DoneComponent
+                        onClose={handleClose}
+                        type={location.state?.from}
+                    />
                 </div>
             )}
         </div>

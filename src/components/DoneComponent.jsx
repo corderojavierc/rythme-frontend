@@ -1,6 +1,19 @@
 import React from "react";
 
-const DoneComponent = ({ onClose }) => {
+const DoneComponent = ({ onClose, type }) => {
+    const config = {
+        comment: {
+            title: "Enviado correctamente",
+            subtitle: "Tu comentario ha sido publicado",
+        },
+        post: {
+            title: "Post creado",
+            subtitle: "Tu valoración ha sido publicada",
+        },
+    };
+
+    const { title, subtitle } = config[type] || config.comment;
+
     return (
         <div className="done-notification">
             <div className="done-content">
@@ -21,10 +34,8 @@ const DoneComponent = ({ onClose }) => {
                     </svg>
                 </div>
                 <div className="done-text-box">
-                    <p className="done-title">Enviado correctamente</p>
-                    <p className="done-subtitle">
-                        Tu comentario ha sido publicado
-                    </p>
+                    <p className="done-title">{title}</p>
+                    <p className="done-subtitle">{subtitle}</p>
                 </div>
                 <button className="done-close-btn" onClick={onClose}>
                     <svg

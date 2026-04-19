@@ -1204,3 +1204,61 @@ body {
 .rotating {
     animation: rotate 2s linear infinite;
 }
+
+.selected-music-container {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.selected-music-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.selection-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #8b96b0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.remove-selection {
+    background: rgba(255, 71, 142, 0.1);
+    color: #ff478e;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.remove-selection:hover {
+    background: rgba(255, 71, 142, 0.2);
+    transform: translateY(-1px);
+}
+
+.rating-selector {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rating-selector label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f0f2f8;
+}
