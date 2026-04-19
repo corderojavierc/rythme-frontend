@@ -1,17 +1,11 @@
-import React from "react";
+export default function ErrorComponent({ onClose, type }) {
+    let title = "Ha ocurrido un error";
+    let subtitle = "Por favor, inténtalo de nuevo";
 
-const ErrorComponent = ({ onClose, type }) => {
-    const config = {
-        "error-song-exists": {
-            title: "No se puede valorar",
-            subtitle: "Ya has valorado esta canción anteriormente",
-        },
-    };
-
-    const { title, subtitle } = config[type] || {
-        title: "Ha ocurrido un error",
-        subtitle: "Por favor, inténtalo de nuevo",
-    };
+    if (type === "error-song-exists") {
+        title = "No se puede valorar";
+        subtitle = "Ya has valorado esta canción anteriormente";
+    }
 
     return (
         <div className="error-notification">
@@ -55,6 +49,4 @@ const ErrorComponent = ({ onClose, type }) => {
             </div>
         </div>
     );
-};
-
-export default ErrorComponent;
+}

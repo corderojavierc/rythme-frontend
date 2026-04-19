@@ -1,5 +1,10 @@
 import CreatePostComponent from "../components/post/CreatePostComponent";
 
 export default function CreatePost() {
-    return <CreatePostComponent />;
+    return (
+        <div>
+            <h2 className="feed-header">Valorar</h2>
+            <CreatePostComponent />
+        </div>
+    );
 }

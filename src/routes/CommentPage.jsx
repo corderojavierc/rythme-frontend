@@ -6,7 +6,7 @@ import LoaderScreen from "../components/LoaderScreen";
 import { getApi } from "../config";
 import { useData } from "../providers/DataProvider";
 
-const API_POST_URL = `${getApi()}/posts`;
+const API_POST_URL = getApi() + "/posts";
 
 export default function CommentPage() {
     const { id } = useParams();
@@ -21,15 +21,23 @@ export default function CommentPage() {
         if (cachedPost) {
             setPost(cachedPost);
             setIsLoading(false);
-        } else if (id && !loadingPosts) {
+            return;
+        }
+
+        if (id && !loadingPosts) {
             async function fetchPost() {
                 try {
                     const token = localStorage.getItem("token");
-                    const response = await fetch(`${API_POST_URL}/${id}`, {
+                    const response = await fetch(API_POST_URL + "/" + id, {
                         headers: { Authorization: "Bearer " + token },
                     });
                     const data = await response.json();
-                    setPost(data.data || data);
+
+                    if (data.data) {
+                        setPost(data.data);
+                    } else {
+                        setPost(data);
+                    }
                 } catch (error) {
                     console.error(error);
                 } finally {

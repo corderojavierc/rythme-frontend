@@ -10,24 +10,25 @@ export default function Home() {
     const { refreshPosts } = useData();
     const location = useLocation();
     const navigate = useNavigate();
+
     const [showNotification, setShowNotification] = useState(false);
     const [isExiting, setIsExiting] = useState(false);
     const [notificationType, setNotificationType] = useState(null);
 
     useEffect(() => {
-        if (
-            location.state?.from === "comment" ||
-            location.state?.from === "post" ||
-            location.state?.from === "error-song-exists"
-        ) {
-            setNotificationType(location.state.from);
+        const from = location.state?.from;
+        const isValidNotification =
+            from === "comment" ||
+            from === "post" ||
+            from === "error-song-exists";
+
+        if (isValidNotification) {
+            setNotificationType(from);
             setShowNotification(true);
             setIsExiting(false);
 
-            if (
-                location.state?.from === "post" ||
-                location.state?.from === "comment"
-            ) {
+            const isSuccess = from === "post" || from === "comment";
+            if (isSuccess) {
                 refreshPosts();
             }
 
@@ -53,6 +54,15 @@ export default function Home() {
         }, 300);
     };
 
+    let notificationClass = "notification-wrapper";
+    if (isExiting) {
+        notificationClass += " exiting";
+    } else {
+        notificationClass += " entering";
+    }
+
+    const isErrorNotification = notificationType === "error-song-exists";
+
     return (
         <div className="app-container">
             <AsideLayout />
@@ -64,19 +74,11 @@ export default function Home() {
             <RightAsideLayout />
 
             {showNotification && (
-                <div
-                    className={`notification-wrapper ${isExiting ? "exiting" : "entering"}`}
-                >
-                    {notificationType === "error-song-exists" ? (
-                        <ErrorComponent
-                            onClose={handleClose}
-                            type={notificationType}
-                        />
+                <div className={notificationClass}>
+                    {isErrorNotification ? (
+                        <ErrorComponent onClose={handleClose} type={notificationType} />
                     ) : (
-                        <DoneComponent
-                            onClose={handleClose}
-                            type={notificationType}
-                        />
+                        <DoneComponent onClose={handleClose} type={notificationType} />
                     )}
                 </div>
             )}

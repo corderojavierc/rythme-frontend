@@ -24,26 +24,26 @@ export default function PostLikeButton() {
 
         if (isLoading) return;
 
-        const currentIsLiked = !!post.is_liked;
-        const newIsLiked = !currentIsLiked;
+        const wasLiked = !!post.is_liked;
+        const willBeLiked = !wasLiked;
+        const newCount = willBeLiked ? likeCount + 1 : likeCount - 1;
+        const method = willBeLiked ? "POST" : "DELETE";
 
         setIsLoading(true);
 
-        const newCount = newIsLiked ? likeCount + 1 : likeCount - 1;
-
-        if (newIsLiked) {
+        if (willBeLiked) {
             setIsAnimating(true);
             setTimeout(() => setIsAnimating(false), 600);
         }
 
         updatePost({
-            is_liked: newIsLiked,
+            is_liked: willBeLiked,
             count_likes: newCount,
         });
 
         try {
             const response = await fetch(API_LIKES_URL, {
-                method: newIsLiked ? "POST" : "DELETE",
+                method: method,
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: "Bearer " + token,
@@ -61,7 +61,7 @@ export default function PostLikeButton() {
         } catch (error) {
             console.error(error);
             updatePost({
-                is_liked: currentIsLiked,
+                is_liked: wasLiked,
                 count_likes: likeCount,
             });
         } finally {
@@ -69,7 +69,15 @@ export default function PostLikeButton() {
         }
     }
 
-    const buttonClass = `action-btn ${isLiked ? "liked" : ""}`;
+    let buttonClass = "action-btn";
+    if (isLiked) {
+        buttonClass += " liked";
+    }
+
+    let animatingClass = "like-icon-container";
+    if (isAnimating) {
+        animatingClass += " animating";
+    }
 
     return (
         <button
@@ -79,7 +87,7 @@ export default function PostLikeButton() {
             style={{ cursor: "pointer" }}
         >
             <div
-                className={`like-icon-container ${isAnimating ? "animating" : ""}`}
+                className={animatingClass}
                 style={{
                     position: "relative",
                     display: "flex",

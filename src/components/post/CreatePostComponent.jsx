@@ -7,13 +7,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 const API_POST_URL = getApi() + "/posts";
 
 export default function CreatePostComponent() {
-    let token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [selectedMusic, setSelectedMusic] = useState(
-        location.state?.selectedMusic || null,
-    );
+    const initialMusic = location.state?.selectedMusic || null;
+    const [selectedMusic, setSelectedMusic] = useState(initialMusic);
     const [rating, setRating] = useState(5);
     const [hoverRating, setHoverRating] = useState(0);
     const [error, setError] = useState("");
@@ -23,6 +22,7 @@ export default function CreatePostComponent() {
         const text = e.target.text.value;
 
         if (!text.trim()) return;
+
         if (!selectedMusic) {
             setError("Debes seleccionar una canción");
             return;
@@ -33,7 +33,7 @@ export default function CreatePostComponent() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: "Bearer " + token,
                 },
                 body: JSON.stringify({
                     music_id: selectedMusic.id,
@@ -45,7 +45,7 @@ export default function CreatePostComponent() {
             const data = await response.json();
 
             if (!response.ok) {
-                if (data.errors?.music_id) {
+                if (data.errors && data.errors.music_id) {
                     setError(data.errors.music_id[0]);
                 } else {
                     throw new Error();
@@ -65,7 +65,12 @@ export default function CreatePostComponent() {
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const isHalf = x < rect.width * 0.45;
-        setHoverRating(index + (isHalf ? 0.5 : 1));
+
+        if (isHalf) {
+            setHoverRating(index + 0.5);
+        } else {
+            setHoverRating(index + 1);
+        }
     };
 
     const handleMouseLeave = () => {
@@ -76,13 +81,19 @@ export default function CreatePostComponent() {
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const isHalf = x < rect.width * 0.45;
-        setRating(index + (isHalf ? 0.5 : 1));
+
+        if (isHalf) {
+            setRating(index + 0.5);
+        } else {
+            setRating(index + 1);
+        }
     };
 
     const currentRating = hoverRating || rating;
 
     const renderInteractiveStars = () => {
         const stars = [];
+
         for (let i = 0; i < 5; i++) {
             const starValue = i + 1;
             const isFull = currentRating >= starValue;
@@ -99,21 +110,23 @@ export default function CreatePostComponent() {
                     <span className="material-symbols-outlined star-empty">
                         star
                     </span>
-                    {isFull ? (
+                    {isFull && (
                         <span
                             className="material-symbols-outlined star-filled star-half-overlay"
                             style={{ width: "100%" }}
                         >
                             star
                         </span>
-                    ) : isHalf ? (
+                    )}
+                    {!isFull && isHalf && (
                         <span className="material-symbols-outlined star-filled star-half-overlay">
                             star
                         </span>
-                    ) : null}
+                    )}
                 </div>,
             );
         }
+
         return stars;
     };
 

@@ -1,18 +1,11 @@
-import React from "react";
+export default function DoneComponent({ onClose, type }) {
+    let title = "Enviado correctamente";
+    let subtitle = "Tu comentario ha sido publicado";
 
-const DoneComponent = ({ onClose, type }) => {
-    const config = {
-        comment: {
-            title: "Enviado correctamente",
-            subtitle: "Tu comentario ha sido publicado",
-        },
-        post: {
-            title: "Post creado",
-            subtitle: "Tu valoración ha sido publicada",
-        },
-    };
-
-    const { title, subtitle } = config[type] || config.comment;
+    if (type === "post") {
+        title = "Post creado";
+        subtitle = "Tu valoración ha sido publicada";
+    }
 
     return (
         <div className="done-notification">
@@ -56,6 +49,4 @@ const DoneComponent = ({ onClose, type }) => {
             </div>
         </div>
     );
-};
-
-export default DoneComponent;
+}

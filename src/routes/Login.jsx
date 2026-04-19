@@ -35,8 +35,9 @@ export default function Login() {
 
             const data = await response.json();
 
-            if (response.ok == false) {
-                setError(data.message ? data.message : "Login error");
+            if (!response.ok) {
+                const errorMessage = data.message ? data.message : "Login error";
+                setError(errorMessage);
                 setIsLoading(false);
                 return;
             }
@@ -52,11 +53,11 @@ export default function Login() {
         }
     };
 
-    if (auth.isAuthenticated == true && isLoading == false) {
+    if (auth.isAuthenticated && !isLoading) {
         return <Navigate to="/" replace />;
     }
 
-    if (isLoading == true) {
+    if (isLoading) {
         return <LoaderScreen text="Cargando..." />;
     }
 
@@ -86,7 +87,7 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                {error != "" && <p style={{ color: "red" }}>{error}</p>}
+                {error !== "" && <p style={{ color: "red" }}>{error}</p>}
                 <button type="submit" className="btn">
                     Iniciar sesión
                 </button>
