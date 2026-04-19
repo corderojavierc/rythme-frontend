@@ -1,19 +1,39 @@
 import { getApi } from "../../config";
-const API_COMMENT_URL = `${getApi()}/comments`;
+import { useData } from "../../providers/DataProvider";
 import { useNavigate } from "react-router-dom";
 
-export default function CreateCommentComponent({ post }) {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    let token = localStorage.getItem("token");
-    const fullName =
-        user.name && user.second_name
-            ? `${user.name} ${user.second_name}`
-            : user.name || user.username || "Usuario";
-    const initials =
-        `${user.name?.[0] || ""}${user.second_name?.[0] || ""}`.toUpperCase() ||
-        "?";
+const API_COMMENT_URL = getApi() + "/comments";
 
+export default function CreateCommentComponent({ post }) {
+    const { updatePost } = useData();
     const navigate = useNavigate();
+
+    const userJson = localStorage.getItem("user");
+    const user = userJson ? JSON.parse(userJson) : {};
+    const token = localStorage.getItem("token");
+
+    let fullName = "";
+    if (user.name && user.second_name) {
+        fullName = user.name + " " + user.second_name;
+    } else if (user.name) {
+        fullName = user.name;
+    } else if (user.username) {
+        fullName = user.username;
+    } else {
+        fullName = "Usuario";
+    }
+
+    let initials = "";
+    if (user.name) {
+        initials += user.name[0];
+    }
+    if (user.second_name) {
+        initials += user.second_name[0];
+    }
+    initials = initials.toUpperCase();
+    if (initials === "") {
+        initials = "?";
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,7 +46,7 @@ export default function CreateCommentComponent({ post }) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: "Bearer " + token,
                 },
                 body: JSON.stringify({
                     post_id: post.id,
@@ -36,9 +56,14 @@ export default function CreateCommentComponent({ post }) {
 
             if (!response.ok) throw new Error();
 
-            e.target.reset();
+            const newCommentCount = (parseInt(post.count_comments) || 0) + 1;
+            updatePost({
+                ...post,
+                count_comments: newCommentCount,
+            });
 
-            navigate("/", { state: { fromComment: true } });
+            e.target.reset();
+            navigate("/", { state: { from: "comment" } });
         } catch (error) {
             console.error(error);
         }

@@ -24,7 +24,7 @@ export default function Register() {
         e.preventDefault();
         setError("");
 
-        if (password != passwordConfirm) {
+        if (password !== passwordConfirm) {
             setError("The passwords do not match");
             return;
         }
@@ -49,10 +49,9 @@ export default function Register() {
 
             const data = await response.json();
 
-            console.log("REGISTER RESPONSE:", data);
-
-            if (response.ok == false) {
-                setError(data.message ? data.message : "Register error");
+            if (!response.ok) {
+                const errorMessage = data.message ? data.message : "Register error";
+                setError(errorMessage);
                 setIsLoading(false);
                 return;
             }
@@ -67,11 +66,11 @@ export default function Register() {
         }
     };
 
-    if (auth.isAuthenticated == true && isLoading == false) {
+    if (auth.isAuthenticated && !isLoading) {
         return <Navigate to="/" replace />;
     }
 
-    if (isLoading == true) {
+    if (isLoading) {
         return <LoaderScreen text="Cargando..." />;
     }
 
@@ -130,7 +129,7 @@ export default function Register() {
                     onChange={(e) => setPasswordConfirm(e.target.value)}
                 />
 
-                {error != "" && <p style={{ color: "red" }}>{error}</p>}
+                {error !== "" && <p style={{ color: "red" }}>{error}</p>}
 
                 <button type="submit" className="btn">
                     Registrarme

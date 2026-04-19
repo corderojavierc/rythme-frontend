@@ -11,17 +11,33 @@ export default function AsideLayout() {
     const { toggleTheme } = useTheme();
     const [showLogout, setShowLogout] = useState(false);
 
-    const webLocation = location.pathname;
+    const currentPath = location.pathname;
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const fullName =
-        user.name && user.second_name
-            ? `${user.name} ${user.second_name}`
-            : user.name || user.username || "Usuario";
+    const userJson = localStorage.getItem("user");
+    const user = userJson ? JSON.parse(userJson) : {};
 
-    const initials =
-        `${user.name?.[0] || ""}${user.second_name?.[0] || ""}`.toUpperCase() ||
-        "?";
+    let fullName = "";
+    if (user.name && user.second_name) {
+        fullName = user.name + " " + user.second_name;
+    } else if (user.name) {
+        fullName = user.name;
+    } else if (user.username) {
+        fullName = user.username;
+    } else {
+        fullName = "Usuario";
+    }
+
+    let initials = "";
+    if (user.name) {
+        initials += user.name[0];
+    }
+    if (user.second_name) {
+        initials += user.second_name[0];
+    }
+    initials = initials.toUpperCase();
+    if (initials === "") {
+        initials = "?";
+    }
 
     const handleLogout = async () => {
         try {
@@ -31,7 +47,7 @@ export default function AsideLayout() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: "Bearer " + token,
                 },
             });
 
@@ -43,6 +59,18 @@ export default function AsideLayout() {
             console.error("Logout Error:", error);
         }
     };
+
+    function getLinkClass(path) {
+        if (currentPath === path) {
+            return "nav-item active";
+        }
+        return "nav-item";
+    }
+
+    let chevronIcon = "expand_more";
+    if (showLogout) {
+        chevronIcon = "expand_less";
+    }
 
     return (
         <aside className="sidebar">
@@ -59,54 +87,33 @@ export default function AsideLayout() {
                 </div>
             </Link>
 
-            <Link
-                className={`nav-item ${webLocation === "/" ? "active" : ""}`}
-                to="/"
-            >
+            <Link className={getLinkClass("/")} to="/">
                 <span className="material-symbols-outlined">home</span>
                 Feed
             </Link>
-            <Link
-                className={`nav-item ${webLocation === "/followed" ? "active" : ""}`}
-                to="/followed"
-            >
+            <Link className={getLinkClass("/followed")} to="/followed">
                 <span className="material-symbols-outlined">group</span>
                 Seguidos
             </Link>
-            <Link
-                className={`nav-item ${webLocation === "/rate" ? "active" : ""}`}
-                to="/rate"
-            >
+            <Link className={getLinkClass("/rate")} to="/rate">
                 <span className="material-symbols-outlined">add_ad</span>
                 Valorar
             </Link>
-            <Link
-                className={`nav-item ${webLocation === "/music" ? "active" : ""}`}
-                to="/music"
-            >
+            <Link className={getLinkClass("/music")} to="/music">
                 <span className="material-symbols-outlined">music_note_2</span>
                 Música
             </Link>
-            <Link
-                className={`nav-item ${webLocation === "/events" ? "active" : ""}`}
-                to="/events"
-            >
+            <Link className={getLinkClass("/events")} to="/events">
                 <span className="material-symbols-outlined">
                     calendar_today
                 </span>
                 Eventos
             </Link>
-            <Link
-                className={`nav-item ${webLocation === "/request" ? "active" : ""}`}
-                to="/request"
-            >
+            <Link className={getLinkClass("/request")} to="/request">
                 <span className="material-symbols-outlined">pan_tool_alt</span>
                 Solicitar
             </Link>
-            <Link
-                className={`nav-item ${webLocation === "/profile" ? "active" : ""}`}
-                to="/profile"
-            >
+            <Link className={getLinkClass("/profile")} to="/profile">
                 <span className="material-symbols-outlined">person</span>
                 Perfil
             </Link>
@@ -131,7 +138,7 @@ export default function AsideLayout() {
                     </div>
                 </div>
                 <span className="material-symbols-outlined user-card-chevron">
-                    {showLogout ? "expand_less" : "expand_more"}
+                    {chevronIcon}
                 </span>
             </div>
 

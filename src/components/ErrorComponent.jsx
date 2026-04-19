@@ -1,16 +1,16 @@
-export default function DoneComponent({ onClose, type }) {
-    let title = "Enviado correctamente";
-    let subtitle = "Tu comentario ha sido publicado";
+export default function ErrorComponent({ onClose, type }) {
+    let title = "Ha ocurrido un error";
+    let subtitle = "Por favor, inténtalo de nuevo";
 
-    if (type === "post") {
-        title = "Post creado";
-        subtitle = "Tu valoración ha sido publicada";
+    if (type === "error-song-exists") {
+        title = "No se puede valorar";
+        subtitle = "Ya has valorado esta canción anteriormente";
     }
 
     return (
-        <div className="done-notification">
-            <div className="done-content">
-                <div className="done-icon-box">
+        <div className="error-notification">
+            <div className="error-content">
+                <div className="error-icon-box">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -22,15 +22,15 @@ export default function DoneComponent({ onClose, type }) {
                         <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            d="m4.5 12.75 6 6 9-13.5"
+                            d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
                         />
                     </svg>
                 </div>
-                <div className="done-text-box">
-                    <p className="done-title">{title}</p>
-                    <p className="done-subtitle">{subtitle}</p>
+                <div className="error-text-box">
+                    <p className="error-title">{title}</p>
+                    <p className="error-subtitle">{subtitle}</p>
                 </div>
-                <button className="done-close-btn" onClick={onClose}>
+                <button className="error-close-btn" onClick={onClose}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

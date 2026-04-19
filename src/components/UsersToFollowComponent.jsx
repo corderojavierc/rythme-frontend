@@ -19,15 +19,18 @@ export default function UsersToFollow() {
             <div className="section-title">A quién seguir</div>
             {recommendedUsers.map((user) => {
                 const isFollowing = follows.includes(user.id);
-                let buttonText = "Seguir";
+                const isHovered = hoveredUserId === user.id;
+
                 let buttonClass = "follow-btn";
+                let buttonText = "Seguir";
 
                 if (isFollowing) {
                     buttonClass = "followed follow-btn";
-                    buttonText =
-                        hoveredUserId === user.id
-                            ? "Dejar de seguir"
-                            : "Siguiendo";
+                    if (isHovered) {
+                        buttonText = "Dejar de seguir";
+                    } else {
+                        buttonText = "Siguiendo";
+                    }
                 }
 
                 return (

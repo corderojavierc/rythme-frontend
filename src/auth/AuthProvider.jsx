@@ -6,9 +6,8 @@ const AuthContext = createContext({
 });
 
 export function AuthProvider({ children }) {
-    const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        return localStorage.getItem("auth") === "true";
-    });
+    const savedAuth = localStorage.getItem("auth");
+    const [isAuthenticated, setIsAuthenticated] = useState(savedAuth === "true");
 
     useEffect(() => {
         localStorage.setItem("auth", isAuthenticated);
@@ -21,4 +20,6 @@ export function AuthProvider({ children }) {
     );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+    return useContext(AuthContext);
+}

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { PostProvider } from "../../providers/PostProvider";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
@@ -9,29 +8,46 @@ export default function PostCardComponent({ post, type = "post" }) {
 
     let fullName = "";
     if (post.name && post.second_name) {
-        fullName = `${post.name} ${post.second_name}`;
+        fullName = post.name + " " + post.second_name;
+    } else if (post.name) {
+        fullName = post.name;
+    } else if (post.user_name) {
+        fullName = post.user_name;
     } else {
-        fullName = post.name || post.user_name || "Usuario";
+        fullName = "Usuario";
     }
 
     const rating = post.rating ? parseFloat(post.rating) : 0;
 
     const renderStars = () => {
         const stars = [];
+
         for (let i = 1; i <= 5; i++) {
-            if (rating >= i) {
-                stars.push(<span key={i} className="material-symbols-outlined star-filled">star</span>);
-            } else if (rating > i - 0.51) {
+            const isFull = rating >= i;
+            const isHalf = rating > i - 0.51;
+
+            if (isFull) {
+                stars.push(
+                    <span key={i} className="material-symbols-outlined star-filled">
+                        star
+                    </span>,
+                );
+            } else if (isHalf) {
                 stars.push(
                     <div key={i} className="star-half-wrapper">
                         <span className="material-symbols-outlined star-empty">star</span>
                         <span className="material-symbols-outlined star-filled star-half-overlay">star</span>
-                    </div>
+                    </div>,
                 );
             } else {
-                stars.push(<span key={i} className="material-symbols-outlined star-empty">star</span>);
+                stars.push(
+                    <span key={i} className="material-symbols-outlined star-empty">
+                        star
+                    </span>,
+                );
             }
         }
+
         return stars;
     };
 
