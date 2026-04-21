@@ -20,12 +20,13 @@ export default function PostCardComponent({ post, type = "post" }) {
     }
 
     function redirectToPost() {
-        navigate(`${post.user_name}/post/${post.id}`);
+        if (type === "fromPost") return;
+        navigate(`${post.user_name}/posts/${post.id}`);
     }
 
     function redirectToProfile(e) {
         e.stopPropagation();
-        navigate(`${post.user_name}`);
+        navigate(`/${post.user_name}`);
     }
 
     function redirectToMusic(e) {

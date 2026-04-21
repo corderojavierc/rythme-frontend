@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import PostCardComponent from "./PostCardComponent";
+import CommentCardComponent from "./CommentCardComponent";
 import LoaderScreen from "../LoaderScreen";
 import { useData } from "../../providers/DataProvider";
 
 const STEP = 10;
 
-export default function PostComponent({ fromFollowed = false }) {
+export default function CommentComponent({ fromFollowed = false }) {
     const {
         posts,
         followedPosts,
@@ -123,7 +123,7 @@ export default function PostComponent({ fromFollowed = false }) {
     return (
         <div>
             {visiblePosts.map((post) => (
-                <PostCardComponent key={post.id} post={post} />
+                <CommentCardComponent key={post.id} post={post} />
             ))}
 
             {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}

@@ -12,6 +12,7 @@ import FollowedsPosts from "./routes/FollowedsPosts";
 import Feed from "./routes/Feed";
 import MusicPage from "./routes/MusicPage";
 import CommentPage from "./routes/CommentPage";
+import PostPage from "./routes/PostPage";
 import { DataProvider } from "./providers/DataProvider";
 import CreatePost from "./routes/CreatePost";
 import Home from "./routes/Home";
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
                         element: <CommentPage />,
                     },
                     {
+                        path: ":username/posts/:id",
+                        element: <PostPage />,
+                    },
+                    {
                         path: "/rate",
                         element: <CreatePost />,
                     },
@@ -67,11 +72,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <StrictMode>
-        <AuthProvider>
-            <DataProvider>
-                <RouterProvider router={router} />
-            </DataProvider>
-        </AuthProvider>
-    </StrictMode>,
+    <AuthProvider>
+        <DataProvider>
+            <RouterProvider router={router} />
+        </DataProvider>
+    </AuthProvider>,
 );

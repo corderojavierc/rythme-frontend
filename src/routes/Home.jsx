@@ -4,10 +4,11 @@ import AsideLayout from "../layout/AsideLayout";
 import RightAsideLayout from "../layout/RightAsideLayout";
 import DoneComponent from "../components/DoneComponent";
 import ErrorComponent from "../components/ErrorComponent";
+import LoaderScreen from "../components/LoaderScreen";
 import { useData } from "../providers/DataProvider";
 
 export default function Home() {
-    const { refreshPosts } = useData();
+    const { refreshPosts, isInitialized } = useData();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -34,7 +35,7 @@ export default function Home() {
 
             navigate(location.pathname, { replace: true, state: {} });
         }
-    }, [location.state?.from, location.pathname, navigate, refreshPosts]);
+    }, [location.state?.from, location.pathname, navigate]);
 
     useEffect(() => {
         if (showNotification && !isExiting) {
@@ -62,6 +63,10 @@ export default function Home() {
     }
 
     const isErrorNotification = notificationType === "error-song-exists";
+
+    if (!isInitialized) {
+        return <LoaderScreen text="Cargando Rythme..." />;
+    }
 
     return (
         <div className="app-container">

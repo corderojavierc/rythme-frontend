@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import MusicCardComponent from "./MusicCardComponent";
+import LoaderScreen from "../LoaderScreen";
 import { getApi } from "../../config";
 
 export default function SearchMusicComponent({ onSelect }) {
@@ -10,6 +11,8 @@ export default function SearchMusicComponent({ onSelect }) {
     const [results, setResults] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const isProcessingRef = useRef(false);
 
     useEffect(() => {
         if (query.trim().length < 2) {
@@ -18,7 +21,9 @@ export default function SearchMusicComponent({ onSelect }) {
             return;
         }
 
-        const fetchMusic = async () => {
+        const controller = new AbortController();
+
+        const timeoutId = setTimeout(async () => {
             setLoading(true);
             try {
                 const token = localStorage.getItem("token");
@@ -29,6 +34,7 @@ export default function SearchMusicComponent({ onSelect }) {
                         Authorization: "Bearer " + token,
                     },
                     body: JSON.stringify({ name: query }),
+                    signal: controller.signal,
                 });
 
                 if (!response.ok) throw new Error("Search failed");
@@ -36,19 +42,27 @@ export default function SearchMusicComponent({ onSelect }) {
                 const data = await response.json();
                 setResults(data.data || []);
                 setMessage(data.message || "");
-            } catch (error) {
-                console.error("Error searching music:", error);
-                setResults([]);
-            } finally {
                 setLoading(false);
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    console.error("Error searching music:", error);
+                    setResults([]);
+                    setLoading(false);
+                }
             }
-        };
+        }, 400);
 
-        const timeoutId = setTimeout(fetchMusic, 400);
-        return () => clearTimeout(timeoutId);
+        return () => {
+            clearTimeout(timeoutId);
+            controller.abort();
+        };
     }, [query]);
 
     const handleSongClick = async (song) => {
+        if (isProcessingRef.current) return;
+        isProcessingRef.current = true;
+        setIsProcessing(true);
+
         let selectedSong = song;
 
         try {
@@ -62,9 +76,7 @@ export default function SearchMusicComponent({ onSelect }) {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + token,
                     },
-                    body: JSON.stringify({
-                        name: song.title + " " + song.artist,
-                    }),
+                    body: JSON.stringify({ name: song.title + " " + song.artist }),
                 });
 
                 if (response.ok) {
@@ -96,21 +108,16 @@ export default function SearchMusicComponent({ onSelect }) {
             }
         } catch (error) {
             console.error("Error al procesar la canción:", error);
+        } finally {
+            isProcessingRef.current = false;
+            setIsProcessing(false);
         }
     };
 
-    const hasResults = results.length > 0;
-    const hasContent = loading || hasResults || message;
-    const queryIsLongEnough = query.trim().length >= 2;
-    const showPanel = hasContent && queryIsLongEnough;
-
-    let containerClass = "music-search-integrated";
-    if (showPanel) {
-        containerClass += " has-content";
-    }
+    const showPanel = (loading || isProcessing || results.length > 0 || message) && query.trim().length >= 2;
 
     return (
-        <div className={containerClass}>
+        <div className={`music-search-integrated${showPanel ? " has-content" : ""}`}>
             <div className="search-group">
                 <input
                     type="text"
@@ -118,6 +125,7 @@ export default function SearchMusicComponent({ onSelect }) {
                     className="rythme-search-field"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    disabled={isProcessing}
                 />
                 <svg viewBox="0 0 24 24" aria-hidden="true" className="search-icon">
                     <g>
@@ -128,39 +136,37 @@ export default function SearchMusicComponent({ onSelect }) {
 
             {showPanel && (
                 <div className="search-results-panel">
-                    {loading && (
+                    {isProcessing && <LoaderScreen inline small text="Verificando canción..." />}
+
+                    {!isProcessing && loading && (
                         <div className="search-status-inline">
-                            <span className="material-symbols-outlined rotating">
-                                refresh
-                            </span>
+                            <span className="material-symbols-outlined rotating">refresh</span>
                             Buscando en la biblioteca...
                         </div>
                     )}
 
-                    {!loading && message && (
+                    {!isProcessing && !loading && message && (
                         <div className="search-status-inline external">
-                            <span className="material-symbols-outlined">
-                                language
-                            </span>
+                            <span className="material-symbols-outlined">language</span>
                             {message}
                         </div>
                     )}
 
-                    <div className="music-results-list">
-                        {results.map((song, index) => (
-                            <MusicCardComponent
-                                key={song.id || index}
-                                music={song}
-                                onClick={handleSongClick}
-                            />
-                        ))}
-                    </div>
+                    {!isProcessing && (
+                        <div className="music-results-list">
+                            {results.map((song, index) => (
+                                <MusicCardComponent
+                                    key={song.id || index}
+                                    music={song}
+                                    onClick={handleSongClick}
+                                />
+                            ))}
+                        </div>
+                    )}
 
-                    {!loading && results.length === 0 && (
+                    {!isProcessing && !loading && results.length === 0 && (
                         <div className="no-music-found-inline">
-                            <span className="material-symbols-outlined">
-                                search_off
-                            </span>
+                            <span className="material-symbols-outlined">search_off</span>
                             No se han encontrado coincidencias
                         </div>
                     )}
