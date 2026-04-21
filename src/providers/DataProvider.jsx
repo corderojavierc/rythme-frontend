@@ -1,8 +1,14 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useAuth } from "../auth/AuthProvider";
 import { getApi } from "../config";
 
 const DataContext = createContext();
+
+function extractList(responseData) {
+    if (responseData.data) return responseData.data;
+    if (Array.isArray(responseData)) return responseData;
+    return [];
+}
 
 export function DataProvider({ children }) {
     const { isAuthenticated } = useAuth();
@@ -16,62 +22,28 @@ export function DataProvider({ children }) {
     const [recommendedUsers, setRecommendedUsers] = useState([]);
     const [follows, setFollows] = useState([]);
 
+    const [isInitialized, setIsInitialized] = useState(false);
     const [loadingPosts, setLoadingPosts] = useState(false);
     const [loadingFollowedPosts, setLoadingFollowedPosts] = useState(false);
     const [loadingUsers, setLoadingUsers] = useState(false);
     const [error, setError] = useState(null);
 
+    const isTogglingFollow = useRef(false);
+
+    function getAuthHeaders() {
+        const token = localStorage.getItem("token");
+        return { Authorization: "Bearer " + token };
+    }
+
     async function fetchPosts(url = getApi() + "/posts") {
         setLoadingPosts(true);
         try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(url, {
-                headers: { Authorization: "Bearer " + token },
-            });
+            const response = await fetch(url, { headers: getAuthHeaders() });
             const data = await response.json();
+            const newPosts = extractList(data);
+            const nextUrl = data.links?.next ?? null;
 
-            let newPosts = [];
-            if (data.data) {
-                newPosts = data.data;
-            } else if (Array.isArray(data)) {
-                newPosts = data;
-            }
-
-            const userJson = localStorage.getItem("user");
-            const user = userJson ? JSON.parse(userJson) : null;
-
-            if (user && token) {
-                try {
-                    const likesResponse = await fetch(getApi() + "/likes/" + user.id, {
-                        headers: { Authorization: "Bearer " + token },
-                    });
-                    const likesData = await likesResponse.json();
-
-                    let rawLikes = [];
-                    if (likesData.data) {
-                        rawLikes = likesData.data;
-                    } else if (Array.isArray(likesData)) {
-                        rawLikes = likesData;
-                    }
-
-                    const likedPostIds = rawLikes
-                        .filter((like) => like.type && like.type.toLowerCase().includes("post"))
-                        .map((like) => like.id.toString());
-
-                    newPosts = newPosts.map((post) => {
-                        const alreadyLiked = post.is_liked || likedPostIds.includes(post.id.toString());
-                        return { ...post, is_liked: alreadyLiked };
-                    });
-                } catch (e) {
-                    console.error("Error fetching likes:", e);
-                }
-            }
-
-            if (data.links && data.links.next) {
-                setNextPageUrl(data.links.next);
-            } else {
-                setNextPageUrl(null);
-            }
+            setNextPageUrl(nextUrl);
 
             const isFirstPage = url === getApi() + "/posts";
             if (isFirstPage) {
@@ -79,8 +51,11 @@ export function DataProvider({ children }) {
             } else {
                 setPosts((prev) => [...prev, ...newPosts]);
             }
+
+            setIsInitialized(true);
         } catch (err) {
             setError("No se pudieron cargar los posts :(");
+            setIsInitialized(true);
         } finally {
             setLoadingPosts(false);
         }
@@ -95,24 +70,12 @@ export function DataProvider({ children }) {
     async function fetchFollowedPosts(url = getApi() + "/posts/followed") {
         setLoadingFollowedPosts(true);
         try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(url, {
-                headers: { Authorization: "Bearer " + token },
-            });
+            const response = await fetch(url, { headers: getAuthHeaders() });
             const data = await response.json();
+            const newPosts = extractList(data);
+            const nextUrl = data.links?.next ?? null;
 
-            let newPosts = [];
-            if (data.data) {
-                newPosts = data.data;
-            } else if (Array.isArray(data)) {
-                newPosts = data;
-            }
-
-            if (data.links && data.links.next) {
-                setNextFollowedPageUrl(data.links.next);
-            } else {
-                setNextFollowedPageUrl(null);
-            }
+            setNextFollowedPageUrl(nextUrl);
 
             const isFirstPage = url === getApi() + "/posts/followed";
             if (isFirstPage) {
@@ -134,45 +97,30 @@ export function DataProvider({ children }) {
     }
 
     async function fetchRecommendedUsers() {
-        const token = localStorage.getItem("token");
         const userJson = localStorage.getItem("user");
         const user = userJson ? JSON.parse(userJson) : null;
 
-        if (!token || !user) return;
+        if (!user) return;
 
         setLoadingUsers(true);
         try {
-            const usersResponse = await fetch(getApi() + "/users", {
-                headers: { Authorization: "Bearer " + token },
-            });
-            const usersData = await usersResponse.json();
+            // Usamos Promise.all para cargar usuarios y seguidos al mismo tiempo (mas rapido)
+            const [usersRes, followsRes] = await Promise.all([
+                fetch(getApi() + "/users", { headers: getAuthHeaders() }),
+                fetch(getApi() + "/follows/" + user.id, { headers: getAuthHeaders() })
+            ]);
 
-            let allUsers = [];
-            if (usersData.data) {
-                allUsers = usersData.data;
-            } else if (Array.isArray(usersData)) {
-                allUsers = usersData;
-            }
+            const allUsers = extractList(await usersRes.json());
+            const followedData = extractList(await followsRes.json());
+            const followedIds = followedData.map((f) => f.id);
 
-            const followsResponse = await fetch(getApi() + "/follows/" + user.id, {
-                headers: { Authorization: "Bearer " + token },
-            });
-            const followsData = await followsResponse.json();
-
-            let userFollows = [];
-            if (followsData.data) {
-                userFollows = followsData.data;
-            } else if (Array.isArray(followsData)) {
-                userFollows = followsData;
-            }
-
-            const followedIds = userFollows.map((f) => f.id);
             setFollows(followedIds);
 
-            const notFollowedYet = allUsers.filter((u) => {
-                return u.id !== user.id && !followedIds.includes(u.id);
-            });
-            const recommendations = notFollowedYet.slice(0, 3);
+            // Filtramos para no recomendarnos a nosotros mismos ni a gente que ya seguimos
+            const recommendations = allUsers
+                .filter((u) => u.id !== user.id && !followedIds.includes(u.id))
+                .slice(0, 3);
+
             setRecommendedUsers(recommendations);
         } catch (e) {
             console.error(e);
@@ -182,79 +130,75 @@ export function DataProvider({ children }) {
     }
 
     function updatePost(updatedPost) {
+        // Actualizamos el post en la lista general
         setPosts((prev) =>
-            prev.map((post) => {
-                if (post.id === updatedPost.id) {
-                    return updatedPost;
-                }
-                return post;
-            }),
+            prev.map((post) => (post.id === updatedPost.id ? updatedPost : post)),
+        );
+        // Tambien lo actualizamos en la lista de seguidos para que esten sincronizados
+        setFollowedPosts((prev) =>
+            prev.map((post) => (post.id === updatedPost.id ? updatedPost : post)),
         );
     }
 
-    async function toggleFollow(id) {
-        const token = localStorage.getItem("token");
+    async function toggleFollow(userId) {
         const userJson = localStorage.getItem("user");
         const user = userJson ? JSON.parse(userJson) : null;
-        if (!token || !user) return;
 
-        const isFollowing = follows.includes(id);
+        if (!user || isTogglingFollow.current) return;
+        isTogglingFollow.current = true;
+
+        const isFollowing = follows.includes(userId);
 
         if (isFollowing) {
-            setFollows((prev) => prev.filter((userId) => userId !== id));
-            setFollowedPosts((prev) => prev.filter((post) => String(post.user_id) !== String(id)));
+            setFollows((prev) => prev.filter((id) => id !== userId));
+            setFollowedPosts((prev) => prev.filter((post) => String(post.user_id) !== String(userId)));
         } else {
-            setFollows((prev) => [...prev, id]);
+            setFollows((prev) => [...prev, userId]);
         }
 
         try {
             const method = isFollowing ? "DELETE" : "POST";
             await fetch(getApi() + "/follows", {
-                method: method,
+                method,
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + token,
+                    ...getAuthHeaders(),
                 },
                 body: JSON.stringify({
                     follower_id: user.id,
-                    followed_id: id,
+                    followed_id: userId,
                 }),
             });
 
             if (!isFollowing) {
-                const response = await fetch(getApi() + "/posts/followed", {
-                    headers: { Authorization: "Bearer " + token },
-                });
-                const data = await response.json();
-
-                let incoming = [];
-                if (data.data) {
-                    incoming = data.data;
-                } else if (Array.isArray(data)) {
-                    incoming = data;
-                }
-
-                const newUserPosts = incoming.filter((post) => String(post.user_id) === String(id));
+                setLoadingFollowedPosts(true);
+                const response = await fetch(getApi() + "/posts/followed", { headers: getAuthHeaders() });
+                const incoming = extractList(await response.json());
+                const newUserPosts = incoming.filter((post) => String(post.user_id) === String(userId));
 
                 if (newUserPosts.length > 0) {
                     setFollowedPosts((prev) => {
                         const existingIds = new Set(prev.map((post) => post.id));
                         const toAdd = newUserPosts.filter((post) => !existingIds.has(post.id));
-                        const merged = [...toAdd, ...prev];
-                        merged.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                        return merged;
+                        return [...toAdd, ...prev].sort(
+                            (a, b) => new Date(b.created_at) - new Date(a.created_at),
+                        );
                     });
                 }
+
+                setLoadingFollowedPosts(false);
             }
         } catch (err) {
             console.error(err);
+        } finally {
+            isTogglingFollow.current = false;
         }
     }
 
     useEffect(() => {
-        if (isAuthenticated === true) {
-            setLoadingPosts(true);
-            setLoadingUsers(true);
+        setIsInitialized(false);
+
+        if (isAuthenticated) {
             fetchPosts();
             fetchFollowedPosts();
             fetchRecommendedUsers();
@@ -273,6 +217,7 @@ export function DataProvider({ children }) {
                 followedPosts,
                 recommendedUsers,
                 follows,
+                isInitialized,
                 loadingPosts,
                 loadingFollowedPosts,
                 loadingUsers,

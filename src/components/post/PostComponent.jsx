@@ -71,7 +71,13 @@ export default function PostComponent({ fromFollowed = false }) {
 
         observer.observe(element);
         return () => observer.disconnect();
-    }, [isLoadingCurrent, loadingUsers, displayedPosts.length, visibleCount, hasMoreCurrent]);
+    }, [
+        isLoadingCurrent,
+        loadingUsers,
+        displayedPosts.length,
+        visibleCount,
+        hasMoreCurrent,
+    ]);
 
     const isLoading = isLoadingCurrent || (fromFollowed && loadingUsers);
     const noPosts = displayedPosts.length === 0;
@@ -85,7 +91,10 @@ export default function PostComponent({ fromFollowed = false }) {
     if (error) {
         return (
             <div className="feed-state feed-error">
-                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 32 }}
+                >
                     wifi_off
                 </span>
                 <span>{error}</span>
@@ -100,7 +109,10 @@ export default function PostComponent({ fromFollowed = false }) {
         }
         return (
             <div className="feed-state">
-                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 32 }}
+                >
                     music_off
                 </span>
                 <span>{emptyMessage}</span>
@@ -124,7 +136,9 @@ export default function PostComponent({ fromFollowed = false }) {
 
             {!hasMore && !isLoadingCurrent && (
                 <div className="feed-end">
-                    <span className="material-symbols-outlined">music_note</span>
+                    <span className="material-symbols-outlined">
+                        music_note
+                    </span>
                     Has llegado al final de todas las opiniones.
                 </div>
             )}
