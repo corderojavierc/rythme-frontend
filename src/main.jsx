@@ -37,7 +37,7 @@ const router = createBrowserRouter([
                         element: <MusicPage />,
                     },
                     {
-                        path: "/posts/:id/comment",
+                        path: ":username/posts/:id/comment",
                         element: <CommentPage />,
                     },
                     {

@@ -1,10 +1,12 @@
 import { PostProvider } from "../../providers/PostProvider";
+import { useNavigate } from "react-router-dom";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
 import { useData } from "../../providers/DataProvider";
 
 export default function PostCardComponent({ post, type = "post" }) {
     const { updatePost } = useData();
+    const navigate = useNavigate();
 
     let fullName = "";
     if (post.name && post.second_name) {
@@ -15,6 +17,20 @@ export default function PostCardComponent({ post, type = "post" }) {
         fullName = post.user_name;
     } else {
         fullName = "Usuario";
+    }
+
+    function redirectToPost() {
+        navigate(`${post.user_name}/post/${post.id}`);
+    }
+
+    function redirectToProfile(e) {
+        e.stopPropagation();
+        navigate(`${post.user_name}`);
+    }
+
+    function redirectToMusic(e) {
+        e.stopPropagation();
+        navigate(`/music/${post.music_id}`);
     }
 
     const rating = post.rating ? parseFloat(post.rating) : 0;
@@ -28,20 +44,30 @@ export default function PostCardComponent({ post, type = "post" }) {
 
             if (isFull) {
                 stars.push(
-                    <span key={i} className="material-symbols-outlined star-filled">
+                    <span
+                        key={i}
+                        className="material-symbols-outlined star-filled"
+                    >
                         star
                     </span>,
                 );
             } else if (isHalf) {
                 stars.push(
                     <div key={i} className="star-half-wrapper">
-                        <span className="material-symbols-outlined star-empty">star</span>
-                        <span className="material-symbols-outlined star-filled star-half-overlay">star</span>
+                        <span className="material-symbols-outlined star-empty">
+                            star
+                        </span>
+                        <span className="material-symbols-outlined star-filled star-half-overlay">
+                            star
+                        </span>
                     </div>,
                 );
             } else {
                 stars.push(
-                    <span key={i} className="material-symbols-outlined star-empty">
+                    <span
+                        key={i}
+                        className="material-symbols-outlined star-empty"
+                    >
                         star
                     </span>,
                 );
@@ -53,8 +79,14 @@ export default function PostCardComponent({ post, type = "post" }) {
 
     return (
         <PostProvider post={post} onUpdate={updatePost}>
-            <div className="rating-card">
-                <div className="rating-header">
+            <div className="rating-card" onClick={redirectToPost}>
+                <div
+                    className="rating-header"
+                    onClick={redirectToProfile}
+                    style={{
+                        width: "fit-content",
+                    }}
+                >
                     <div className="avatar">
                         <img src={post.profile_image} alt={fullName} />
                     </div>
@@ -63,8 +95,7 @@ export default function PostCardComponent({ post, type = "post" }) {
                         <div className="user-handle">@{post.user_name}</div>
                     </div>
                 </div>
-
-                <div className="song-block">
+                <div className="song-block" onClick={redirectToMusic}>
                     <div className="cover">
                         <img
                             src={post.cover_url}
@@ -85,13 +116,18 @@ export default function PostCardComponent({ post, type = "post" }) {
                 <div className="rating-content">
                     <div className="stars-display-row">
                         <div className="stars-container">{renderStars()}</div>
-                        <span className="rating-score-display">{rating.toFixed(2)}</span>
+                        <span className="rating-score-display">
+                            {rating.toFixed(2)}
+                        </span>
                     </div>
                     <div className="comment">{post.title}</div>
                 </div>
 
                 {type === "post" && (
-                    <div className="actions">
+                    <div
+                        className="actions"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <PostLikeButton />
                         <PostCommentButton />
                     </div>
