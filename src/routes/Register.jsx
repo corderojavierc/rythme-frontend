@@ -50,12 +50,15 @@ export default function Register() {
             const data = await response.json();
 
             if (!response.ok) {
-                const errorMessage = data.message ? data.message : "Register error";
+                const errorMessage = data.message
+                    ? data.message
+                    : "Register error";
                 setError(errorMessage);
                 setIsLoading(false);
                 return;
             }
 
+            localStorage.setItem("user", JSON.stringify(data.user));
             localStorage.setItem("token", data.token);
             auth.setIsAuthenticated(true);
             navigate("/");
