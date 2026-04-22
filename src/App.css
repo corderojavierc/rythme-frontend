@@ -16,9 +16,6 @@ body {
     justify-content: center;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition:
-        background 0.3s ease,
-        color 0.3s ease;
 }
 
 .material-symbols-outlined {
@@ -162,40 +159,6 @@ body {
 
 .action-btn.logout-btn .material-symbols-outlined {
     color: #ff478e;
-}
-
-.sidebar .theme-toggle {
-    margin-top: 12px;
-    background: linear-gradient(
-        135deg,
-        rgba(74, 132, 255, 0.1),
-        rgba(255, 71, 142, 0.1)
-    );
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    color: #f0f2f8;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 14px;
-    padding: 12px 16px;
-    transition: all 0.2s;
-    font-family: "DM Sans", sans-serif;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.sidebar .theme-toggle:hover {
-    background: linear-gradient(
-        135deg,
-        rgba(74, 132, 255, 0.15),
-        rgba(255, 71, 142, 0.15)
-    );
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .user-card {
@@ -866,7 +829,6 @@ body {
 
     .brand-link,
     .nav-spacer,
-    .theme-toggle,
     .action-btn.logout-btn {
         display: none;
     }

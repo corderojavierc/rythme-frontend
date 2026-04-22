@@ -12,27 +12,16 @@ export default function CreateCommentComponent({ post }) {
     const user = userJson ? JSON.parse(userJson) : {};
     const token = localStorage.getItem("token");
 
-    let fullName = "";
-    if (user.name && user.second_name) {
-        fullName = user.name + " " + user.second_name;
-    } else if (user.name) {
-        fullName = user.name;
-    } else if (user.username) {
-        fullName = user.username;
-    } else {
-        fullName = "Usuario";
+    let fullName = user.username || "Usuario";
+    if (user.name) {
+        fullName = user.name + (user.second_name ? " " + user.second_name : "");
     }
 
-    let initials = "";
-    if (user.name) {
-        initials += user.name[0];
-    }
-    if (user.second_name) {
-        initials += user.second_name[0];
-    }
-    initials = initials.toUpperCase();
-    if (initials === "") {
-        initials = "?";
+    let initials = "?";
+    if (user.name || user.second_name) {
+        initials = (
+            (user.name?.[0] || "") + (user.second_name?.[0] || "")
+        ).toUpperCase();
     }
 
     const handleSubmit = async (e) => {

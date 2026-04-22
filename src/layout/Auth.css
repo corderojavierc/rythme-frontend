@@ -64,24 +64,6 @@ body {
     color: #a0a7ba;
 }
 
-.theme-toggle {
-    margin-top: 25px;
-    background: rgba(255, 93, 162, 0.1);
-    border: 1px solid rgba(255, 93, 162, 0.3);
-    border-radius: 12px;
-    color: #ff5da2;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 15px;
-    padding: 8px 16px;
-    transition: all 0.2s;
-}
-
-.theme-toggle:hover {
-    opacity: 0.8;
-    transform: translateY(-1px);
-}
-
 .right {
     width: 45%;
 }
@@ -147,50 +129,4 @@ body {
 
 .register a:hover {
     text-decoration: underline;
-}
-
-body.light {
-    background: #e2e6eb;
-    color: #1e2433;
-}
-
-body.light .card {
-    background: #f5f7fa;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-body.light .card input {
-    background: #e1e4e8;
-    color: #1e2433;
-}
-
-body.light .card input:focus {
-    border: 1px solid #4f7fff;
-    box-shadow: 0 0 0 2px rgba(79, 127, 255, 0.2);
-}
-
-body.light .card .btn {
-    background: #4f7fff;
-}
-
-body.light .right .title {
-    color: #ff4f8b;
-}
-
-body.light .register a {
-    color: #4f7fff;
-}
-
-body.light .theme-toggle {
-    color: #ff4f8b;
-    border: 1px solid rgba(255, 79, 139, 0.3);
-    background: rgba(255, 79, 139, 0.08);
-}
-
-body.light .blue {
-    color: #4f7fff;
-}
-
-body.light .pink {
-    color: #ff4f8b;
 }

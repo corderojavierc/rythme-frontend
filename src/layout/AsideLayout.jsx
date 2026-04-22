@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
-import { useTheme } from "../hooks/useTheme";
 import "../App.css";
 
 export default function AsideLayout() {
     const auth = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-    const { toggleTheme } = useTheme();
     const [showLogout, setShowLogout] = useState(false);
 
     const currentPath = location.pathname;
@@ -16,27 +14,16 @@ export default function AsideLayout() {
     const userJson = localStorage.getItem("user");
     const user = userJson ? JSON.parse(userJson) : {};
 
-    let fullName = "";
-    if (user.name && user.second_name) {
-        fullName = user.name + " " + user.second_name;
-    } else if (user.name) {
-        fullName = user.name;
-    } else if (user.username) {
-        fullName = user.username;
-    } else {
-        fullName = "Usuario";
+    let fullName = user.username || "Usuario";
+    if (user.name) {
+        fullName = user.name + (user.second_name ? " " + user.second_name : "");
     }
 
-    let initials = "";
-    if (user.name) {
-        initials += user.name[0];
-    }
-    if (user.second_name) {
-        initials += user.second_name[0];
-    }
-    initials = initials.toUpperCase();
-    if (initials === "") {
-        initials = "?";
+    let initials = "?";
+    if (user.name || user.second_name) {
+        initials = (
+            (user.name?.[0] || "") + (user.second_name?.[0] || "")
+        ).toUpperCase();
     }
 
     const handleLogout = async () => {
@@ -151,10 +138,6 @@ export default function AsideLayout() {
                     Cerrar sesión
                 </button>
             )}
-
-            <button className="theme-toggle" onClick={toggleTheme}>
-                Cambiar tema
-            </button>
         </aside>
     );
 }

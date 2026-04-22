@@ -8,15 +8,9 @@ export default function PostCardComponent({ post, type = "post" }) {
     const { updatePost } = useData();
     const navigate = useNavigate();
 
-    let fullName = "";
-    if (post.name && post.second_name) {
-        fullName = post.name + " " + post.second_name;
-    } else if (post.name) {
-        fullName = post.name;
-    } else if (post.user_name) {
-        fullName = post.user_name;
-    } else {
-        fullName = "Usuario";
+    let fullName = post.user_name || "Usuario";
+    if (post.name) {
+        fullName = post.name + (post.second_name ? " " + post.second_name : "");
     }
 
     function redirectToPost() {

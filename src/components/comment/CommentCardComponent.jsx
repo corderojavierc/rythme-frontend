@@ -7,15 +7,9 @@ export default function CommentCardComponent({ comment, post }) {
     const data = comment || post || {};
     const user = data.user || data;
 
-    let fullName = "";
-    if (user.name && user.second_name) {
-        fullName = user.name + " " + user.second_name;
-    } else if (user.name) {
-        fullName = user.name;
-    } else if (user.user_name || user.username) {
-        fullName = user.user_name || user.username;
-    } else {
-        fullName = "Usuario";
+    let fullName = user.user_name || user.username || "Usuario";
+    if (user.name) {
+        fullName = user.name + (user.second_name ? " " + user.second_name : "");
     }
 
     const text = data.text || data.title || "";

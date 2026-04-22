@@ -1,9 +1,6 @@
 import "./Auth.css";
-import { useTheme } from "../hooks/useTheme";
 
 export default function LoginLayout({ title, children, linkText, linkHref }) {
-    const { isLight, toggleTheme } = useTheme();
-
     return (
         <div className="card">
             <div className="left">
@@ -20,10 +17,6 @@ export default function LoginLayout({ title, children, linkText, linkHref }) {
                 </div>
 
                 <p className="slogan">Conecta con la música</p>
-
-                <button className="theme-toggle" onClick={toggleTheme}>
-                    {isLight ? "Oscuro" : "Claro"}
-                </button>
             </div>
 
             <div className="right">

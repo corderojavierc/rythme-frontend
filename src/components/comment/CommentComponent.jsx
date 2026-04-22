@@ -13,7 +13,7 @@ export default function CommentComponent({ postId }) {
         fetchComments,
         loadMoreComments,
         resetComments,
-        error
+        error,
     } = useData();
 
     const [visibleCount, setVisibleCount] = useState(STEP);
@@ -58,7 +58,7 @@ export default function CommentComponent({ postId }) {
         comments.length,
         visibleCount,
         hasMoreComments,
-        postId
+        postId,
     ]);
 
     const noComments = comments.length === 0;
@@ -72,7 +72,10 @@ export default function CommentComponent({ postId }) {
     if (error) {
         return (
             <div className="feed-state feed-error">
-                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 32 }}
+                >
                     error
                 </span>
                 <span>{error}</span>
@@ -83,7 +86,10 @@ export default function CommentComponent({ postId }) {
     if (noComments && !loadingComments) {
         return (
             <div className="feed-state">
-                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 32 }}
+                >
                     chat_bubble_outline
                 </span>
                 <span>Aún no hay comentarios. ¡Sé el primero!</span>
@@ -101,15 +107,17 @@ export default function CommentComponent({ postId }) {
 
             {loadingComments && !noComments && (
                 <div style={{ textAlign: "center", padding: "20px" }}>
-                    <LoaderScreen inline small text="Cargando más comentarios..." />
+                    <LoaderScreen
+                        inline
+                        small
+                        text="Cargando más comentarios..."
+                    />
                 </div>
             )}
 
             {!hasMore && !loadingComments && (
                 <div className="feed-end">
-                    <span className="material-symbols-outlined">
-                        chat
-                    </span>
+                    <span className="material-symbols-outlined">chat</span>
                     Has llegado al final de los comentarios.
                 </div>
             )}
