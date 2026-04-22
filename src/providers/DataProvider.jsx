@@ -22,6 +22,10 @@ export function DataProvider({ children }) {
     const [recommendedUsers, setRecommendedUsers] = useState([]);
     const [follows, setFollows] = useState([]);
 
+    const [comments, setComments] = useState([]);
+    const [nextCommentPageUrl, setNextCommentPageUrl] = useState(null);
+    const [loadingComments, setLoadingComments] = useState(false);
+
     const [isInitialized, setIsInitialized] = useState(false);
     const [loadingPosts, setLoadingPosts] = useState(false);
     const [loadingFollowedPosts, setLoadingFollowedPosts] = useState(false);
@@ -96,6 +100,40 @@ export function DataProvider({ children }) {
         }
     }
 
+    async function fetchComments(postId, url = null) {
+        const fetchUrl = url || getApi() + "/comments/" + postId;
+        setLoadingComments(true);
+        try {
+            const response = await fetch(fetchUrl, { headers: getAuthHeaders() });
+            const data = await response.json();
+            const newComments = extractList(data);
+            const nextUrl = data.links?.next ?? null;
+
+            setNextCommentPageUrl(nextUrl);
+
+            if (!url) {
+                setComments(newComments);
+            } else {
+                setComments((prev) => [...prev, ...newComments]);
+            }
+        } catch (err) {
+            console.error("Error fetching comments:", err);
+        } finally {
+            setLoadingComments(false);
+        }
+    }
+
+    async function loadMoreComments(postId) {
+        if (nextCommentPageUrl && !loadingComments) {
+            await fetchComments(postId, nextCommentPageUrl);
+        }
+    }
+
+    function resetComments() {
+        setComments([]);
+        setNextCommentPageUrl(null);
+    }
+
     async function fetchRecommendedUsers() {
         const userJson = localStorage.getItem("user");
         const user = userJson ? JSON.parse(userJson) : null;
@@ -137,6 +175,12 @@ export function DataProvider({ children }) {
         // Tambien lo actualizamos en la lista de seguidos para que esten sincronizados
         setFollowedPosts((prev) =>
             prev.map((post) => (post.id === updatedPost.id ? updatedPost : post)),
+        );
+    }
+
+    function updateComment(updatedComment) {
+        setComments((prev) =>
+            prev.map((c) => (c.id === updatedComment.id ? updatedComment : c)),
         );
     }
 
@@ -207,6 +251,7 @@ export function DataProvider({ children }) {
             setFollowedPosts([]);
             setRecommendedUsers([]);
             setFollows([]);
+            setComments([]);
         }
     }, [isAuthenticated]);
 
@@ -223,6 +268,7 @@ export function DataProvider({ children }) {
                 loadingUsers,
                 error,
                 updatePost,
+                updateComment,
                 toggleFollow,
                 hasMorePages: nextPageUrl !== null,
                 hasMoreFollowedPages: nextFollowedPageUrl !== null,
@@ -235,6 +281,12 @@ export function DataProvider({ children }) {
                     fetchFollowedPosts();
                     fetchRecommendedUsers();
                 },
+                comments,
+                loadingComments,
+                hasMoreComments: nextCommentPageUrl !== null,
+                fetchComments,
+                loadMoreComments,
+                resetComments,
             }}
         >
             {children}

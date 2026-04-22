@@ -1,50 +1,60 @@
-import { PostProvider } from "../../providers/PostProvider";
-import { useNavigate } from "react-router-dom";
 import { useData } from "../../providers/DataProvider";
+import { PostProvider } from "../../providers/PostProvider";
+import CommentLikeButton from "./CommentLikeButton";
 
-export default function CommentCardComponent({ post, type = "post" }) {
-    const { updatePost } = useData();
-    const navigate = useNavigate();
+export default function CommentCardComponent({ comment, post }) {
+    const { updateComment } = useData();
+    const data = comment || post || {};
+    const user = data.user || data;
 
     let fullName = "";
-    if (post.name && post.second_name) {
-        fullName = post.name + " " + post.second_name;
-    } else if (post.name) {
-        fullName = post.name;
-    } else if (post.user_name) {
-        fullName = post.user_name;
+    if (user.name && user.second_name) {
+        fullName = user.name + " " + user.second_name;
+    } else if (user.name) {
+        fullName = user.name;
+    } else if (user.user_name || user.username) {
+        fullName = user.user_name || user.username;
     } else {
         fullName = "Usuario";
     }
 
+    const text = data.text || data.title || "";
+    const profileImage = user.profile_image || "";
+
     return (
-        <PostProvider post={post} onUpdate={updatePost}>
-            <div className="rating-card">
+        <PostProvider post={data} onUpdate={updateComment}>
+            <div className="rating-card" style={{ cursor: "default" }}>
                 <div
                     className="rating-header"
                     style={{
                         width: "fit-content",
+                        marginBottom: "12px",
                     }}
                 >
                     <div className="avatar">
-                        <img src={post.profile_image} alt={fullName} />
+                        {profileImage ? (
+                            <img src={profileImage} alt={fullName} />
+                        ) : (
+                            fullName.charAt(0).toUpperCase()
+                        )}
                     </div>
                     <div className="user-info">
                         <div className="user-name">{fullName}</div>
-                        <div className="user-handle">@{post.user_name}</div>
+                        <div className="user-handle">
+                            @{user.user_name || user.username || "user"}
+                        </div>
                     </div>
                 </div>
 
                 <div className="rating-content">
-                    <div className="comment">{post.title}</div>
-                </div>
+                    <div className="comment" style={{ marginBottom: "16px" }}>
+                        {text}
+                    </div>
 
-                {type === "post" && (
-                    <div
-                        className="actions"
-                        onClick={(e) => e.stopPropagation()}
-                    ></div>
-                )}
+                    <div className="actions">
+                        <CommentLikeButton />
+                    </div>
+                </div>
             </div>
         </PostProvider>
     );

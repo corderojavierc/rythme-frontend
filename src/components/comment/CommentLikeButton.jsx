@@ -4,14 +4,14 @@ import { getApi } from "../../config";
 
 const API_LIKES_URL = getApi() + "/likes";
 
-export default function PostLikeButton() {
+export default function CommentLikeButton() {
     const userJson = localStorage.getItem("user");
     const currentUser = userJson ? JSON.parse(userJson) : {};
     const token = localStorage.getItem("token");
 
-    const { post, updatePost } = usePostContext();
-    const isLiked = post.is_liked || post.liked;
-    const likeCount = post.count_likes || 0;
+    const { post: comment, updatePost: updateComment } = usePostContext();
+    const isLiked = comment.is_liked || comment.liked;
+    const likeCount = comment.count_likes || 0;
 
     const isTogglingLike = useRef(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +21,7 @@ export default function PostLikeButton() {
         if (!currentUser.id || !token || isTogglingLike.current) return;
         isTogglingLike.current = true;
 
-        const wasLiked = post.is_liked || post.liked;
+        const wasLiked = comment.is_liked || comment.liked;
         const willBeLiked = !wasLiked;
         const newCount = willBeLiked ? likeCount + 1 : likeCount - 1;
         const method = willBeLiked ? "POST" : "DELETE";
@@ -33,7 +33,7 @@ export default function PostLikeButton() {
             setTimeout(() => setIsAnimating(false), 600);
         }
 
-        updatePost({
+        updateComment({
             is_liked: willBeLiked,
             liked: willBeLiked,
             count_likes: newCount,
@@ -48,8 +48,8 @@ export default function PostLikeButton() {
                 },
                 body: JSON.stringify({
                     user_id: currentUser.id,
-                    likeable_type: "post",
-                    likeable_id: post.id.toString(),
+                    likeable_type: "comment",
+                    likeable_id: comment.id.toString(),
                 }),
             });
 
@@ -58,7 +58,7 @@ export default function PostLikeButton() {
             }
         } catch (error) {
             console.error(error);
-            updatePost({
+            updateComment({
                 is_liked: wasLiked,
                 liked: wasLiked,
                 count_likes: likeCount,

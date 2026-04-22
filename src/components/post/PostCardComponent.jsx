@@ -21,7 +21,7 @@ export default function PostCardComponent({ post, type = "post" }) {
 
     function redirectToPost() {
         if (type === "fromPost") return;
-        navigate(`${post.user_name}/posts/${post.id}`);
+        navigate(`/${post.user_name}/posts/${post.id}`);
     }
 
     function redirectToProfile(e) {

@@ -5,51 +5,33 @@ import { useData } from "../../providers/DataProvider";
 
 const STEP = 10;
 
-export default function CommentComponent({ fromFollowed = false }) {
+export default function CommentComponent({ postId }) {
     const {
-        posts,
-        followedPosts,
-        loadingPosts,
-        loadingFollowedPosts,
-        loadingUsers,
-        error,
-        hasMorePages,
-        hasMoreFollowedPages,
-        loadMorePosts,
-        loadMoreFollowedPosts,
+        comments,
+        loadingComments,
+        hasMoreComments,
+        fetchComments,
+        loadMoreComments,
+        resetComments,
+        error
     } = useData();
 
     const [visibleCount, setVisibleCount] = useState(STEP);
     const sentinelRef = useRef(null);
 
-    let displayedPosts;
-    let isLoadingCurrent;
-    let hasMoreCurrent;
-    let loadMore;
-
-    if (fromFollowed) {
-        displayedPosts = followedPosts;
-        isLoadingCurrent = loadingFollowedPosts;
-        hasMoreCurrent = hasMoreFollowedPages;
-        loadMore = loadMoreFollowedPosts;
-    } else {
-        displayedPosts = posts;
-        isLoadingCurrent = loadingPosts;
-        hasMoreCurrent = hasMorePages;
-        loadMore = loadMorePosts;
-    }
+    useEffect(() => {
+        if (postId) {
+            resetComments();
+            fetchComments(postId);
+        }
+    }, [postId]);
 
     function showMore() {
         setVisibleCount((prev) => prev + STEP);
     }
 
     useEffect(() => {
-        setVisibleCount(STEP);
-    }, [fromFollowed]);
-
-    useEffect(() => {
-        const stillLoading = isLoadingCurrent || (fromFollowed && loadingUsers);
-        if (stillLoading) return;
+        if (loadingComments) return;
 
         const element = sentinelRef.current;
         if (!element) return;
@@ -59,10 +41,10 @@ export default function CommentComponent({ fromFollowed = false }) {
                 const isVisible = entries[0].isIntersecting;
                 if (!isVisible) return;
 
-                const showingAllLoaded = visibleCount >= displayedPosts.length;
-                if (showingAllLoaded && hasMoreCurrent) {
-                    loadMore();
-                } else if (visibleCount < displayedPosts.length) {
+                const showingAllLoaded = visibleCount >= comments.length;
+                if (showingAllLoaded && hasMoreComments) {
+                    loadMoreComments(postId);
+                } else if (visibleCount < comments.length) {
                     showMore();
                 }
             },
@@ -72,74 +54,63 @@ export default function CommentComponent({ fromFollowed = false }) {
         observer.observe(element);
         return () => observer.disconnect();
     }, [
-        isLoadingCurrent,
-        loadingUsers,
-        displayedPosts.length,
+        loadingComments,
+        comments.length,
         visibleCount,
-        hasMoreCurrent,
+        hasMoreComments,
+        postId
     ]);
 
-    const isLoading = isLoadingCurrent || (fromFollowed && loadingUsers);
-    const noPosts = displayedPosts.length === 0;
-    const hasMore = visibleCount < displayedPosts.length || hasMoreCurrent;
-    const visiblePosts = displayedPosts.slice(0, visibleCount);
+    const noComments = comments.length === 0;
+    const hasMore = visibleCount < comments.length || hasMoreComments;
+    const visibleComments = comments.slice(0, visibleCount);
 
-    if (isLoading && noPosts) {
-        return <LoaderScreen inline text="Cargando opiniones..." />;
+    if (loadingComments && noComments) {
+        return <LoaderScreen inline text="Cargando comentarios..." />;
     }
 
     if (error) {
         return (
             <div className="feed-state feed-error">
-                <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: 32 }}
-                >
-                    wifi_off
+                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                    error
                 </span>
                 <span>{error}</span>
             </div>
         );
     }
 
-    if (noPosts && !hasMoreCurrent && !isLoading) {
-        let emptyMessage = "Aun no hay opiniones. Se el primero en crear una!";
-        if (fromFollowed) {
-            emptyMessage = "No existen opiniones de los usuarios que sigues.";
-        }
+    if (noComments && !loadingComments) {
         return (
             <div className="feed-state">
-                <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: 32 }}
-                >
-                    music_off
+                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
+                    chat_bubble_outline
                 </span>
-                <span>{emptyMessage}</span>
+                <span>Aún no hay comentarios. ¡Sé el primero!</span>
             </div>
         );
     }
 
     return (
         <div>
-            {visiblePosts.map((post) => (
-                <CommentCardComponent key={post.id} post={post} />
+            {visibleComments.map((comment) => (
+                <CommentCardComponent key={comment.id} comment={comment} />
             ))}
 
             {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
 
-            {isLoadingCurrent && !noPosts && (
+            {loadingComments && !noComments && (
                 <div style={{ textAlign: "center", padding: "20px" }}>
-                    <LoaderScreen inline small text="Cargando más..." />
+                    <LoaderScreen inline small text="Cargando más comentarios..." />
                 </div>
             )}
 
-            {!hasMore && !isLoadingCurrent && (
+            {!hasMore && !loadingComments && (
                 <div className="feed-end">
                     <span className="material-symbols-outlined">
-                        music_note
+                        chat
                     </span>
-                    Has llegado al final de todas las opiniones.
+                    Has llegado al final de los comentarios.
                 </div>
             )}
         </div>
