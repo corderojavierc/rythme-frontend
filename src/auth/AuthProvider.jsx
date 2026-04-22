@@ -7,7 +7,9 @@ const AuthContext = createContext({
 
 export function AuthProvider({ children }) {
     const savedAuth = localStorage.getItem("auth");
-    const [isAuthenticated, setIsAuthenticated] = useState(savedAuth === "true");
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        savedAuth === "true",
+    );
 
     useEffect(() => {
         localStorage.setItem("auth", isAuthenticated);

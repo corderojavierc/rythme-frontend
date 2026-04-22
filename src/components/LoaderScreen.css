@@ -12,10 +12,6 @@
     z-index: 9999;
 }
 
-body.light .loader-container {
-    background: #e2e6eb;
-}
-
 .loader {
     width: 900px;
     display: flex;
@@ -30,10 +26,6 @@ body.light .loader-container {
     height: 14px;
     border-radius: 50%;
     background-color: #e4e7ee;
-}
-
-body.light .ball {
-    background-color: #5a6278;
 }
 
 .ball:nth-child(1) {
@@ -81,10 +73,6 @@ body.light .ball {
     text-transform: uppercase;
     color: #a0a7ba;
     animation: pulse 1.6s infinite ease-in-out;
-}
-
-body.light .loading-text {
-    color: #5a6278;
 }
 
 @keyframes pulse {

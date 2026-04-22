@@ -11,7 +11,9 @@ export default function PostPage() {
     const { id } = useParams();
     const { posts, loadingPosts } = useData();
 
-    const [post, setPost] = useState(() => posts.find((p) => String(p.id) === String(id)));
+    const [post, setPost] = useState(() =>
+        posts.find((p) => String(p.id) === String(id)),
+    );
     const [isLoadingPost, setIsLoadingPost] = useState(!post);
 
     const token = localStorage.getItem("token");

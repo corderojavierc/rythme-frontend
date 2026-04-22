@@ -1,5 +1,4 @@
 export default function MusicCardComponent({ music, onClick }) {
-
     return (
         <div className="song-block" onClick={() => onClick && onClick(music)}>
             <div className="cover">

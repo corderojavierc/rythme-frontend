@@ -104,7 +104,9 @@ export function DataProvider({ children }) {
         const fetchUrl = url || getApi() + "/comments/" + postId;
         setLoadingComments(true);
         try {
-            const response = await fetch(fetchUrl, { headers: getAuthHeaders() });
+            const response = await fetch(fetchUrl, {
+                headers: getAuthHeaders(),
+            });
             const data = await response.json();
             const newComments = extractList(data);
             const nextUrl = data.links?.next ?? null;
@@ -142,10 +144,11 @@ export function DataProvider({ children }) {
 
         setLoadingUsers(true);
         try {
-            // Usamos Promise.all para cargar usuarios y seguidos al mismo tiempo (mas rapido)
             const [usersRes, followsRes] = await Promise.all([
                 fetch(getApi() + "/users", { headers: getAuthHeaders() }),
-                fetch(getApi() + "/follows/" + user.id, { headers: getAuthHeaders() })
+                fetch(getApi() + "/follows/" + user.id, {
+                    headers: getAuthHeaders(),
+                }),
             ]);
 
             const allUsers = extractList(await usersRes.json());
@@ -154,7 +157,6 @@ export function DataProvider({ children }) {
 
             setFollows(followedIds);
 
-            // Filtramos para no recomendarnos a nosotros mismos ni a gente que ya seguimos
             const recommendations = allUsers
                 .filter((u) => u.id !== user.id && !followedIds.includes(u.id))
                 .slice(0, 3);
@@ -168,13 +170,15 @@ export function DataProvider({ children }) {
     }
 
     function updatePost(updatedPost) {
-        // Actualizamos el post en la lista general
         setPosts((prev) =>
-            prev.map((post) => (post.id === updatedPost.id ? updatedPost : post)),
+            prev.map((post) =>
+                post.id === updatedPost.id ? updatedPost : post,
+            ),
         );
-        // Tambien lo actualizamos en la lista de seguidos para que esten sincronizados
         setFollowedPosts((prev) =>
-            prev.map((post) => (post.id === updatedPost.id ? updatedPost : post)),
+            prev.map((post) =>
+                post.id === updatedPost.id ? updatedPost : post,
+            ),
         );
     }
 
@@ -195,7 +199,9 @@ export function DataProvider({ children }) {
 
         if (isFollowing) {
             setFollows((prev) => prev.filter((id) => id !== userId));
-            setFollowedPosts((prev) => prev.filter((post) => String(post.user_id) !== String(userId)));
+            setFollowedPosts((prev) =>
+                prev.filter((post) => String(post.user_id) !== String(userId)),
+            );
         } else {
             setFollows((prev) => [...prev, userId]);
         }
@@ -216,16 +222,25 @@ export function DataProvider({ children }) {
 
             if (!isFollowing) {
                 setLoadingFollowedPosts(true);
-                const response = await fetch(getApi() + "/posts/followed", { headers: getAuthHeaders() });
+                const response = await fetch(getApi() + "/posts/followed", {
+                    headers: getAuthHeaders(),
+                });
                 const incoming = extractList(await response.json());
-                const newUserPosts = incoming.filter((post) => String(post.user_id) === String(userId));
+                const newUserPosts = incoming.filter(
+                    (post) => String(post.user_id) === String(userId),
+                );
 
                 if (newUserPosts.length > 0) {
                     setFollowedPosts((prev) => {
-                        const existingIds = new Set(prev.map((post) => post.id));
-                        const toAdd = newUserPosts.filter((post) => !existingIds.has(post.id));
+                        const existingIds = new Set(
+                            prev.map((post) => post.id),
+                        );
+                        const toAdd = newUserPosts.filter(
+                            (post) => !existingIds.has(post.id),
+                        );
                         return [...toAdd, ...prev].sort(
-                            (a, b) => new Date(b.created_at) - new Date(a.created_at),
+                            (a, b) =>
+                                new Date(b.created_at) - new Date(a.created_at),
                         );
                     });
                 }

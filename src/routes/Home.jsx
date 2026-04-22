@@ -81,9 +81,15 @@ export default function Home() {
             {showNotification && (
                 <div className={notificationClass}>
                     {isErrorNotification ? (
-                        <ErrorComponent onClose={handleClose} type={notificationType} />
+                        <ErrorComponent
+                            onClose={handleClose}
+                            type={notificationType}
+                        />
                     ) : (
-                        <DoneComponent onClose={handleClose} type={notificationType} />
+                        <DoneComponent
+                            onClose={handleClose}
+                            type={notificationType}
+                        />
                     )}
                 </div>
             )}
