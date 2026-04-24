@@ -15,11 +15,13 @@ export default function MusicPage() {
     const [music, setMusic] = useState(() => {
         if (location.state) {
             return {
-                title: location.state.songName || "",
+                title: location.state.title || location.state.songName || "",
                 artist: location.state.artist || "",
                 cover_url: location.state.cover_url || "",
-                rating: location.state.global_rating || 0,
+                rating:
+                    location.state.rating || location.state.global_rating || 0,
                 count_ratings: location.state.count_ratings || 0,
+                is_valorated: !!location.state.is_valorated,
             };
         }
         return null;
@@ -48,6 +50,7 @@ export default function MusicPage() {
 
         fetchMusic();
         fetchMusicPosts(id);
+        console.log(music);
     }, [id]);
 
     if (loading && !music) {
@@ -93,33 +96,59 @@ export default function MusicPage() {
                     </div>
                 </div>
 
-                <div className="rating-box">
-                    <div className="rating-score-row">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="28"
-                            height="28"
-                            viewBox="0 0 24 24"
-                            fill="#facc15"
-                            stroke="#facc15"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        >
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                        </svg>
-                        {music.rating ? Number(music.rating).toFixed(1) : "-"}
+                <div className="rating-container-static">
+                    <div className="rating-box">
+                        <div className="rating-score-row">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="28"
+                                height="28"
+                                viewBox="0 0 24 24"
+                                fill="#facc15"
+                                stroke="#facc15"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            {music.rating
+                                ? Number(music.rating).toFixed(1)
+                                : "-"}
+                        </div>
+                        <span className="rating-count-text">
+                            {music.count_ratings}{" "}
+                            {music.count_ratings === 1
+                                ? "valoración"
+                                : "valoraciones"}
+                        </span>
                     </div>
-                    <span className="rating-count-text">
-                        {music.count_ratings}{" "}
-                        {music.count_ratings === 1
-                            ? "valoración"
-                            : "valoraciones"}
-                    </span>
                 </div>
             </div>
 
-            <MusicNavegator />
+            <div className="music-page-tabs-row">
+                <div className="tabs-placeholder"></div>
+                <MusicNavegator />
+                <div className="tabs-action">
+                    {!music.is_valorated && (
+                        <button
+                            className="comment-button"
+                            onClick={() =>
+                                navigate("/rate", {
+                                    state: { selectedMusic: music },
+                                })
+                            }
+                        >
+                            <span className="circle1"></span>
+                            <span className="circle2"></span>
+                            <span className="circle3"></span>
+                            <span className="circle4"></span>
+                            <span className="circle5"></span>
+                            <span className="text">Valorar</span>
+                        </button>
+                    )}
+                </div>
+            </div>
 
             <div className="music-posts-container">
                 {loadingMusicPosts ? (

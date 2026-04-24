@@ -136,9 +136,12 @@ export function DataProvider({ children }) {
     async function fetchMusicPosts(musicId) {
         setLoadingMusicPosts(true);
         try {
-            const response = await fetch(getApi() + "/music/" + musicId + "/posts", {
-                headers: getAuthHeaders(),
-            });
+            const response = await fetch(
+                getApi() + "/music/" + musicId + "/posts",
+                {
+                    headers: getAuthHeaders(),
+                },
+            );
             const data = await response.json();
             setMusicPosts(extractList(data));
         } catch (err) {

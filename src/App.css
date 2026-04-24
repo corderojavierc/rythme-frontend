@@ -353,11 +353,9 @@ body {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(74, 132, 255, 0.2),
-        rgba(255, 71, 142, 0.2)
-    );
+    background: linear-gradient(135deg,
+            rgba(74, 132, 255, 0.2),
+            rgba(255, 71, 142, 0.2));
 }
 
 .cover-emoji {
@@ -1495,6 +1493,30 @@ body {
     font-weight: 800;
     margin-bottom: 8px;
     line-height: 1.2;
+}
+
+.rating-container-static {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-left: auto;
+}
+
+.music-page-tabs-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.tabs-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.music-navigator {
+    margin: 0 !important;
 }
 
 .song-artist-large {

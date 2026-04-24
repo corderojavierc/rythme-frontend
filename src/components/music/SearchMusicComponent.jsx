@@ -87,24 +87,7 @@ export default function SearchMusicComponent({ onSelect }) {
                 }
             }
 
-            const checkResponse = await fetch(
-                getApi() + "/posts/check/" + selectedSong.id,
-                {
-                    headers: { Authorization: "Bearer " + token },
-                },
-            );
 
-            if (checkResponse.ok) {
-                const checkData = await checkResponse.json();
-
-                if (checkData.exists) {
-                    navigate(location.pathname, {
-                        state: { from: "error-song-exists" },
-                        replace: true,
-                    });
-                    return;
-                }
-            }
 
             if (onSelect) {
                 onSelect(selectedSong);

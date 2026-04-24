@@ -15,7 +15,9 @@ export default function PostCardComponent({ post, type = "post" }) {
 
     function redirectToPost() {
         if (type === "fromPost") return;
-        navigate(`/${post.user_name}/posts/${post.id}`);
+        navigate(`/${post.user_name}/posts/${post.id}`, {
+            state: { post },
+        });
     }
 
     function redirectToProfile(e) {
@@ -36,6 +38,7 @@ export default function PostCardComponent({ post, type = "post" }) {
                 cover_url: post.cover_url,
                 global_rating: post.global_rating,
                 count_ratings: post.count_ratings,
+                is_valorated: post.is_valorated,
             },
         });
     }
