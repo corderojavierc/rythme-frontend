@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import PostCardComponent from "../components/post/PostCardComponent";
 import CommentComponent from "../components/comment/CommentComponent";
 import LoaderScreen from "../components/LoaderScreen";
@@ -8,12 +8,16 @@ import { useData } from "../providers/DataProvider";
 
 export default function PostPage() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { id } = useParams();
-    const { posts, loadingPosts } = useData();
+    const { posts, followedPosts, musicPosts, loadingPosts, loadingFollowedPosts, loadingMusicPosts } = useData();
 
-    const [post, setPost] = useState(() =>
-        posts.find((p) => String(p.id) === String(id)),
-    );
+    const [post, setPost] = useState(() => {
+        if (location.state?.post) return location.state.post;
+
+        const allPosts = [...posts, ...followedPosts, ...musicPosts];
+        return allPosts.find((p) => String(p.id) === String(id));
+    });
     const [isLoadingPost, setIsLoadingPost] = useState(!post);
 
     const token = localStorage.getItem("token");
@@ -23,12 +27,21 @@ export default function PostPage() {
     }, [id]);
 
     useEffect(() => {
-        const cachedPost = posts.find((p) => String(p.id) === String(id));
+        const allPosts = [...posts, ...followedPosts, ...musicPosts];
+        const cachedPost =
+            location.state?.post ||
+            allPosts.find((p) => String(p.id) === String(id));
 
         if (cachedPost) {
             setPost(cachedPost);
             setIsLoadingPost(false);
-        } else if (id && !loadingPosts && !post) {
+        } else if (
+            id &&
+            !loadingPosts &&
+            !loadingFollowedPosts &&
+            !loadingMusicPosts &&
+            !post
+        ) {
             setIsLoadingPost(true);
             fetch(getApi() + "/posts/" + id, {
                 headers: { Authorization: "Bearer " + token },
@@ -40,7 +53,18 @@ export default function PostPage() {
                 .catch((err) => console.error(err))
                 .finally(() => setIsLoadingPost(false));
         }
-    }, [id, posts, loadingPosts, token, post]);
+    }, [
+        id,
+        posts,
+        followedPosts,
+        musicPosts,
+        loadingPosts,
+        loadingFollowedPosts,
+        loadingMusicPosts,
+        token,
+        post,
+        location.state,
+    ]);
 
     return (
         <>

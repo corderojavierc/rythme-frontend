@@ -15,17 +15,32 @@ export default function PostCardComponent({ post, type = "post" }) {
 
     function redirectToPost() {
         if (type === "fromPost") return;
-        navigate(`/${post.user_name}/posts/${post.id}`);
+        navigate(`/${post.user_name}/posts/${post.id}`, {
+            state: { post },
+        });
     }
 
     function redirectToProfile(e) {
         e.stopPropagation();
-        navigate(`/${post.user_name}`);
+        navigate(`/${post.user_name}`, {
+            state: {
+                user_name: post.user_name,
+            },
+        });
     }
 
     function redirectToMusic(e) {
         e.stopPropagation();
-        navigate(`/music/${post.music_id}`);
+        navigate(`/music/${post.music_id}`, {
+            state: {
+                songName: post.music,
+                artist: post.artist,
+                cover_url: post.cover_url,
+                global_rating: post.global_rating,
+                count_ratings: post.count_ratings,
+                is_valorated: post.is_valorated,
+            },
+        });
     }
 
     const rating = post.rating ? parseFloat(post.rating) : 0;
