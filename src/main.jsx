@@ -9,6 +9,7 @@ import PublicRoute from "./routes/PublicRoute";
 import { AuthProvider } from "./auth/AuthProvider";
 import FollowedsPosts from "./routes/FollowedsPosts";
 import Feed from "./routes/Feed";
+import GlobalMusicPage from "./routes/GlobalMusicPage";
 import MusicPage from "./routes/MusicPage";
 import CommentPage from "./routes/CommentPage";
 import PostPage from "./routes/PostPage";
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: "/music",
-                        element: <MusicPage />,
+                        element: <GlobalMusicPage />,
                     },
                     {
                         path: ":username/posts/:id/comment",
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
                     {
                         path: ":username/posts/:id",
                         element: <PostPage />,
+                    },
+                    {
+                        path: "/music/:id",
+                        element: <MusicPage />,
                     },
                     {
                         path: "/rate",

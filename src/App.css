@@ -1397,3 +1397,137 @@ body {
     top: 11px;
     left: 11px;
 }
+
+.music-navigator {
+    display: flex;
+    width: fit-content;
+    background-color: #151a26;
+    border-radius: 24px;
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    margin: 0 auto 24px auto;
+    box-sizing: border-box;
+}
+
+.music-nav-btn {
+    background-color: transparent;
+    border: none;
+    padding: 8px 24px;
+    color: #8b96b0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: "Poppins", sans-serif;
+}
+
+.music-nav-btn:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: #f0f2f8;
+}
+
+.music-nav-btn.active {
+    background-color: rgba(74, 132, 255, 0.1);
+    color: #4a84ff;
+}
+
+.music-nav-btn.active .material-symbols-outlined {
+    font-variation-settings: "FILL" 1;
+}
+
+.cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(74, 132, 255, 0.1), rgba(255, 71, 142, 0.1));
+    z-index: 2;
+    pointer-events: none;
+    border-radius: 16px;
+    mix-blend-mode: overlay;
+}
+
+.page-header-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.music-page-title {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.divider {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 24px;
+}
+
+.song-block-static {
+    cursor: default;
+    padding: 24px;
+    gap: 24px;
+    border-radius: 20px;
+    margin-bottom: 32px;
+}
+
+.cover-large {
+    width: 160px;
+    height: 160px;
+    position: relative;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.cover-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.song-title-large {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.song-artist-large {
+    font-size: 20px;
+    opacity: 0.8;
+}
+
+.rating-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 20px 32px;
+    border-radius: 16px;
+    gap: 10px;
+}
+
+.rating-score-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.rating-score-row svg {
+    width: 32px;
+    height: 32px;
+}
+
+.rating-count-text {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+}

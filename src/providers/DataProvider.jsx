@@ -29,6 +29,8 @@ export function DataProvider({ children }) {
     const [isInitialized, setIsInitialized] = useState(false);
     const [loadingPosts, setLoadingPosts] = useState(false);
     const [loadingFollowedPosts, setLoadingFollowedPosts] = useState(false);
+    const [musicPosts, setMusicPosts] = useState([]);
+    const [loadingMusicPosts, setLoadingMusicPosts] = useState(false);
     const [loadingUsers, setLoadingUsers] = useState(false);
     const [error, setError] = useState(null);
 
@@ -131,6 +133,21 @@ export function DataProvider({ children }) {
         }
     }
 
+    async function fetchMusicPosts(musicId) {
+        setLoadingMusicPosts(true);
+        try {
+            const response = await fetch(getApi() + "/music/" + musicId + "/posts", {
+                headers: getAuthHeaders(),
+            });
+            const data = await response.json();
+            setMusicPosts(extractList(data));
+        } catch (err) {
+            console.error("Error fetching music posts:", err);
+        } finally {
+            setLoadingMusicPosts(false);
+        }
+    }
+
     function resetComments() {
         setComments([]);
         setNextCommentPageUrl(null);
@@ -176,6 +193,11 @@ export function DataProvider({ children }) {
             ),
         );
         setFollowedPosts((prev) =>
+            prev.map((post) =>
+                post.id === updatedPost.id ? updatedPost : post,
+            ),
+        );
+        setMusicPosts((prev) =>
             prev.map((post) =>
                 post.id === updatedPost.id ? updatedPost : post,
             ),
@@ -302,6 +324,9 @@ export function DataProvider({ children }) {
                 fetchComments,
                 loadMoreComments,
                 resetComments,
+                musicPosts,
+                loadingMusicPosts,
+                fetchMusicPosts,
             }}
         >
             {children}
