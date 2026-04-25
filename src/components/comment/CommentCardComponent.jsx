@@ -1,8 +1,10 @@
 import { useData } from "../../providers/DataProvider";
 import { PostProvider } from "../../providers/PostProvider";
 import CommentLikeButton from "./CommentLikeButton";
+import { useNavigate } from "react-router-dom";
 
 export default function CommentCardComponent({ comment, post }) {
+    const navigate = useNavigate();
     const { updateComment } = useData();
     const data = comment || post || {};
     const user = data.user || data;
@@ -10,6 +12,19 @@ export default function CommentCardComponent({ comment, post }) {
     let fullName = user.user_name || user.username || "Usuario";
     if (user.name) {
         fullName = user.name + (user.second_name ? " " + user.second_name : "");
+    }
+
+    function redirectToProfile(e) {
+        e.stopPropagation();
+        navigate(`/${comment.user_name}`, {
+            state: {
+                id: comment.user_id,
+                username: comment.user_name,
+                name: comment.name,
+                second_name: comment.second_name,
+                profile_image: comment.profile_image,
+            },
+        });
     }
 
     const text = data.text || data.title || "";
@@ -23,7 +38,9 @@ export default function CommentCardComponent({ comment, post }) {
                     style={{
                         width: "fit-content",
                         marginBottom: "12px",
+                        cursor: "pointer",
                     }}
+                    onClick={redirectToProfile}
                 >
                     <div className="avatar">
                         {profileImage ? (

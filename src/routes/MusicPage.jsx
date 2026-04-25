@@ -5,6 +5,7 @@ import LoaderScreen from "../components/LoaderScreen";
 import MusicNavegator from "../components/music/MusicNavegator";
 import PostCardComponent from "../components/post/PostCardComponent";
 import { useData } from "../providers/DataProvider";
+import NotFoundPage from "./NotFoundPage";
 
 export default function MusicPage() {
     const navigate = useNavigate();
@@ -58,7 +59,7 @@ export default function MusicPage() {
     }
 
     if (!music) {
-        return <div className="feed-state">No se pudo cargar la canción.</div>;
+        return <NotFoundPage />;
     }
 
     return (
@@ -69,7 +70,9 @@ export default function MusicPage() {
                     title="Go Back"
                     onClick={() => navigate(-1)}
                 >
-                    <span className="material-symbols-outlined">arrow_back</span>
+                    <span className="material-symbols-outlined">
+                        arrow_back
+                    </span>
                 </button>
                 <h2 className="feed-header music-page-title">{music.title}</h2>
             </div>

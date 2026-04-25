@@ -1,11 +1,15 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import UserCardComponent from "../components/user/UserCardComponent";
+import UserNavigationComponent from "../components/user/UserNavigationComponent";
 
 export default function ProfilePage() {
     const navigate = useNavigate();
     const { username } = useParams();
     const location = useLocation();
     const userJson = localStorage.getItem("user");
+
+    const [activeTab, setActiveTab] = useState("ratings");
     const [user, setUser] = useState(() => {
         if (location.state && location.state.username === username) {
             return {
@@ -13,6 +17,7 @@ export default function ProfilePage() {
                 name: location.state.name || "",
                 second_name: location.state.second_name || "",
                 profile_image: location.state.profile_image || "",
+                username: location.state.username || username,
             };
         }
         const storedUser = userJson ? JSON.parse(userJson) : {};
@@ -26,6 +31,7 @@ export default function ProfilePage() {
                 name: location.state.name || "",
                 second_name: location.state.second_name || "",
                 profile_image: location.state.profile_image || "",
+                username: location.state.username || username,
             });
         } else {
             const storedUser = userJson ? JSON.parse(userJson) : {};
@@ -45,19 +51,34 @@ export default function ProfilePage() {
                     title="Go Back"
                     onClick={() => navigate(-1)}
                 >
-                    <span className="material-symbols-outlined">arrow_back</span>
+                    <span className="material-symbols-outlined">
+                        arrow_back
+                    </span>
                 </button>
                 <h2 className="feed-header music-page-title">{username}</h2>
             </div>
-            <div className="">
-                <img
-                    src={user?.profile_image}
-                    alt={user?.name}
-                    className="profile-image"
-                />
-                <h3 className="profile-name">
-                    {user?.name} {user?.second_name}
-                </h3>
+
+            <UserCardComponent user={user} />
+
+            <UserNavigationComponent
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+            />
+
+            <div className="profile-content-area">
+                {activeTab === "ratings" && (
+                    <div className="feed-state">
+                        No hay valoraciones que mostrar.
+                    </div>
+                )}
+                {activeTab === "comments" && (
+                    <div className="feed-state">
+                        No hay comentarios que mostrar.
+                    </div>
+                )}
+                {activeTab === "likes" && (
+                    <div className="feed-state">No hay likes que mostrar.</div>
+                )}
             </div>
         </>
     );
