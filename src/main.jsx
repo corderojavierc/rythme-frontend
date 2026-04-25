@@ -9,6 +9,9 @@ import PublicRoute from "./routes/PublicRoute";
 import { AuthProvider } from "./auth/AuthProvider";
 import FollowedsPosts from "./routes/FollowedsPosts";
 import Feed from "./routes/Feed";
+import ProfilePage from "./routes/ProfilePage";
+import GlobalEventPage from "./routes/GlobalEventPage";
+import ApplicationPage from "./routes/ApplicationPage";
 import GlobalMusicPage from "./routes/GlobalMusicPage";
 import MusicPage from "./routes/MusicPage";
 import CommentPage from "./routes/CommentPage";
@@ -52,6 +55,18 @@ const router = createBrowserRouter([
                     {
                         path: "/rate",
                         element: <CreatePost />,
+                    },
+                    {
+                        path: "/events",
+                        element: <GlobalEventPage />,
+                    },
+                    {
+                        path: "/request",
+                        element: <ApplicationPage />,
+                    },
+                    {
+                        path: ":username",
+                        element: <ProfilePage />,
                     },
                 ],
             },

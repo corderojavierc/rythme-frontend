@@ -24,7 +24,11 @@ export default function PostCardComponent({ post, type = "post" }) {
         e.stopPropagation();
         navigate(`/${post.user_name}`, {
             state: {
-                user_name: post.user_name,
+                id: post.user_id,
+                username: post.user_name,
+                name: post.name,
+                second_name: post.second_name,
+                profile_image: post.profile_image,
             },
         });
     }

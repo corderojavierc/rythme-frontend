@@ -100,7 +100,10 @@ export default function AsideLayout() {
                 <span className="material-symbols-outlined">pan_tool_alt</span>
                 Solicitar
             </Link>
-            <Link className={getLinkClass("/profile")} to="/profile">
+            <Link
+                className={getLinkClass("/:username")}
+                to={`/${user.username}`}
+            >
                 <span className="material-symbols-outlined">person</span>
                 Perfil
             </Link>
