@@ -11,40 +11,18 @@ export default function DoneComponent({ onClose, type }) {
         <div className="done-notification">
             <div className="done-content">
                 <div className="done-icon-box">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        style={{ width: "24px", height: "24px" }}
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m4.5 12.75 6 6 9-13.5"
-                        />
-                    </svg>
+                    <span className="material-symbols-outlined" style={{ fontSize: "24px" }}>
+                        check_circle
+                    </span>
                 </div>
                 <div className="done-text-box">
                     <p className="done-title">{title}</p>
                     <p className="done-subtitle">{subtitle}</p>
                 </div>
                 <button className="done-close-btn" onClick={onClose}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        style={{ width: "20px", height: "20px" }}
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M6 18 18 6M6 6l12 12"
-                        />
-                    </svg>
+                    <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
+                        close
+                    </span>
                 </button>
             </div>
         </div>
