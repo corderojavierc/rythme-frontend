@@ -69,14 +69,7 @@ export default function MusicPage() {
                     title="Go Back"
                     onClick={() => navigate(-1)}
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="35"
-                        height="35"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M11 6L5 12M5 12L11 18M5 12H19"></path>
-                    </svg>
+                    <span className="material-symbols-outlined">arrow_back</span>
                 </button>
                 <h2 className="feed-header music-page-title">{music.title}</h2>
             </div>
@@ -99,19 +92,12 @@ export default function MusicPage() {
                 <div className="rating-container-static">
                     <div className="rating-box">
                         <div className="rating-score-row">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="28"
-                                height="28"
-                                viewBox="0 0 24 24"
-                                fill="#facc15"
-                                stroke="#facc15"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+                            <span
+                                className="material-symbols-outlined"
+                                style={{ color: "#facc15", fontSize: "28px" }}
                             >
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                            </svg>
+                                star
+                            </span>
                             {music.rating
                                 ? Number(music.rating).toFixed(1)
                                 : "-"}
