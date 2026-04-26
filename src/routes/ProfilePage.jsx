@@ -21,6 +21,9 @@ export default function ProfilePage() {
                 second_name: location.state.second_name || "",
                 profile_image: location.state.profile_image || "",
                 username: location.state.username || username,
+                followers: location.state.followers || "0",
+                following: location.state.following || "0",
+                posts: location.state.posts || "0",
             };
         }
         const storedUser = userJson ? JSON.parse(userJson) : {};
@@ -35,6 +38,9 @@ export default function ProfilePage() {
                 second_name: location.state.second_name || "",
                 profile_image: location.state.profile_image || "",
                 username: location.state.username || username,
+                followers: location.state.followers || "0",
+                following: location.state.following || "0",
+                posts: location.state.posts || "0",
             });
         } else {
             const storedUser = userJson ? JSON.parse(userJson) : {};
@@ -53,6 +59,15 @@ export default function ProfilePage() {
     const loggedInUser = userJson ? JSON.parse(userJson) : {};
     const isMe = loggedInUser.id && String(user.id) === String(loggedInUser.id);
 
+    const handleFollowChange = (nextFollowingState) => {
+        setUser((prev) => ({
+            ...prev,
+            followers: nextFollowingState
+                ? (parseInt(prev.followers) || 0) + 1
+                : (parseInt(prev.followers) || 0) - 1,
+        }));
+    };
+
     return (
         <>
             <div className="page-header-container">
@@ -68,7 +83,7 @@ export default function ProfilePage() {
                 <h2 className="feed-header music-page-title">{username}</h2>
             </div>
 
-            <UserCardComponent user={user} />
+            <UserCardComponent user={user} onFollowChange={handleFollowChange} />
 
             <UserNavigationComponent
                 activeTab={activeTab}

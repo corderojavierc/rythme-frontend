@@ -29,6 +29,9 @@ export default function PostCardComponent({ post, type = "post" }) {
                 name: post.name,
                 second_name: post.second_name,
                 profile_image: post.profile_image,
+                followers: post.followers,
+                following: post.following,
+                posts: post.posts,
             },
         });
     }

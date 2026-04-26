@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useData } from "../../providers/DataProvider";
 
-export default function UserCardComponent({ user }) {
+export default function UserCardComponent({ user, onFollowChange }) {
     const { follows, toggleFollow } = useData();
     const [hoveredUserId, setHoveredUserId] = useState(null);
 
@@ -13,6 +13,12 @@ export default function UserCardComponent({ user }) {
     const isFollowing = follows.includes(user.id);
     const isMe = currentUser && String(currentUser.id) === String(user.id);
     const isHovered = hoveredUserId === user.id;
+
+    const handleToggle = () => {
+        const nextFollowingState = !isFollowing;
+        toggleFollow(user.id);
+        if (onFollowChange) onFollowChange(nextFollowingState);
+    };
 
     let buttonClass = "follow-btn profile-follow-btn-large";
     let buttonText = "Seguir";
@@ -48,7 +54,7 @@ export default function UserCardComponent({ user }) {
                                 className={buttonClass}
                                 onMouseEnter={() => setHoveredUserId(user.id)}
                                 onMouseLeave={() => setHoveredUserId(null)}
-                                onClick={() => toggleFollow(user.id)}
+                                onClick={handleToggle}
                             >
                                 {buttonText}
                             </button>
@@ -62,21 +68,25 @@ export default function UserCardComponent({ user }) {
                     <div className="profile-stats">
                         <div className="stat-item">
                             <span className="stat-count">
-                                {user.followers_count || "0"}
+                                {user.followers || "0"}
                             </span>
-                            <span className="stat-label">Seguidores</span>
+                            <span className="stat-label">
+                                {user.followers === 1
+                                    ? "Seguidor"
+                                    : "Seguidores"}
+                            </span>
                         </div>
                         <div className="stat-item">
                             <span className="stat-count">
-                                {user.following_count || "0"}
+                                {user.following || "0"}
                             </span>
                             <span className="stat-label">Siguiendo</span>
                         </div>
                         <div className="stat-item">
                             <span className="stat-count">
-                                {user.posts_count || "0"}
+                                {user.posts || "0"}
                             </span>
-                            <span className="stat-label">Publicaciones</span>
+                            <span className="stat-label">Valoraciones</span>
                         </div>
                     </div>
 
