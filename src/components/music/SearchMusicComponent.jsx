@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MusicCardComponent from "./MusicCardComponent";
 import LoaderScreen from "../LoaderScreen";
 import { getApi } from "../../config";
 
 export default function SearchMusicComponent({ onSelect }) {
   const navigate = useNavigate();
-  const location = useLocation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [message, setMessage] = useState("");

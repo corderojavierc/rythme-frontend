@@ -60,7 +60,7 @@ export function DataProvider({ children }) {
       }
 
       setIsInitialized(true);
-    } catch (err) {
+    } catch {
       setError("No se pudieron cargar los posts :(");
       setIsInitialized(true);
     } finally {
@@ -90,7 +90,7 @@ export function DataProvider({ children }) {
       } else {
         setFollowedPosts((prev) => [...prev, ...newPosts]);
       }
-    } catch (err) {
+    } catch {
       setError("No se pudieron cargar los posts :(");
     } finally {
       setLoadingFollowedPosts(false);
@@ -223,9 +223,15 @@ export function DataProvider({ children }) {
       setFollows((prev) => [...prev, userId]);
     }
 
+    const updatedUser = { ...user };
+    updatedUser.following = isFollowing
+      ? (parseInt(user.following) || 1) - 1
+      : (parseInt(user.following) || 0) + 1;
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+
     try {
       const method = isFollowing ? "DELETE" : "POST";
-      await fetch(getApi() + "/follows", {
+      const response = await fetch(getApi() + "/follows", {
         method,
         headers: {
           "Content-Type": "application/json",
@@ -237,12 +243,16 @@ export function DataProvider({ children }) {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error("Failed to toggle follow");
+      }
+
       if (!isFollowing) {
         setLoadingFollowedPosts(true);
-        const response = await fetch(getApi() + "/posts/followed", {
+        const postsResponse = await fetch(getApi() + "/posts/followed", {
           headers: getAuthHeaders(),
         });
-        const incoming = extractList(await response.json());
+        const incoming = extractList(await postsResponse.json());
         const newUserPosts = incoming.filter(
           (post) => String(post.user_id) === String(userId),
         );
@@ -263,6 +273,12 @@ export function DataProvider({ children }) {
       }
     } catch (err) {
       console.error(err);
+      setFollows(
+        isFollowing
+          ? [...follows, userId]
+          : follows.filter((id) => id !== userId),
+      );
+      localStorage.setItem("user", JSON.stringify(user));
     } finally {
       isTogglingFollow.current = false;
     }

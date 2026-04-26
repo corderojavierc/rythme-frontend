@@ -38,9 +38,11 @@ export default function PostComponent({ fromFollowed = false }) {
         emptyMsg: "Aun no hay opiniones. Se el primero en crear una!",
       };
 
-  useEffect(() => {
+  const [prevFromFollowed, setPrevFromFollowed] = useState(fromFollowed);
+  if (fromFollowed !== prevFromFollowed) {
+    setPrevFromFollowed(fromFollowed);
     setVisibleCount(STEP);
-  }, [fromFollowed]);
+  }
 
   useEffect(() => {
     if (config.loading) return;
@@ -60,7 +62,8 @@ export default function PostComponent({ fromFollowed = false }) {
 
     if (sentinelRef.current) observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [config, visibleCount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config.loading, config.hasMore, visibleCount]);
 
   const visiblePosts = config.data.slice(0, visibleCount);
   const showSentinel = visibleCount < config.data.length || config.hasMore;

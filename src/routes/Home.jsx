@@ -16,24 +16,30 @@ export default function Home() {
   const [isExiting, setIsExiting] = useState(false);
   const [notificationType, setNotificationType] = useState(null);
 
-  useEffect(() => {
-    const from = location.state?.from;
+  const [prevFrom, setPrevFrom] = useState(null);
+  const from = location.state?.from;
+
+  if (from && from !== prevFrom) {
     const isValidNotification =
       from === "comment" || from === "post" || from === "error-song-exists";
 
     if (isValidNotification) {
+      setPrevFrom(from);
       setNotificationType(from);
       setShowNotification(true);
       setIsExiting(false);
+    }
+  }
 
-      const isSuccess = from === "post" || from === "comment";
-      if (isSuccess) {
-        refreshPosts();
-      }
-
+  useEffect(() => {
+    if (notificationType && (notificationType === "post" || notificationType === "comment")) {
+      refreshPosts();
+    }
+    if (location.state?.from) {
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state?.from, location.pathname, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notificationType]);
 
   const handleClose = () => {
     setIsExiting(true);

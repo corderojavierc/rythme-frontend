@@ -43,6 +43,7 @@ export default function UserCommentsComponent({ id, isMe }) {
       setNextPageUrl(null);
       fetchComments();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -62,6 +63,7 @@ export default function UserCommentsComponent({ id, isMe }) {
 
     observer.observe(element);
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, nextPageUrl]);
 
   const noComments = comments.length === 0;
