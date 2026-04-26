@@ -23,75 +23,50 @@ export default function CommentComponent({ postId }) {
         if (postId) {
             resetComments();
             fetchComments(postId);
+            setVisibleCount(STEP);
         }
     }, [postId]);
-
-    function showMore() {
-        setVisibleCount((prev) => prev + STEP);
-    }
 
     useEffect(() => {
         if (loadingComments) return;
 
-        const element = sentinelRef.current;
-        if (!element) return;
-
         const observer = new IntersectionObserver(
             (entries) => {
-                const isVisible = entries[0].isIntersecting;
-                if (!isVisible) return;
-
-                const showingAllLoaded = visibleCount >= comments.length;
-                if (showingAllLoaded && hasMoreComments) {
-                    loadMoreComments(postId);
-                } else if (visibleCount < comments.length) {
-                    showMore();
+                if (entries[0].isIntersecting) {
+                    if (visibleCount < comments.length) {
+                        setVisibleCount((prev) => prev + STEP);
+                    } else if (hasMoreComments) {
+                        loadMoreComments(postId);
+                    }
                 }
             },
-            { rootMargin: "400px" },
+            { rootMargin: "400px" }
         );
 
-        observer.observe(element);
+        if (sentinelRef.current) observer.observe(sentinelRef.current);
         return () => observer.disconnect();
-    }, [
-        loadingComments,
-        comments.length,
-        visibleCount,
-        hasMoreComments,
-        postId,
-    ]);
+    }, [loadingComments, comments.length, visibleCount, hasMoreComments, postId]);
 
-    const noComments = comments.length === 0;
-    const hasMore = visibleCount < comments.length || hasMoreComments;
     const visibleComments = comments.slice(0, visibleCount);
+    const showSentinel = visibleCount < comments.length || hasMoreComments;
 
-    if (loadingComments && noComments) {
+    if (loadingComments && comments.length === 0) {
         return <LoaderScreen inline text="Cargando comentarios..." />;
     }
 
     if (error) {
         return (
             <div className="feed-state feed-error">
-                <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: 32 }}
-                >
-                    error
-                </span>
+                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>error</span>
                 <span>{error}</span>
             </div>
         );
     }
 
-    if (noComments && !loadingComments) {
+    if (comments.length === 0 && !loadingComments) {
         return (
             <div className="feed-state">
-                <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: 32 }}
-                >
-                    chat_bubble_outline
-                </span>
+                <span className="material-symbols-outlined" style={{ fontSize: 32 }}>chat_bubble_outline</span>
                 <span>Aún no hay comentarios. ¡Sé el primero!</span>
             </div>
         );
@@ -103,19 +78,15 @@ export default function CommentComponent({ postId }) {
                 <CommentCardComponent key={comment.id} comment={comment} />
             ))}
 
-            {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
+            {showSentinel && <div ref={sentinelRef} style={{ height: 10 }} />}
 
-            {loadingComments && !noComments && (
+            {loadingComments && comments.length > 0 && (
                 <div style={{ textAlign: "center", padding: "20px" }}>
-                    <LoaderScreen
-                        inline
-                        small
-                        text="Cargando más comentarios..."
-                    />
+                    <LoaderScreen inline small text="Cargando más comentarios..." />
                 </div>
             )}
 
-            {!hasMore && !loadingComments && (
+            {!showSentinel && !loadingComments && (
                 <div className="feed-end">
                     <span className="material-symbols-outlined">chat</span>
                     Has llegado al final de los comentarios.

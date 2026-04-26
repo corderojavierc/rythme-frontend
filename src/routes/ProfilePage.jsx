@@ -1,5 +1,8 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import UserPostsComponent from "../components/user/UserPostsComponent";
+import UserCommentsComponent from "../components/user/UserCommentsComponent";
+import UserLikedComponent from "../components/user/UserLikedComponent";
 import UserCardComponent from "../components/user/UserCardComponent";
 import UserNavigationComponent from "../components/user/UserNavigationComponent";
 
@@ -43,6 +46,13 @@ export default function ProfilePage() {
         }
     }, [username, location.state, userJson]);
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [username]);
+
+    const loggedInUser = userJson ? JSON.parse(userJson) : {};
+    const isMe = loggedInUser.id && String(user.id) === String(loggedInUser.id);
+
     return (
         <>
             <div className="page-header-container">
@@ -67,17 +77,13 @@ export default function ProfilePage() {
 
             <div className="profile-content-area">
                 {activeTab === "ratings" && (
-                    <div className="feed-state">
-                        No hay valoraciones que mostrar.
-                    </div>
+                    <UserPostsComponent id={user.id} isMe={isMe} />
                 )}
                 {activeTab === "comments" && (
-                    <div className="feed-state">
-                        No hay comentarios que mostrar.
-                    </div>
+                    <UserCommentsComponent id={user.id} isMe={isMe} />
                 )}
                 {activeTab === "likes" && (
-                    <div className="feed-state">No hay likes que mostrar.</div>
+                    <UserLikedComponent id={user.id} isMe={isMe} />
                 )}
             </div>
         </>

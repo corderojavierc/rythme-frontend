@@ -37,15 +37,6 @@ export default function Home() {
         }
     }, [location.state?.from, location.pathname, navigate]);
 
-    useEffect(() => {
-        if (showNotification && !isExiting) {
-            const timer = setTimeout(() => {
-                handleClose();
-            }, 3800);
-            return () => clearTimeout(timer);
-        }
-    }, [showNotification, isExiting]);
-
     const handleClose = () => {
         setIsExiting(true);
         setTimeout(() => {
@@ -54,6 +45,15 @@ export default function Home() {
             setNotificationType(null);
         }, 300);
     };
+
+    useEffect(() => {
+        if (showNotification && !isExiting) {
+            const timer = setTimeout(() => {
+                handleClose();
+            }, 3800);
+            return () => clearTimeout(timer);
+        }
+    }, [showNotification, isExiting]);
 
     let notificationClass = "notification-wrapper";
     if (isExiting) {

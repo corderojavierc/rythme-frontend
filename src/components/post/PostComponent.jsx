@@ -22,69 +22,50 @@ export default function PostComponent({ fromFollowed = false }) {
     const [visibleCount, setVisibleCount] = useState(STEP);
     const sentinelRef = useRef(null);
 
-    let displayedPosts;
-    let isLoadingCurrent;
-    let hasMoreCurrent;
-    let loadMore;
-
-    if (fromFollowed) {
-        displayedPosts = followedPosts;
-        isLoadingCurrent = loadingFollowedPosts;
-        hasMoreCurrent = hasMoreFollowedPages;
-        loadMore = loadMoreFollowedPosts;
-    } else {
-        displayedPosts = posts;
-        isLoadingCurrent = loadingPosts;
-        hasMoreCurrent = hasMorePages;
-        loadMore = loadMorePosts;
-    }
-
-    function showMore() {
-        setVisibleCount((prev) => prev + STEP);
-    }
+    const config = fromFollowed
+        ? {
+              data: followedPosts,
+              loading: loadingFollowedPosts || loadingUsers,
+              hasMore: hasMoreFollowedPages,
+              load: loadMoreFollowedPosts,
+              emptyMsg: "No existen opiniones de los usuarios que sigues.",
+          }
+        : {
+              data: posts,
+              loading: loadingPosts,
+              hasMore: hasMorePages,
+              load: loadMorePosts,
+              emptyMsg: "Aun no hay opiniones. Se el primero en crear una!",
+          };
 
     useEffect(() => {
         setVisibleCount(STEP);
     }, [fromFollowed]);
 
     useEffect(() => {
-        const stillLoading = isLoadingCurrent || (fromFollowed && loadingUsers);
-        if (stillLoading) return;
-
-        const element = sentinelRef.current;
-        if (!element) return;
+        if (config.loading) return;
 
         const observer = new IntersectionObserver(
             (entries) => {
-                const isVisible = entries[0].isIntersecting;
-                if (!isVisible) return;
-
-                const showingAllLoaded = visibleCount >= displayedPosts.length;
-                if (showingAllLoaded && hasMoreCurrent) {
-                    loadMore();
-                } else if (visibleCount < displayedPosts.length) {
-                    showMore();
+                if (entries[0].isIntersecting) {
+                    if (visibleCount < config.data.length) {
+                        setVisibleCount((prev) => prev + STEP);
+                    } else if (config.hasMore) {
+                        config.load();
+                    }
                 }
             },
             { rootMargin: "400px" },
         );
 
-        observer.observe(element);
+        if (sentinelRef.current) observer.observe(sentinelRef.current);
         return () => observer.disconnect();
-    }, [
-        isLoadingCurrent,
-        loadingUsers,
-        displayedPosts.length,
-        visibleCount,
-        hasMoreCurrent,
-    ]);
+    }, [config, visibleCount]);
 
-    const isLoading = isLoadingCurrent || (fromFollowed && loadingUsers);
-    const noPosts = displayedPosts.length === 0;
-    const hasMore = visibleCount < displayedPosts.length || hasMoreCurrent;
-    const visiblePosts = displayedPosts.slice(0, visibleCount);
+    const visiblePosts = config.data.slice(0, visibleCount);
+    const showSentinel = visibleCount < config.data.length || config.hasMore;
 
-    if (isLoading && noPosts) {
+    if (config.loading && config.data.length === 0) {
         return <LoaderScreen inline text="Cargando opiniones..." />;
     }
 
@@ -102,11 +83,7 @@ export default function PostComponent({ fromFollowed = false }) {
         );
     }
 
-    if (noPosts && !hasMoreCurrent && !isLoading) {
-        let emptyMessage = "Aun no hay opiniones. Se el primero en crear una!";
-        if (fromFollowed) {
-            emptyMessage = "No existen opiniones de los usuarios que sigues.";
-        }
+    if (config.data.length === 0 && !config.hasMore && !config.loading) {
         return (
             <div className="feed-state">
                 <span
@@ -115,7 +92,7 @@ export default function PostComponent({ fromFollowed = false }) {
                 >
                     music_off
                 </span>
-                <span>{emptyMessage}</span>
+                <span>{config.emptyMsg}</span>
             </div>
         );
     }
@@ -126,15 +103,15 @@ export default function PostComponent({ fromFollowed = false }) {
                 <PostCardComponent key={post.id} post={post} />
             ))}
 
-            {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
+            {showSentinel && <div ref={sentinelRef} style={{ height: 10 }} />}
 
-            {isLoadingCurrent && !noPosts && (
+            {config.loading && config.data.length > 0 && (
                 <div style={{ textAlign: "center", padding: "20px" }}>
                     <LoaderScreen inline small text="Cargando más..." />
                 </div>
             )}
 
-            {!hasMore && !isLoadingCurrent && (
+            {!showSentinel && !config.loading && (
                 <div className="feed-end">
                     <span className="material-symbols-outlined">
                         music_note

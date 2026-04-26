@@ -8,7 +8,9 @@ export default function PostCommentButton() {
     const commentCount = post.count_comments ? post.count_comments : 0;
 
     const handleComment = () => {
-        navigate(`${post.user_name}/posts/${post.id}/comment`);
+        navigate(`/${post.user_name}/posts/${post.id}/comment`, {
+            state: { post },
+        });
     };
 
     return (

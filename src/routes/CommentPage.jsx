@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import PostCardComponent from "../components/post/PostCardComponent";
 import CreateCommentComponent from "../components/comment/CreateCommentComponent";
 import LoaderScreen from "../components/LoaderScreen";
@@ -10,13 +10,22 @@ const API_POST_URL = getApi() + "/posts";
 
 export default function CommentPage() {
     const { id } = useParams();
-    const { posts, loadingPosts } = useData();
+    const location = useLocation();
+    const { posts, followedPosts, musicPosts, loadingPosts } = useData();
 
-    const [post, setPost] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [post, setPost] = useState(() => {
+        if (location.state?.post) return location.state.post;
+
+        const allPosts = [...posts, ...followedPosts, ...musicPosts];
+        return allPosts.find((p) => String(p.id) === String(id));
+    });
+    const [isLoading, setIsLoading] = useState(!post);
 
     useEffect(() => {
-        const cachedPost = posts.find((p) => p.id == id);
+        const allPosts = [...posts, ...followedPosts, ...musicPosts];
+        const cachedPost =
+            location.state?.post ||
+            allPosts.find((p) => String(p.id) === String(id));
 
         if (cachedPost) {
             setPost(cachedPost);
@@ -24,7 +33,7 @@ export default function CommentPage() {
             return;
         }
 
-        if (id && !loadingPosts) {
+        if (id && !loadingPosts && !post) {
             async function fetchPost() {
                 try {
                     const token = localStorage.getItem("token");
@@ -46,7 +55,7 @@ export default function CommentPage() {
             }
             fetchPost();
         }
-    }, [id, posts, loadingPosts]);
+    }, [id, posts, followedPosts, musicPosts, loadingPosts, post, location.state]);
 
     if (isLoading) return <LoaderScreen />;
 

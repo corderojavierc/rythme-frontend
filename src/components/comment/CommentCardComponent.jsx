@@ -7,22 +7,25 @@ export default function CommentCardComponent({ comment, post }) {
     const navigate = useNavigate();
     const { updateComment } = useData();
     const data = comment || post || {};
-    const user = data.user || data;
+    const user = data?.user || data || {};
 
-    let fullName = user.user_name || user.username || "Usuario";
-    if (user.name) {
+    let fullName = user?.user_name || user?.username || "Usuario";
+    if (user?.name) {
         fullName = user.name + (user.second_name ? " " + user.second_name : "");
     }
 
     function redirectToProfile(e) {
         e.stopPropagation();
-        navigate(`/${comment.user_name}`, {
+        const profileUser = comment || user;
+        if (!profileUser?.user_name && !profileUser?.username) return;
+
+        navigate(`/${profileUser.user_name || profileUser.username}`, {
             state: {
-                id: comment.user_id,
-                username: comment.user_name,
-                name: comment.name,
-                second_name: comment.second_name,
-                profile_image: comment.profile_image,
+                id: profileUser.user_id || profileUser.id,
+                username: profileUser.user_name || profileUser.username,
+                name: profileUser.name,
+                second_name: profileUser.second_name,
+                profile_image: profileUser.profile_image,
             },
         });
     }
