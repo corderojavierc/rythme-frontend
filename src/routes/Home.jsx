@@ -32,7 +32,10 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (notificationType && (notificationType === "post" || notificationType === "comment")) {
+    if (
+      notificationType &&
+      (notificationType === "post" || notificationType === "comment")
+    ) {
       refreshPosts();
     }
     if (location.state?.from) {

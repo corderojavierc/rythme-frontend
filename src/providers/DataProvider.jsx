@@ -298,6 +298,7 @@ export function DataProvider({ children }) {
       setFollows([]);
       setComments([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   return (

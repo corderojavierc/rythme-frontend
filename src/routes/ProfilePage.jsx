@@ -1,5 +1,6 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getApi } from "../config";
 import UserPostsComponent from "../components/user/UserPostsComponent";
 import UserCommentsComponent from "../components/user/UserCommentsComponent";
 import UserLikedComponent from "../components/user/UserLikedComponent";
@@ -144,6 +145,7 @@ export default function ProfilePage() {
     };
 
     fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   const loggedInUser = userJson ? JSON.parse(userJson) : {};

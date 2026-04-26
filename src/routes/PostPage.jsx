@@ -69,7 +69,15 @@ export default function PostPage() {
         .catch((err) => console.error(err))
         .finally(() => setIsLoadingPost(false));
     }
-  }, [id, loadingPosts, loadingFollowedPosts, loadingMusicPosts, token, post, isLoadingPost]);
+  }, [
+    id,
+    loadingPosts,
+    loadingFollowedPosts,
+    loadingMusicPosts,
+    token,
+    post,
+    isLoadingPost,
+  ]);
 
   return (
     <>
