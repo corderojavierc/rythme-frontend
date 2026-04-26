@@ -5,154 +5,142 @@ import LoaderScreen from "../components/LoaderScreen";
 import MusicNavegator from "../components/music/MusicNavegator";
 import PostCardComponent from "../components/post/PostCardComponent";
 import { useData } from "../providers/DataProvider";
+import NotFoundPage from "./NotFoundPage";
 
 export default function MusicPage() {
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const location = useLocation();
-    const { musicPosts, loadingMusicPosts, fetchMusicPosts } = useData();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const location = useLocation();
+  const { musicPosts, loadingMusicPosts, fetchMusicPosts } = useData();
 
-    const [music, setMusic] = useState(() => {
-        if (location.state) {
-            return {
-                title: location.state.title || location.state.songName || "",
-                artist: location.state.artist || "",
-                cover_url: location.state.cover_url || "",
-                rating:
-                    location.state.rating || location.state.global_rating || 0,
-                count_ratings: location.state.count_ratings || 0,
-                is_valorated: !!location.state.is_valorated,
-            };
+  const [music, setMusic] = useState(() => {
+    if (location.state) {
+      return {
+        title: location.state.title || location.state.songName || "",
+        artist: location.state.artist || "",
+        cover_url: location.state.cover_url || "",
+        rating: location.state.rating || location.state.global_rating || 0,
+        count_ratings: location.state.count_ratings || 0,
+        is_valorated: !!location.state.is_valorated,
+      };
+    }
+    return null;
+  });
+
+  const [loading, setLoading] = useState(!location.state);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const fetchMusic = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${getApi()}/music/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setMusic(data.data);
         }
-        return null;
-    });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const [loading, setLoading] = useState(!location.state);
+    fetchMusic();
+    fetchMusicPosts(id);
+    console.log(music);
+  }, [id]);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        const fetchMusic = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await fetch(`${getApi()}/music/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setMusic(data.data);
-                }
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
+  if (loading && !music) {
+    return <LoaderScreen text="Cargando canción..." />;
+  }
 
-        fetchMusic();
-        fetchMusicPosts(id);
-        console.log(music);
-    }, [id]);
+  if (!music) {
+    return <NotFoundPage />;
+  }
 
-    if (loading && !music) {
-        return <LoaderScreen text="Cargando canción..." />;
-    }
+  return (
+    <>
+      <div className="page-header-container">
+        <button
+          className="back-button"
+          title="Go Back"
+          onClick={() => navigate(-1)}
+        >
+          <span className="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h2 className="feed-header music-page-title">{music.title}</h2>
+      </div>
+      <div className="divider"></div>
+      <div className="song-block song-block-static">
+        <div className="cover cover-large">
+          <img src={music.cover_url} alt={music.title} />
+          <div className="cover-overlay"></div>
+        </div>
 
-    if (!music) {
-        return <div className="feed-state">No se pudo cargar la canción.</div>;
-    }
+        <div className="song-info">
+          <div className="song-title song-title-large">{music.title}</div>
+          <div className="song-artist song-artist-large">{music.artist}</div>
+        </div>
 
-    return (
-        <>
-            <div className="page-header-container">
-                <button
-                    className="back-button"
-                    title="Go Back"
-                    onClick={() => navigate(-1)}
-                >
-                    <span className="material-symbols-outlined">arrow_back</span>
-                </button>
-                <h2 className="feed-header music-page-title">{music.title}</h2>
+        <div className="rating-container-static">
+          <div className="rating-box">
+            <div className="rating-score-row">
+              <span
+                className="material-symbols-outlined"
+                style={{ color: "#facc15", fontSize: "28px" }}
+              >
+                star
+              </span>
+              {music.rating ? Number(music.rating).toFixed(1) : "-"}
             </div>
-            <div className="divider"></div>
-            <div className="song-block song-block-static">
-                <div className="cover cover-large">
-                    <img src={music.cover_url} alt={music.title} />
-                    <div className="cover-overlay"></div>
-                </div>
+            <span className="rating-count-text">
+              {music.count_ratings}{" "}
+              {music.count_ratings === 1 ? "valoración" : "valoraciones"}
+            </span>
+          </div>
+        </div>
+      </div>
 
-                <div className="song-info">
-                    <div className="song-title song-title-large">
-                        {music.title}
-                    </div>
-                    <div className="song-artist song-artist-large">
-                        {music.artist}
-                    </div>
-                </div>
+      <div className="music-page-tabs-row">
+        <div className="tabs-placeholder"></div>
+        <MusicNavegator />
+        <div className="tabs-action">
+          {!music.is_valorated && (
+            <button
+              className="comment-button"
+              onClick={() =>
+                navigate("/rate", {
+                  state: { selectedMusic: music },
+                })
+              }
+            >
+              <span className="circle1"></span>
+              <span className="circle2"></span>
+              <span className="circle3"></span>
+              <span className="circle4"></span>
+              <span className="circle5"></span>
+              <span className="text">Valorar</span>
+            </button>
+          )}
+        </div>
+      </div>
 
-                <div className="rating-container-static">
-                    <div className="rating-box">
-                        <div className="rating-score-row">
-                            <span
-                                className="material-symbols-outlined"
-                                style={{ color: "#facc15", fontSize: "28px" }}
-                            >
-                                star
-                            </span>
-                            {music.rating
-                                ? Number(music.rating).toFixed(1)
-                                : "-"}
-                        </div>
-                        <span className="rating-count-text">
-                            {music.count_ratings}{" "}
-                            {music.count_ratings === 1
-                                ? "valoración"
-                                : "valoraciones"}
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="music-page-tabs-row">
-                <div className="tabs-placeholder"></div>
-                <MusicNavegator />
-                <div className="tabs-action">
-                    {!music.is_valorated && (
-                        <button
-                            className="comment-button"
-                            onClick={() =>
-                                navigate("/rate", {
-                                    state: { selectedMusic: music },
-                                })
-                            }
-                        >
-                            <span className="circle1"></span>
-                            <span className="circle2"></span>
-                            <span className="circle3"></span>
-                            <span className="circle4"></span>
-                            <span className="circle5"></span>
-                            <span className="text">Valorar</span>
-                        </button>
-                    )}
-                </div>
-            </div>
-
-            <div className="music-posts-container">
-                {loadingMusicPosts ? (
-                    <LoaderScreen
-                        inline
-                        small
-                        text="Cargando valoraciones..."
-                    />
-                ) : musicPosts.length > 0 ? (
-                    musicPosts.map((post) => (
-                        <PostCardComponent key={post.id} post={post} />
-                    ))
-                ) : (
-                    <div className="feed-state">
-                        Aún no hay valoraciones para esta canción.
-                    </div>
-                )}
-            </div>
-        </>
-    );
+      <div className="music-posts-container">
+        {loadingMusicPosts ? (
+          <LoaderScreen inline small text="Cargando valoraciones..." />
+        ) : musicPosts.length > 0 ? (
+          musicPosts.map((post) => (
+            <PostCardComponent key={post.id} post={post} />
+          ))
+        ) : (
+          <div className="feed-state">
+            Aún no hay valoraciones para esta canción.
+          </div>
+        )}
+      </div>
+    </>
+  );
 }

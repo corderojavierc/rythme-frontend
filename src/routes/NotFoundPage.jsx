@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function WorkInProgressPage() {
+export default function NotFoundPage() {
   const navigate = useNavigate();
 
   return (
@@ -13,21 +13,19 @@ export default function WorkInProgressPage() {
         >
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
-        <h2 className="feed-header music-page-title">En construcción</h2>
+        <h2 className="feed-header music-page-title">Error 404</h2>
       </div>
 
       <div className="feed-state wip-container">
         <div style={{ position: "relative" }}>
-          <span className="material-symbols-outlined wip-icon">
-            construction
-          </span>
+          <span className="material-symbols-outlined wip-icon">search_off</span>
         </div>
 
         <div style={{ textAlign: "center" }}>
-          <h1 className="wip-title">Sección bajo construcción</h1>
+          <h1 className="wip-title">Página no encontrada</h1>
           <p className="wip-text">
-            Esta sección de <strong>RythMe</strong> aún está en desarrollo.
-            Vuelve pronto para descubrir nuevas formas de vivir la música.
+            Parece que el ritmo te ha llevado a un lugar que no existe. La
+            página que buscas no se encuentra en nuestro catálogo.
           </p>
         </div>
 

@@ -8,91 +8,83 @@ import LoaderScreen from "../components/LoaderScreen";
 import { useData } from "../providers/DataProvider";
 
 export default function Home() {
-    const { refreshPosts, isInitialized } = useData();
-    const location = useLocation();
-    const navigate = useNavigate();
+  const { refreshPosts, isInitialized } = useData();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    const [showNotification, setShowNotification] = useState(false);
-    const [isExiting, setIsExiting] = useState(false);
-    const [notificationType, setNotificationType] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+  const [notificationType, setNotificationType] = useState(null);
 
-    useEffect(() => {
-        const from = location.state?.from;
-        const isValidNotification =
-            from === "comment" ||
-            from === "post" ||
-            from === "error-song-exists";
+  useEffect(() => {
+    const from = location.state?.from;
+    const isValidNotification =
+      from === "comment" || from === "post" || from === "error-song-exists";
 
-        if (isValidNotification) {
-            setNotificationType(from);
-            setShowNotification(true);
-            setIsExiting(false);
+    if (isValidNotification) {
+      setNotificationType(from);
+      setShowNotification(true);
+      setIsExiting(false);
 
-            const isSuccess = from === "post" || from === "comment";
-            if (isSuccess) {
-                refreshPosts();
-            }
+      const isSuccess = from === "post" || from === "comment";
+      if (isSuccess) {
+        refreshPosts();
+      }
 
-            navigate(location.pathname, { replace: true, state: {} });
-        }
-    }, [location.state?.from, location.pathname, navigate]);
-
-    useEffect(() => {
-        if (showNotification && !isExiting) {
-            const timer = setTimeout(() => {
-                handleClose();
-            }, 3800);
-            return () => clearTimeout(timer);
-        }
-    }, [showNotification, isExiting]);
-
-    const handleClose = () => {
-        setIsExiting(true);
-        setTimeout(() => {
-            setShowNotification(false);
-            setIsExiting(false);
-            setNotificationType(null);
-        }, 300);
-    };
-
-    let notificationClass = "notification-wrapper";
-    if (isExiting) {
-        notificationClass += " exiting";
-    } else {
-        notificationClass += " entering";
+      navigate(location.pathname, { replace: true, state: {} });
     }
+  }, [location.state?.from, location.pathname, navigate]);
 
-    const isErrorNotification = notificationType === "error-song-exists";
+  const handleClose = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setShowNotification(false);
+      setIsExiting(false);
+      setNotificationType(null);
+    }, 300);
+  };
 
-    if (!isInitialized) {
-        return <LoaderScreen text="Cargando Rythme..." />;
+  useEffect(() => {
+    if (showNotification && !isExiting) {
+      const timer = setTimeout(() => {
+        handleClose();
+      }, 3800);
+      return () => clearTimeout(timer);
     }
+  }, [showNotification, isExiting]);
 
-    return (
-        <div className="app-container">
-            <AsideLayout />
+  let notificationClass = "notification-wrapper";
+  if (isExiting) {
+    notificationClass += " exiting";
+  } else {
+    notificationClass += " entering";
+  }
 
-            <main className="main">
-                <Outlet />
-            </main>
+  const isErrorNotification = notificationType === "error-song-exists";
 
-            <RightAsideLayout />
+  if (!isInitialized) {
+    return <LoaderScreen text="Cargando Rythme..." />;
+  }
 
-            {showNotification && (
-                <div className={notificationClass}>
-                    {isErrorNotification ? (
-                        <ErrorComponent
-                            onClose={handleClose}
-                            type={notificationType}
-                        />
-                    ) : (
-                        <DoneComponent
-                            onClose={handleClose}
-                            type={notificationType}
-                        />
-                    )}
-                </div>
-            )}
+  return (
+    <div className="app-container">
+      <AsideLayout />
+
+      <main className="main">
+        <Outlet />
+      </main>
+
+      <RightAsideLayout />
+
+      {showNotification && (
+        <div className={notificationClass}>
+          {isErrorNotification ? (
+            <ErrorComponent onClose={handleClose} type={notificationType} />
+          ) : (
+            <DoneComponent onClose={handleClose} type={notificationType} />
+          )}
         </div>
-    );
+      )}
+    </div>
+  );
 }

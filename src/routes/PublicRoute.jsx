@@ -2,11 +2,11 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function PublicRoute({ children }) {
-    const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
-    if (isAuthenticated) {
-        return <Navigate to="/" replace />;
-    }
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
-    return children;
+  return children;
 }

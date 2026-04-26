@@ -21,79 +21,79 @@ import CreatePost from "./routes/CreatePost";
 import Home from "./routes/Home";
 
 const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <ProtectedRoute />,
+  {
+    path: "/",
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <Home />,
         children: [
-            {
-                element: <Home />,
-                children: [
-                    {
-                        path: "/",
-                        element: <Feed />,
-                    },
-                    {
-                        path: "/followed",
-                        element: <FollowedsPosts />,
-                    },
-                    {
-                        path: "/music",
-                        element: <GlobalMusicPage />,
-                    },
-                    {
-                        path: ":username/posts/:id/comment",
-                        element: <CommentPage />,
-                    },
-                    {
-                        path: ":username/posts/:id",
-                        element: <PostPage />,
-                    },
-                    {
-                        path: "/music/:id",
-                        element: <MusicPage />,
-                    },
-                    {
-                        path: "/rate",
-                        element: <CreatePost />,
-                    },
-                    {
-                        path: "/events",
-                        element: <GlobalEventPage />,
-                    },
-                    {
-                        path: "/request",
-                        element: <ApplicationPage />,
-                    },
-                    {
-                        path: ":username",
-                        element: <ProfilePage />,
-                    },
-                ],
-            },
+          {
+            path: "/",
+            element: <Feed />,
+          },
+          {
+            path: "/followed",
+            element: <FollowedsPosts />,
+          },
+          {
+            path: "/music",
+            element: <GlobalMusicPage />,
+          },
+          {
+            path: ":username/posts/:id/comment",
+            element: <CommentPage />,
+          },
+          {
+            path: ":username/posts/:id",
+            element: <PostPage />,
+          },
+          {
+            path: "/music/:id",
+            element: <MusicPage />,
+          },
+          {
+            path: "/rate",
+            element: <CreatePost />,
+          },
+          {
+            path: "/events",
+            element: <GlobalEventPage />,
+          },
+          {
+            path: "/request",
+            element: <ApplicationPage />,
+          },
+          {
+            path: ":username",
+            element: <ProfilePage />,
+          },
         ],
-    },
-    {
-        path: "/login",
-        element: (
-            <PublicRoute>
-                <Login />
-            </PublicRoute>
-        ),
-    },
-    {
-        path: "/register",
-        element: (
-            <PublicRoute>
-                <Register />
-            </PublicRoute>
-        ),
-    },
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <PublicRoute>
+        <Register />
+      </PublicRoute>
+    ),
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <AuthProvider>
-        <DataProvider>
-            <RouterProvider router={router} />
-        </DataProvider>
-    </AuthProvider>,
+  <AuthProvider>
+    <DataProvider>
+      <RouterProvider router={router} />
+    </DataProvider>
+  </AuthProvider>,
 );
