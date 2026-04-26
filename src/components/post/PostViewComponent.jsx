@@ -9,45 +9,45 @@ import { getApi } from "../config";
 const API_POST_URL = `${getApi()}/posts`;
 
 export default function CreateCommentComponent() {
-    const { id } = useParams();
+  const { id } = useParams();
 
-    let token = localStorage.getItem("token");
+  let token = localStorage.getItem("token");
 
-    const [post, setPost] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchPost() {
-            try {
-                const response = await fetch(`${API_POST_URL}/${id}`, {
-                    headers: { Authorization: "Bearer " + token },
-                });
-                const data = await response.json();
+  useEffect(() => {
+    async function fetchPost() {
+      try {
+        const response = await fetch(`${API_POST_URL}/${id}`, {
+          headers: { Authorization: "Bearer " + token },
+        });
+        const data = await response.json();
 
-                setPost(data.data || data);
-            } catch (error) {
-                console.error("Error fetching post:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
+        setPost(data.data || data);
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-        if (id) {
-            fetchPost();
-        }
-    }, [id, token]);
+    if (id) {
+      fetchPost();
+    }
+  }, [id, token]);
 
-    if (loading) return <LoaderScreen />;
+  if (loading) return <LoaderScreen />;
 
-    return (
-        <div className="app-container">
-            <AsideLayout />
+  return (
+    <div className="app-container">
+      <AsideLayout />
 
-            <main className="main">
-                {post && <PostCardComponent post={post} type="comment" />}
-            </main>
+      <main className="main">
+        {post && <PostCardComponent post={post} type="comment" />}
+      </main>
 
-            <RightAsideLayout />
-        </div>
-    );
+      <RightAsideLayout />
+    </div>
+  );
 }
