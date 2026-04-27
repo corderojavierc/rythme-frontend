@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./login.css";
+import logoImg from "./logo-removebg-preview-effect.png";
 
 export default function Login() {
     const [isLight, setIsLight] = useState(false);
@@ -18,7 +19,7 @@ export default function Login() {
             <div className="left">
                 <div className="brand">
                     <img
-                        src="logo-removebg-preview-effect.png"
+                        src={logoImg}
                         className="logo"
                         alt="RythMe Logo"
                     />
