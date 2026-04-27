@@ -19,12 +19,20 @@ export default function CommentComponent({ postId }) {
   const [visibleCount, setVisibleCount] = useState(STEP);
   const sentinelRef = useRef(null);
 
+  const [prevPostId, setPrevPostId] = useState(postId);
+  if (postId !== prevPostId) {
+    setPrevPostId(postId);
+    resetComments();
+    fetchComments(postId);
+    setVisibleCount(STEP);
+  }
+
   useEffect(() => {
     if (postId) {
       resetComments();
       fetchComments(postId);
-      setVisibleCount(STEP);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
   useEffect(() => {
@@ -45,6 +53,7 @@ export default function CommentComponent({ postId }) {
 
     if (sentinelRef.current) observer.observe(sentinelRef.current);
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingComments, comments.length, visibleCount, hasMoreComments, postId]);
 
   const visibleComments = comments.slice(0, visibleCount);

@@ -44,6 +44,7 @@ export default function UserLikedComponent({ id, isMe }) {
       setNextPageUrl(null);
       fetchLikes();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -63,6 +64,7 @@ export default function UserLikedComponent({ id, isMe }) {
 
     observer.observe(element);
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, nextPageUrl]);
 
   const noLikes = likes.length === 0;

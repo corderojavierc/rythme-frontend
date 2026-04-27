@@ -33,22 +33,32 @@ export default function PostPage() {
     window.scrollTo(0, 0);
   }, [id]);
 
-  useEffect(() => {
-    const allPosts = [...posts, ...followedPosts, ...musicPosts];
-    const cachedPost =
-      location.state?.post || allPosts.find((p) => String(p.id) === String(id));
+  const allPosts = [...posts, ...followedPosts, ...musicPosts];
+  const cachedPost =
+    location.state?.post || allPosts.find((p) => String(p.id) === String(id));
 
+  const [prevId, setPrevId] = useState(id);
+
+  if (id !== prevId) {
+    setPrevId(id);
     if (cachedPost) {
       setPost(cachedPost);
       setIsLoadingPost(false);
-    } else if (
+    } else {
+      setPost(null);
+      setIsLoadingPost(true);
+    }
+  }
+
+  useEffect(() => {
+    if (
+      !post &&
       id &&
       !loadingPosts &&
       !loadingFollowedPosts &&
       !loadingMusicPosts &&
-      !post
+      isLoadingPost
     ) {
-      setIsLoadingPost(true);
       fetch(getApi() + "/posts/" + id, {
         headers: { Authorization: "Bearer " + token },
       })
@@ -61,15 +71,12 @@ export default function PostPage() {
     }
   }, [
     id,
-    posts,
-    followedPosts,
-    musicPosts,
     loadingPosts,
     loadingFollowedPosts,
     loadingMusicPosts,
     token,
     post,
-    location.state,
+    isLoadingPost,
   ]);
 
   return (
