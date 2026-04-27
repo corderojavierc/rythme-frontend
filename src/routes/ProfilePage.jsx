@@ -6,6 +6,8 @@ import UserCommentsComponent from "../components/user/UserCommentsComponent";
 import UserLikedComponent from "../components/user/UserLikedComponent";
 import UserCardComponent from "../components/user/UserCardComponent";
 import UserNavigationComponent from "../components/user/UserNavigationComponent";
+import NotFoundPage from "./NotFoundPage";
+import LoaderScreen from "../components/LoaderScreen";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ export default function ProfilePage() {
   const userJson = localStorage.getItem("user");
 
   const [activeTab, setActiveTab] = useState("ratings");
+  const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(!location.state);
   const [user, setUser] = useState(() => {
     if (location.state && location.state.username === username) {
       return {
@@ -106,6 +110,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setNotFound(false);
+    setLoading((prev) => prev || !user.id);
+
+    const controller = new AbortController();
+    const { signal } = controller;
 
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
@@ -114,10 +123,14 @@ export default function ProfilePage() {
       try {
         let response = await fetch(`${getApi()}/users/${username}`, {
           headers,
+          signal,
         });
 
         if (!response.ok) {
-          const allUsersRes = await fetch(`${getApi()}/users`, { headers });
+          const allUsersRes = await fetch(`${getApi()}/users`, {
+            headers,
+            signal,
+          });
           const allUsers = await allUsersRes.json();
           const usersList = allUsers.data || allUsers;
           const found = usersList.find((u) => u.username === username);
@@ -127,6 +140,8 @@ export default function ProfilePage() {
             if (found.username === me.username) {
               localStorage.setItem("user", JSON.stringify(found));
             }
+          } else {
+            setNotFound(true);
           }
           return;
         }
@@ -140,11 +155,17 @@ export default function ProfilePage() {
           localStorage.setItem("user", JSON.stringify(userData));
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        if (error.name !== "AbortError") {
+          console.error("Error fetching user data:", error);
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUser();
+
+    return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
@@ -159,6 +180,14 @@ export default function ProfilePage() {
         : (parseInt(prev.followers) || 0) - 1,
     }));
   };
+
+  if (loading) {
+    return <LoaderScreen text="Cargando perfil..." />;
+  }
+
+  if (notFound) {
+    return <NotFoundPage />;
+  }
 
   return (
     <>
