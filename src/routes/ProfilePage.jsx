@@ -17,7 +17,9 @@ export default function ProfilePage() {
 
   const [activeTab, setActiveTab] = useState("ratings");
   const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(!location.state);
+  const storedUserInit = userJson ? JSON.parse(userJson) : {};
+  const isOwnProfile = username === storedUserInit.username;
+  const [loading, setLoading] = useState(!location.state && !isOwnProfile);
   const [user, setUser] = useState(() => {
     if (location.state && location.state.username === username) {
       return {
@@ -111,7 +113,7 @@ export default function ProfilePage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     setNotFound(false);
-    setLoading((prev) => prev || !user.id);
+    if (!user.id) setLoading(true);
 
     const controller = new AbortController();
     const { signal } = controller;
