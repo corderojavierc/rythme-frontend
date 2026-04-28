@@ -1,5 +1,5 @@
-import WorkInProgressPage from "./WorkInProgressPage";
+import ApplicationComponent from "../components/application/ApplicationComponent";
 
 export default function ApplicationPage() {
-  return <WorkInProgressPage />;
+  return <ApplicationComponent />;
 }
