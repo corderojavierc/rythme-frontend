@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApi } from "../../config";
+import ApplicationSent from "./ApplicationSent";
+import LoaderScreen from "../LoaderScreen";
 
 const TYPE_OPTIONS = [
   { value: "artist", label: "Artista musical", icon: "music_note" },
@@ -12,6 +14,72 @@ export default function ApplicationForm() {
 
   const [type, setType] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const followers = e.target.followers.value;
+    const listeners = e.target.listeners.value;
+    const youtube = e.target.youtube.value;
+    const tiktok = e.target.tiktok.value;
+    const instagram = e.target.instagram.value;
+    const spotify = e.target.spotify.value;
+    const twitch = e.target.twitch.value;
+    const description = e.target.description.value;
+    setError("");
+
+    if (!type) {
+      setError("Selecciona el tipo de cuenta.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${getApi()}/artist-applications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          type,
+          followers: followers ? parseInt(followers) : 0,
+          listeners: listeners ? parseInt(listeners) : null,
+          youtube: youtube || null,
+          tiktok: tiktok || null,
+          instagram: instagram || null,
+          spotify: spotify || null,
+          twitch: twitch || null,
+          description,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message ?? "Error al enviar la solicitud.");
+        setIsLoading(false);
+        return;
+      }
+
+      e.target.reset();
+      setSubmitted(true);
+    } catch {
+      setError("Error de conexión con el servidor.");
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <LoaderScreen text="Enviando solicitud..." />;
+  }
+
+  if (submitted) {
+    return <ApplicationSent />;
+  }
 
   return (
     <>
