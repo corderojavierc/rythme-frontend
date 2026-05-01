@@ -6,11 +6,7 @@ export default function LoginLayout({ title, children, linkText, linkHref }) {
     <div className="card">
       <div className="left">
         <div className="brand">
-          <img
-            src={logoImg}
-            className="logo"
-            alt="RythMe Logo"
-          />
+          <img src={logoImg} className="logo" alt="RythMe Logo" />
           <h2 className="brand-text">
             <span className="blue">Ryth</span>
             <span className="pink">Me</span>

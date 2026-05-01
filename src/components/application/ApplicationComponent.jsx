@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function ApplicationComponent() {
   const navigate = useNavigate();
+
   return (
     <>
       <div className="page-header-container">

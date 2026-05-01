@@ -6,7 +6,7 @@ import LoaderScreen from "../LoaderScreen";
 
 const TYPE_OPTIONS = [
   { value: "artist", label: "Artista musical", icon: "music_note" },
-  { value: "content_creator", label: "Creador de contenido", icon: "videocam" },
+  { value: "creator", label: "Creador de contenido", icon: "videocam" },
 ];
 
 export default function ApplicationForm() {
@@ -66,6 +66,7 @@ export default function ApplicationForm() {
       }
 
       e.target.reset();
+      setIsLoading(false);
       setSubmitted(true);
     } catch {
       setError("Error de conexión con el servidor.");
