@@ -17,6 +17,7 @@ import MusicPage from "./routes/MusicPage";
 import CommentPage from "./routes/CommentPage";
 import PostPage from "./routes/PostPage";
 import { DataProvider } from "./providers/DataProvider";
+import ApplicationForm from "./components/application/ApplicationForm";
 import CreatePost from "./routes/CreatePost";
 import Home from "./routes/Home";
 
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
           {
             path: "/request",
             element: <ApplicationPage />,
+          },
+          {
+            path: "/request/form",
+            element: <ApplicationForm />,
           },
           {
             path: ":username",

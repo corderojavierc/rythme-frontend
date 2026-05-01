@@ -184,7 +184,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return <LoaderScreen text="Cargando perfil..." />;
+    return <LoaderScreen text="Cargando perfil..." inline={true} />;
   }
 
   if (notFound) {
