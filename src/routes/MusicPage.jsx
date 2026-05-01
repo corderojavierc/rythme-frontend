@@ -54,7 +54,7 @@ export default function MusicPage() {
   }, [id]);
 
   if (loading && !music) {
-    return <LoaderScreen text="Cargando canción..." />;
+    return <LoaderScreen text="Cargando canción..." inline={true} />;
   }
 
   if (!music) {

@@ -1,46 +1,45 @@
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getApi } from "../../config";
+import LoaderScreen from "../LoaderScreen";
+import ApplicationPending from "./ApplicationPending";
+import ApplicationStart from "./ApplicationStart";
 
 export default function ApplicationComponent() {
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasApplication, setHasApplication] = useState(false);
 
-  return (
-    <>
-      <div className="page-header-container">
-        <button
-          className="back-button"
-          title="Volver"
-          onClick={() => navigate(-1)}
-        >
-          <span className="material-symbols-outlined">arrow_back</span>
-        </button>
-        <h2 className="feed-header music-page-title">
-          Programas de Verificación
-        </h2>
-      </div>
+  useEffect(() => {
+    const checkApplication = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${getApi()}/artist-applications/has`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
 
-      <div className="feed-state wip-container">
-        <div style={{ position: "relative" }}>
-          <span className="material-symbols-outlined wip-icon">
-            forward_to_inbox
-          </span>
-        </div>
+        if (
+          data.has_application ||
+          data.error === "Ya tienes una aplicación pendiente."
+        ) {
+          setHasApplication(true);
+        } else {
+          setHasApplication(false);
+        }
+      } catch {
+        setHasApplication(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-        <div style={{ textAlign: "center" }}>
-          <h1 className="wip-title">¿Eres artista o creador de contenido?</h1>
-          <p className="wip-text">
-            Únete a la comunidad de profesionales en <strong>RythMe</strong> y
-            accede a herramientas exclusivas para impulsar tu carrera musical o
-            tu contenido.
-          </p>
-        </div>
-        <button
-          className="action-btn wip-button"
-          onClick={() => navigate("/request/form")}
-        >
-          <span className="material-symbols-outlined">start</span>
-          Empezar solicitud
-        </button>
-      </div>
-    </>
-  );
+    checkApplication();
+  }, []);
+
+  if (isLoading) {
+    return <LoaderScreen text="Comprobando solicitudes... " inline={true} />;
+  }
+
+  return hasApplication ? <ApplicationPending /> : <ApplicationStart />;
 }

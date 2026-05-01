@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApi } from "../../config";
 import ApplicationSent from "./ApplicationSent";
@@ -14,8 +14,32 @@ export default function ApplicationForm() {
 
   const [type, setType] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
+  const [alreadyHas, setAlreadyHas] = useState(false);
+
+  useEffect(() => {
+    const check = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${getApi()}/artist-applications/has`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (
+          data.has_application ||
+          data.error === "Ya tienes una aplicación pendiente."
+        ) {
+          setAlreadyHas(true);
+        }
+      } catch {
+        setAlreadyHas(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    check();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,7 +102,7 @@ export default function ApplicationForm() {
     return <LoaderScreen text="Enviando solicitud..." />;
   }
 
-  if (submitted) {
+  if (submitted || alreadyHas) {
     return <ApplicationSent />;
   }
 
