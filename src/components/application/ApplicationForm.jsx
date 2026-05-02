@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getApi } from "../../config";
 import ApplicationSent from "./ApplicationSent";
 import LoaderScreen from "../LoaderScreen";
+import ApplicationError from "./ApplicationError";
 
 const TYPE_OPTIONS = [
   { value: "artist", label: "Artista musical", icon: "music_note" },
@@ -11,6 +12,7 @@ const TYPE_OPTIONS = [
 
 export default function ApplicationForm() {
   const navigate = useNavigate();
+  const user = localStorage.getItem("user");
 
   const [type, setType] = useState("");
   const [error, setError] = useState("");
@@ -104,6 +106,10 @@ export default function ApplicationForm() {
 
   if (submitted || alreadyHas) {
     return <ApplicationSent />;
+  }
+
+  if (user.type !== "user") {
+    return <ApplicationError />;
   }
 
   return (

@@ -3,10 +3,12 @@ import { getApi } from "../../config";
 import LoaderScreen from "../LoaderScreen";
 import ApplicationPending from "./ApplicationPending";
 import ApplicationStart from "./ApplicationStart";
+import ApplicationError from "./ApplicationError";
 
 export default function ApplicationComponent() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasApplication, setHasApplication] = useState(false);
+  const user = localStorage.getItem("user");
 
   useEffect(() => {
     const checkApplication = async () => {
@@ -36,6 +38,8 @@ export default function ApplicationComponent() {
 
     checkApplication();
   }, []);
+
+  if (user.type !== "user") return <ApplicationError />;
 
   if (isLoading) {
     return <LoaderScreen text="Comprobando solicitudes... " inline={true} />;

@@ -92,10 +92,12 @@ export default function AsideLayout() {
         <span className="material-symbols-outlined">calendar_today</span>
         Eventos
       </Link>
-      <Link className={getLinkClass("/request")} to="/request">
-        <span className="material-symbols-outlined">pan_tool_alt</span>
-        Solicitar
-      </Link>
+      {user.type === "user" && (
+        <Link className={getLinkClass("/request")} to="/request">
+          <span className="material-symbols-outlined">pan_tool_alt</span>
+          Solicitar
+        </Link>
+      )}
       <Link
         className={getLinkClass(`/${user.username}`)}
         to={`/${user.username}`}
