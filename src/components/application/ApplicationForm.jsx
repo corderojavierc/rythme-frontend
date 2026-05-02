@@ -63,7 +63,7 @@ export default function ApplicationForm() {
       }
     };
     check();
-  }, []);
+  }, [user]);
 
   const extractSpotifyId = (value) => {
     const match = value.match(/artist\/([a-zA-Z0-9]+)/);
@@ -209,41 +209,33 @@ export default function ApplicationForm() {
               <label className="app-field-label">YouTube</label>
               <input
                 className="rythme-search-field"
-                type="text"
+                type="url"
                 name="youtube"
               />
             </div>
             <div className="app-field-group">
               <label className="app-field-label">TikTok</label>
-              <input
-                className="rythme-search-field"
-                type="text"
-                name="tiktok"
-              />
+              <input className="rythme-search-field" type="url" name="tiktok" />
             </div>
             <div className="app-field-group">
               <label className="app-field-label">Instagram</label>
               <input
                 className="rythme-search-field"
-                type="text"
+                type="url"
                 name="instagram"
               />
             </div>
             <div className="app-field-group">
-              <label className="app-field-label">Spotify (URL o ID)</label>
+              <label className="app-field-label">Spotify</label>
               <input
                 className="rythme-search-field"
-                type="text"
+                type="url"
                 name="spotify"
               />
             </div>
             <div className="app-field-group">
               <label className="app-field-label">Twitch</label>
-              <input
-                className="rythme-search-field"
-                type="text"
-                name="twitch"
-              />
+              <input className="rythme-search-field" type="url" name="twitch" />
             </div>
           </div>
         </div>

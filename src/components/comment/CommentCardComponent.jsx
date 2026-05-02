@@ -2,6 +2,7 @@ import { useData } from "../../providers/DataProvider";
 import { PostProvider } from "../../providers/PostProvider";
 import CommentLikeButton from "./CommentLikeButton";
 import { useNavigate } from "react-router-dom";
+import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
 
 export default function CommentCardComponent({ comment, post }) {
   const navigate = useNavigate();
@@ -55,16 +56,7 @@ export default function CommentCardComponent({ comment, post }) {
           <div className="user-info">
             <div className="user-name">
               {fullName}
-              {(user?.type || user?.user_type) &&
-                user.type !== "user" &&
-                user.user_type !== "user" && (
-                  <span
-                    className={`material-symbols-outlined verified-icon verified-${user.type || user.user_type}`}
-                    title={user.type || user.user_type}
-                  >
-                    verified
-                  </span>
-                )}
+              <VerifiedBadgeComponent type={user.type || user.user_type} />
             </div>
             <div className="user-handle">
               @{user.user_name || user.username || "user"}

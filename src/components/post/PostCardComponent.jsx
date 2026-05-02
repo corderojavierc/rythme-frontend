@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
 import { useData } from "../../providers/DataProvider";
+import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
 
 export default function PostCardComponent({ post, type = "post" }) {
   const { updatePost } = useData();
@@ -102,16 +103,7 @@ export default function PostCardComponent({ post, type = "post" }) {
           <div className="user-info">
             <div className="user-name">
               {fullName}
-              {(post.user_type || post.type) &&
-                post.user_type !== "user" &&
-                post.type !== "user" && (
-                  <span
-                    className={`material-symbols-outlined verified-icon verified-${post.user_type || post.type}`}
-                    title={post.user_type || post.type}
-                  >
-                    verified
-                  </span>
-                )}
+              <VerifiedBadgeComponent type={post.user_type || post.type} />
             </div>
             <div className="user-handle">@{post.user_name}</div>
           </div>

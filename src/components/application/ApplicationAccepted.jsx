@@ -1,7 +1,22 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-export default function ApplicationVerified() {
+export default function ApplicationAccepted() {
   const navigate = useNavigate();
+  const [user] = useState(() => {
+    const userString = localStorage.getItem("user");
+    return userString ? JSON.parse(userString) : null;
+  });
+
+  let translatedType = user?.type || "";
+  if (user?.type === "artist") translatedType = "artista";
+  if (user?.type === "creator") translatedType = "creador";
+  if (user?.type === "admin") translatedType = "administrador";
+
+  if (!user) {
+    navigate("/");
+    return null;
+  }
 
   return (
     <>
@@ -19,8 +34,11 @@ export default function ApplicationVerified() {
       <div className="feed-state wip-container">
         <div style={{ position: "relative" }}>
           <span
-            className="material-symbols-outlined wip-icon"
-            style={{ color: "#22c55e" }}
+            className={`material-symbols-outlined verified-${user.type}`}
+            style={{
+              fontSize: "120px",
+              fontVariationSettings: '"FILL" 1',
+            }}
           >
             verified
           </span>
@@ -32,8 +50,8 @@ export default function ApplicationVerified() {
           </h1>
           <p className="wip-text">
             Tu solicitud ha sido <strong>aprobada con éxito</strong>. Ahora
-            tienes acceso a todas las herramientas exclusivas para artistas y
-            creadores en <strong>RythMe</strong>.
+            tienes acceso a todas las herramientas exclusivas para{" "}
+            {translatedType} en <strong>RythMe</strong>.
           </p>
         </div>
         <button className="action-btn wip-button" onClick={() => navigate("/")}>

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
+import VerifiedBadgeComponent from "../components/VerifiedBadgeComponent";
 import "../App.css";
 import logoImg from "../logo-removebg-preview-effect.png";
 
@@ -12,19 +13,28 @@ export default function AsideLayout() {
 
   const currentPath = location.pathname;
 
-  const userJson = localStorage.getItem("user");
-  const user = userJson ? JSON.parse(userJson) : {};
+  const [user, setUser] = useState(() => {
+    const userJson = localStorage.getItem("user");
+    return userJson ? JSON.parse(userJson) : {};
+  });
+
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      const userJson = localStorage.getItem("user");
+      setUser(userJson ? JSON.parse(userJson) : {});
+    };
+    window.addEventListener("userUpdated", handleUserUpdate);
+    return () => window.removeEventListener("userUpdated", handleUserUpdate);
+  }, []);
 
   let fullName = user.username || "Usuario";
   if (user.name) {
-    fullName = user.name + (user.second_name ? " " + user.second_name : "");
+    fullName = user.name;
   }
 
   let initials = "?";
-  if (user.name || user.second_name) {
-    initials = (
-      (user.name?.[0] || "") + (user.second_name?.[0] || "")
-    ).toUpperCase();
+  if (user.name) {
+    initials = (user.name?.[0] || "").toUpperCase();
   }
 
   const handleLogout = async () => {
@@ -117,7 +127,10 @@ export default function AsideLayout() {
           )}
         </div>
         <div className="user-card-info">
-          <div className="user-card-name">{fullName}</div>
+          <div className="user-card-name">
+            {fullName}
+            <VerifiedBadgeComponent type={user.type} />
+          </div>
           <div className="user-card-handle">@{user.username || "usuario"}</div>
         </div>
         <span className="material-symbols-outlined user-card-chevron">

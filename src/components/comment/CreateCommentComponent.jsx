@@ -1,6 +1,7 @@
 import { getApi } from "../../config";
 import { useData } from "../../providers/DataProvider";
 import { useNavigate } from "react-router-dom";
+import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
 
 const API_COMMENT_URL = getApi() + "/comments";
 
@@ -78,14 +79,7 @@ export default function CreateCommentComponent({ post }) {
         <div className="user-info">
           <div className="user-name">
             {fullName}
-            {user.type && user.type !== "user" && (
-              <span
-                className={`material-symbols-outlined verified-icon verified-${user.type}`}
-                title={user.type}
-              >
-                verified
-              </span>
-            )}
+            <VerifiedBadgeComponent type={user.type} />
           </div>
           <div className="user-handle">
             @{user.username ? user.username : "user"}

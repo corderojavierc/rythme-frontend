@@ -3,17 +3,39 @@ import { getApi } from "../../config";
 import LoaderScreen from "../LoaderScreen";
 import ApplicationPending from "./ApplicationPending";
 import ApplicationStart from "./ApplicationStart";
-import ApplicationError from "./ApplicationError";
+import ApplicationAccepted from "./ApplicationAccepted";
 
 export default function ApplicationComponent() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasApplication, setHasApplication] = useState(false);
-  const user = localStorage.getItem("user");
+  const [user, setUser] = useState(() => {
+    const userString = localStorage.getItem("user");
+    return userString ? JSON.parse(userString) : null;
+  });
 
   useEffect(() => {
     const checkApplication = async () => {
       try {
         const token = localStorage.getItem("token");
+
+        if (user && user.username) {
+          const userRes = await fetch(`${getApi()}/users`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (userRes.ok) {
+            const allUsers = await userRes.json();
+            const usersList = allUsers.data || allUsers;
+            const userData = usersList.find(
+              (u) => u.username === user.username,
+            );
+            if (userData) {
+              setUser(userData);
+              localStorage.setItem("user", JSON.stringify(userData));
+              window.dispatchEvent(new Event("userUpdated"));
+            }
+          }
+        }
+
         const response = await fetch(`${getApi()}/artist-applications/has`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,9 +59,9 @@ export default function ApplicationComponent() {
     };
 
     checkApplication();
-  }, []);
+  }, [user]);
 
-  if (user.type !== "user") return <ApplicationError />;
+  if (!user || user.type !== "user") return <ApplicationAccepted />;
 
   if (isLoading) {
     return <LoaderScreen text="Comprobando solicitudes... " inline={true} />;
