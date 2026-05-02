@@ -13,7 +13,6 @@ export default function Register() {
 
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
-  const [secondName, setSecondName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -40,7 +39,6 @@ export default function Register() {
         body: JSON.stringify({
           username: username,
           name: name,
-          second_name: secondName,
           email: email,
           password: password,
           password_confirmation: passwordConfirm,
@@ -100,13 +98,6 @@ export default function Register() {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Apellido"
-          required
-          value={secondName}
-          onChange={(e) => setSecondName(e.target.value)}
         />
         <input
           type="email"

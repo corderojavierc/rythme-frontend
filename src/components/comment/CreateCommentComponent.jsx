@@ -14,14 +14,12 @@ export default function CreateCommentComponent({ post }) {
 
   let fullName = user.username || "Usuario";
   if (user.name) {
-    fullName = user.name + (user.second_name ? " " + user.second_name : "");
+    fullName = user.name;
   }
 
   let initials = "?";
-  if (user.name || user.second_name) {
-    initials = (
-      (user.name?.[0] || "") + (user.second_name?.[0] || "")
-    ).toUpperCase();
+  if (user.name) {
+    initials = (user.name?.[0] || "").toUpperCase();
   }
 
   const handleSubmit = async (e) => {
@@ -78,7 +76,17 @@ export default function CreateCommentComponent({ post }) {
           )}
         </div>
         <div className="user-info">
-          <div className="user-name">{fullName}</div>
+          <div className="user-name">
+            {fullName}
+            {user.type && user.type !== "user" && (
+              <span
+                className={`material-symbols-outlined verified-icon verified-${user.type}`}
+                title={user.type}
+              >
+                verified
+              </span>
+            )}
+          </div>
           <div className="user-handle">
             @{user.username ? user.username : "user"}
           </div>

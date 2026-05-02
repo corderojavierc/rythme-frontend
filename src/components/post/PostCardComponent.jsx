@@ -10,7 +10,7 @@ export default function PostCardComponent({ post, type = "post" }) {
 
   let fullName = post.user_name || "Usuario";
   if (post.name) {
-    fullName = post.name + (post.second_name ? " " + post.second_name : "");
+    fullName = post.name;
   }
 
   function redirectToPost() {
@@ -27,11 +27,11 @@ export default function PostCardComponent({ post, type = "post" }) {
         id: post.user_id,
         username: post.user_name,
         name: post.name,
-        second_name: post.second_name,
         profile_image: post.profile_image,
         followers: post.followers,
         following: post.following,
         posts: post.posts,
+        type: post.user_type || post.type,
       },
     });
   }
@@ -100,7 +100,19 @@ export default function PostCardComponent({ post, type = "post" }) {
             <img src={post.profile_image} alt={fullName} />
           </div>
           <div className="user-info">
-            <div className="user-name">{fullName}</div>
+            <div className="user-name">
+              {fullName}
+              {(post.user_type || post.type) &&
+                post.user_type !== "user" &&
+                post.type !== "user" && (
+                  <span
+                    className={`material-symbols-outlined verified-icon verified-${post.user_type || post.type}`}
+                    title={post.user_type || post.type}
+                  >
+                    verified
+                  </span>
+                )}
+            </div>
             <div className="user-handle">@{post.user_name}</div>
           </div>
         </div>

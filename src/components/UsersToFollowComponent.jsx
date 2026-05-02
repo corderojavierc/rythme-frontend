@@ -42,7 +42,15 @@ export default function UsersToFollow() {
             />
             <div className="person-info">
               <div className="person-name">
-                {user.name} {user.second_name}
+                {user.name}
+                {user.type && user.type !== "user" && (
+                  <span
+                    className={`material-symbols-outlined verified-icon verified-${user.type}`}
+                    title={user.type}
+                  >
+                    verified
+                  </span>
+                )}
               </div>
               <div className="person-handle">@{user.username}</div>
             </div>

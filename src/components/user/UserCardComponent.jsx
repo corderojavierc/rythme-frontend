@@ -43,7 +43,15 @@ export default function UserCardComponent({ user, onFollowChange }) {
           <div className="profile-name-row">
             <div className="profile-titles">
               <h1 className="profile-display-name">
-                {user.name} {user.second_name}
+                {user.name}
+                {user.type && user.type !== "user" && (
+                  <span
+                    className={`material-symbols-outlined verified-icon verified-${user.type}`}
+                    title={user.type}
+                  >
+                    verified
+                  </span>
+                )}
               </h1>
               <span className="profile-username">@{user.username}</span>
             </div>
