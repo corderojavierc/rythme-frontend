@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useData } from "../../providers/DataProvider";
+import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
 
 export default function UserCardComponent({ user, onFollowChange }) {
   const { follows, toggleFollow } = useData();
@@ -43,7 +44,8 @@ export default function UserCardComponent({ user, onFollowChange }) {
           <div className="profile-name-row">
             <div className="profile-titles">
               <h1 className="profile-display-name">
-                {user.name} {user.second_name}
+                {user.name}
+                <VerifiedBadgeComponent type={user.type} />
               </h1>
               <span className="profile-username">@{user.username}</span>
             </div>

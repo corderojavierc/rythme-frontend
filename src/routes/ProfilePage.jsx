@@ -25,12 +25,12 @@ export default function ProfilePage() {
       return {
         id: location.state.user_id || location.state.id || "",
         name: location.state.name || "",
-        second_name: location.state.second_name || "",
         profile_image: location.state.profile_image || "",
         username: location.state.username || username,
         followers: location.state.followers || "0",
         following: location.state.following || "0",
         posts: location.state.posts || "0",
+        type: location.state.type || "",
       };
     }
     const storedUser = userJson ? JSON.parse(userJson) : {};
@@ -52,8 +52,6 @@ export default function ProfilePage() {
           location.state.id ||
           (isMe ? storedUser.id : ""),
         name: location.state.name || (isMe ? storedUser.name : ""),
-        second_name:
-          location.state.second_name || (isMe ? storedUser.second_name : ""),
         profile_image:
           location.state.profile_image ||
           (isMe ? storedUser.profile_image : ""),
@@ -63,6 +61,7 @@ export default function ProfilePage() {
         following:
           location.state.following || (isMe ? storedUser.following : "0"),
         posts: location.state.posts || (isMe ? storedUser.posts : "0"),
+        type: location.state.type || (isMe ? storedUser.type : ""),
       });
     } else {
       if (isMe) {
@@ -88,10 +87,6 @@ export default function ProfilePage() {
           prev.id ||
           (isMe ? storedUser.id : ""),
         name: location.state.name || prev.name || (isMe ? storedUser.name : ""),
-        second_name:
-          location.state.second_name ||
-          prev.second_name ||
-          (isMe ? storedUser.second_name : ""),
         profile_image:
           location.state.profile_image ||
           prev.profile_image ||
@@ -106,6 +101,7 @@ export default function ProfilePage() {
           (isMe ? storedUser.following : "0"),
         posts:
           location.state.posts || prev.posts || (isMe ? storedUser.posts : "0"),
+        type: location.state.type || prev.type || (isMe ? storedUser.type : ""),
       };
     });
   }

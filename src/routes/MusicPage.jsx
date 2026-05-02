@@ -101,13 +101,6 @@ export default function MusicPage() {
               {music.count_ratings === 1 ? "valoración" : "valoraciones"}
             </span>
           </div>
-        </div>
-      </div>
-
-      <div className="music-page-tabs-row">
-        <div className="tabs-placeholder"></div>
-        <MusicNavegator />
-        <div className="tabs-action">
           {!music.is_valorated && (
             <button
               className="comment-button"
@@ -126,6 +119,12 @@ export default function MusicPage() {
             </button>
           )}
         </div>
+      </div>
+
+      <div className="music-page-tabs-row">
+        <div className="tabs-placeholder"></div>
+        <MusicNavegator />
+        <div className="tabs-action"></div>
       </div>
 
       <div className="music-posts-container">

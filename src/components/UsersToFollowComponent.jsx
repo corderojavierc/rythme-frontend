@@ -1,10 +1,25 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import LoaderScreen from "./LoaderScreen";
 import { useData } from "../providers/DataProvider";
+import VerifiedBadgeComponent from "./VerifiedBadgeComponent";
 
 export default function UsersToFollow() {
   const { recommendedUsers, follows, loadingUsers, toggleFollow } = useData();
   const [hoveredUserId, setHoveredUserId] = useState(null);
+  const navigate = useNavigate();
+
+  function redirectToProfile(user) {
+    navigate(`/${user.username}`, {
+      state: {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        profile_image: user.profile_image,
+        type: user.type,
+      },
+    });
+  }
 
   if (loadingUsers && recommendedUsers.length === 0) {
     return <LoaderScreen inline small text="Buscando gente..." />;
@@ -39,10 +54,17 @@ export default function UsersToFollow() {
               className="person-avatar"
               src={user.profile_image}
               alt={user.username}
+              onClick={() => redirectToProfile(user)}
+              style={{ cursor: "pointer" }}
             />
-            <div className="person-info">
+            <div
+              className="person-info"
+              onClick={() => redirectToProfile(user)}
+              style={{ cursor: "pointer" }}
+            >
               <div className="person-name">
-                {user.name} {user.second_name}
+                {user.name}
+                <VerifiedBadgeComponent type={user.type} />
               </div>
               <div className="person-handle">@{user.username}</div>
             </div>

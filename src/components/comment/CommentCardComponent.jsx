@@ -2,6 +2,7 @@ import { useData } from "../../providers/DataProvider";
 import { PostProvider } from "../../providers/PostProvider";
 import CommentLikeButton from "./CommentLikeButton";
 import { useNavigate } from "react-router-dom";
+import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
 
 export default function CommentCardComponent({ comment, post }) {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function CommentCardComponent({ comment, post }) {
 
   let fullName = user?.user_name || user?.username || "Usuario";
   if (user?.name) {
-    fullName = user.name + (user.second_name ? " " + user.second_name : "");
+    fullName = user.name;
   }
 
   function redirectToProfile(e) {
@@ -24,8 +25,8 @@ export default function CommentCardComponent({ comment, post }) {
         id: profileUser.user_id || profileUser.id,
         username: profileUser.user_name || profileUser.username,
         name: profileUser.name,
-        second_name: profileUser.second_name,
         profile_image: profileUser.profile_image,
+        type: profileUser.user_type || profileUser.type,
       },
     });
   }
@@ -53,7 +54,10 @@ export default function CommentCardComponent({ comment, post }) {
             )}
           </div>
           <div className="user-info">
-            <div className="user-name">{fullName}</div>
+            <div className="user-name">
+              {fullName}
+              <VerifiedBadgeComponent type={user.type || user.user_type} />
+            </div>
             <div className="user-handle">
               @{user.user_name || user.username || "user"}
             </div>

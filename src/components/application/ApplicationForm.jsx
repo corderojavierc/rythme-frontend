@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getApi } from "../../config";
 import ApplicationSent from "./ApplicationSent";
 import LoaderScreen from "../LoaderScreen";
+import ApplicationAccepted from "./ApplicationAccepted";
 
 const TYPE_OPTIONS = [
   { value: "artist", label: "Artista musical", icon: "music_note" },
@@ -11,6 +12,10 @@ const TYPE_OPTIONS = [
 
 export default function ApplicationForm() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(() => {
+    const userString = localStorage.getItem("user");
+    return userString ? JSON.parse(userString) : null;
+  });
 
   const [type, setType] = useState("");
   const [error, setError] = useState("");
@@ -22,6 +27,25 @@ export default function ApplicationForm() {
     const check = async () => {
       try {
         const token = localStorage.getItem("token");
+
+        if (user && user.username) {
+          const userRes = await fetch(`${getApi()}/users`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (userRes.ok) {
+            const allUsers = await userRes.json();
+            const usersList = allUsers.data || allUsers;
+            const userData = usersList.find(
+              (u) => u.username === user.username,
+            );
+            if (userData) {
+              setUser(userData);
+              localStorage.setItem("user", JSON.stringify(userData));
+              window.dispatchEvent(new Event("userUpdated"));
+            }
+          }
+        }
+
         const res = await fetch(`${getApi()}/artist-applications/has`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -39,18 +63,20 @@ export default function ApplicationForm() {
       }
     };
     check();
-  }, []);
+  }, [user]);
+
+  const extractSpotifyId = (value) => {
+    const match = value.match(/artist\/([a-zA-Z0-9]+)/);
+    return match ? match[1] : value;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const followers = e.target.followers.value;
-    const listeners = e.target.listeners.value;
-    const youtube = e.target.youtube.value;
-    const tiktok = e.target.tiktok.value;
-    const instagram = e.target.instagram.value;
-    const spotify = e.target.spotify.value;
-    const twitch = e.target.twitch.value;
-    const description = e.target.description.value;
+    const formData = new FormData(e.target);
+    const followers = formData.get("followers");
+    const listeners = formData.get("listeners");
+    const spotifyRaw = formData.get("spotify");
+
     setError("");
 
     if (!type) {
@@ -72,12 +98,12 @@ export default function ApplicationForm() {
           type,
           followers: followers ? parseInt(followers) : 0,
           listeners: listeners ? parseInt(listeners) : null,
-          youtube: youtube || null,
-          tiktok: tiktok || null,
-          instagram: instagram || null,
-          spotify: spotify || null,
-          twitch: twitch || null,
-          description,
+          youtube: formData.get("youtube") || null,
+          tiktok: formData.get("tiktok") || null,
+          instagram: formData.get("instagram") || null,
+          spotify: extractSpotifyId(spotifyRaw) || null,
+          twitch: formData.get("twitch") || null,
+          description: formData.get("description"),
         }),
       });
 
@@ -89,7 +115,6 @@ export default function ApplicationForm() {
         return;
       }
 
-      e.target.reset();
       setIsLoading(false);
       setSubmitted(true);
     } catch {
@@ -98,22 +123,14 @@ export default function ApplicationForm() {
     }
   };
 
-  if (isLoading) {
-    return <LoaderScreen text="Enviando solicitud..." />;
-  }
-
-  if (submitted || alreadyHas) {
-    return <ApplicationSent />;
-  }
+  if (!user || user.type !== "user") return <ApplicationAccepted />;
+  if (isLoading) return <LoaderScreen text="Cargando..." />;
+  if (submitted || alreadyHas) return <ApplicationSent />;
 
   return (
     <>
       <div className="page-header-container">
-        <button
-          className="back-button"
-          title="Volver"
-          onClick={() => navigate(-1)}
-        >
+        <button className="back-button" onClick={() => navigate(-1)}>
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         <h2 className="feed-header music-page-title">
@@ -161,29 +178,25 @@ export default function ApplicationForm() {
           <div className="app-row">
             <div className="app-field-group">
               <label className="app-field-label">
-                <span className="material-symbols-outlined">group</span>
+                <span className="material-symbols-outlined">group</span>{" "}
                 Seguidores totales *
               </label>
               <input
                 className="rythme-search-field"
                 type="number"
-                min="0"
                 name="followers"
-                placeholder="ej. 5000"
                 required
               />
             </div>
             <div className="app-field-group">
               <label className="app-field-label">
-                <span className="material-symbols-outlined">headphones</span>
+                <span className="material-symbols-outlined">headphones</span>{" "}
                 Oyentes mensuales
               </label>
               <input
                 className="rythme-search-field"
                 type="number"
-                min="0"
                 name="listeners"
-                placeholder="ej. 2000"
               />
             </div>
           </div>
@@ -193,64 +206,36 @@ export default function ApplicationForm() {
           <p className="selection-label">Redes sociales</p>
           <div className="app-socials-grid">
             <div className="app-field-group">
-              <label className="app-field-label">
-                <span className="material-symbols-outlined">play_circle</span>
-                YouTube
-              </label>
+              <label className="app-field-label">YouTube</label>
               <input
                 className="rythme-search-field"
                 type="url"
                 name="youtube"
-                placeholder="https://youtube.com/@tucanal"
               />
             </div>
             <div className="app-field-group">
-              <label className="app-field-label">
-                <span className="material-symbols-outlined">music_video</span>
-                TikTok
-              </label>
-              <input
-                className="rythme-search-field"
-                type="url"
-                name="tiktok"
-                placeholder="https://tiktok.com/@tuusuario"
-              />
+              <label className="app-field-label">TikTok</label>
+              <input className="rythme-search-field" type="url" name="tiktok" />
             </div>
             <div className="app-field-group">
-              <label className="app-field-label">
-                <span className="material-symbols-outlined">photo_camera</span>
-                Instagram
-              </label>
+              <label className="app-field-label">Instagram</label>
               <input
                 className="rythme-search-field"
                 type="url"
                 name="instagram"
-                placeholder="https://instagram.com/tuusuario"
               />
             </div>
             <div className="app-field-group">
-              <label className="app-field-label">
-                <span className="material-symbols-outlined">library_music</span>
-                Spotify
-              </label>
+              <label className="app-field-label">Spotify</label>
               <input
                 className="rythme-search-field"
                 type="url"
                 name="spotify"
-                placeholder="https://open.spotify.com/artist/..."
               />
             </div>
             <div className="app-field-group">
-              <label className="app-field-label">
-                <span className="material-symbols-outlined">live_tv</span>
-                Twitch
-              </label>
-              <input
-                className="rythme-search-field"
-                type="url"
-                name="twitch"
-                placeholder="https://twitch.tv/tucanal"
-              />
+              <label className="app-field-label">Twitch</label>
+              <input className="rythme-search-field" type="url" name="twitch" />
             </div>
           </div>
         </div>
@@ -259,18 +244,12 @@ export default function ApplicationForm() {
           <p className="selection-label">Sobre ti *</p>
           <textarea
             className="rythme-comment-area"
-            placeholder="Cuéntanos quién eres, qué tipo de contenido creas y por qué quieres verificarte en RythMe..."
             name="description"
             required
           />
         </div>
 
-        {error && (
-          <div className="post-error-message">
-            <span className="material-symbols-outlined">error</span>
-            {error}
-          </div>
-        )}
+        {error && <div className="post-error-message">{error}</div>}
 
         <button className="comment-button" type="submit">
           <span className="circle1"></span>
