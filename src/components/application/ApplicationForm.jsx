@@ -28,7 +28,10 @@ export default function ApplicationForm() {
       try {
         const token = localStorage.getItem("token");
 
-        if (user && user.username) {
+        const userStr = localStorage.getItem("user");
+        const currentUser = userStr ? JSON.parse(userStr) : null;
+
+        if (currentUser && currentUser.username) {
           const userRes = await fetch(`${getApi()}/users`, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -36,7 +39,7 @@ export default function ApplicationForm() {
             const allUsers = await userRes.json();
             const usersList = allUsers.data || allUsers;
             const userData = usersList.find(
-              (u) => u.username === user.username,
+              (u) => u.username === currentUser.username,
             );
             if (userData) {
               setUser(userData);
@@ -63,7 +66,7 @@ export default function ApplicationForm() {
       }
     };
     check();
-  }, [user]);
+  }, []);
 
   const extractSpotifyId = (value) => {
     const match = value.match(/artist\/([a-zA-Z0-9]+)/);

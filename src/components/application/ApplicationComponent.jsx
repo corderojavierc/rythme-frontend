@@ -18,7 +18,10 @@ export default function ApplicationComponent() {
       try {
         const token = localStorage.getItem("token");
 
-        if (user && user.username) {
+        const userStr = localStorage.getItem("user");
+        const currentUser = userStr ? JSON.parse(userStr) : null;
+
+        if (currentUser && currentUser.username) {
           const userRes = await fetch(`${getApi()}/users`, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -26,7 +29,7 @@ export default function ApplicationComponent() {
             const allUsers = await userRes.json();
             const usersList = allUsers.data || allUsers;
             const userData = usersList.find(
-              (u) => u.username === user.username,
+              (u) => u.username === currentUser.username,
             );
             if (userData) {
               setUser(userData);
@@ -59,7 +62,7 @@ export default function ApplicationComponent() {
     };
 
     checkApplication();
-  }, [user]);
+  }, []);
 
   if (!user || user.type !== "user") return <ApplicationAccepted />;
 
