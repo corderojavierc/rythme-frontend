@@ -1,18 +1,12 @@
 import UsersToFollow from "../components/UsersToFollowComponent";
+import UserSearchComponent from "../components/user/UserSearchComponent";
 import "../App.css";
 
 export default function RightAsideLayout() {
   return (
     <aside className="right-sidebar">
       <div>
-        <div className="search-group">
-          <input
-            type="text"
-            placeholder="Buscar artistas, usuarios"
-            className="rythme-search-field"
-          />
-          <span className="material-symbols-outlined search-icon">search</span>
-        </div>
+        <UserSearchComponent />
         <div className="section-title">Podría interesarte</div>
         <div className="event-card">
           <div className="event-date">

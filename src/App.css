@@ -1148,6 +1148,7 @@ body {
 .music-search-integrated {
   margin-bottom: 24px;
   width: 100%;
+  position: relative;
 }
 
 .music-search-integrated .search-group {
@@ -1156,7 +1157,16 @@ body {
 
 .search-results-panel {
   background: #1a202f;
-  border-radius: 3%;
+  border-radius: 12px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin-top: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .search-status-inline {
