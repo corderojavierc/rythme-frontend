@@ -28,23 +28,21 @@ export default function ApplicationForm() {
       try {
         const token = localStorage.getItem("token");
 
-        const userStr = localStorage.getItem("user");
-        const currentUser = userStr ? JSON.parse(userStr) : null;
+        const userRes = await fetch(`${getApi()}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        if (currentUser && currentUser.username) {
-          const userRes = await fetch(`${getApi()}/users`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (userRes.ok) {
-            const allUsers = await userRes.json();
-            const usersList = allUsers.data || allUsers;
-            const userData = usersList.find(
-              (u) => u.username === currentUser.username,
-            );
-            if (userData) {
-              setUser(userData);
-              localStorage.setItem("user", JSON.stringify(userData));
-              window.dispatchEvent(new Event("userUpdated"));
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          const actualUser = userData.data || userData;
+          if (actualUser) {
+            setUser(actualUser);
+            localStorage.setItem("user", JSON.stringify(actualUser));
+            window.dispatchEvent(new Event("userUpdated"));
+
+            if (actualUser.type !== "user") {
+              setIsLoading(false);
+              return;
             }
           }
         }
@@ -53,12 +51,7 @@ export default function ApplicationForm() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        if (
-          data.has_application ||
-          data.error === "Ya tienes una aplicación pendiente."
-        ) {
-          setAlreadyHas(true);
-        }
+        setAlreadyHas(data.has_application || data.is_accepted);
       } catch {
         setAlreadyHas(false);
       } finally {
@@ -126,7 +119,7 @@ export default function ApplicationForm() {
     }
   };
 
-  if (!user || user.type !== "user") return <ApplicationAccepted />;
+  if (user && user.type !== "user") return <ApplicationAccepted user={user} />;
   if (isLoading) return <LoaderScreen text="Cargando..." />;
   if (submitted || alreadyHas) return <ApplicationSent />;
 

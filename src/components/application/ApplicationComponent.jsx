@@ -14,46 +14,34 @@ export default function ApplicationComponent() {
   });
 
   useEffect(() => {
-    const checkApplication = async () => {
+    const checkStatus = async () => {
       try {
         const token = localStorage.getItem("token");
 
-        const userStr = localStorage.getItem("user");
-        const currentUser = userStr ? JSON.parse(userStr) : null;
+        const userRes = await fetch(`${getApi()}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        if (currentUser && currentUser.username) {
-          const userRes = await fetch(`${getApi()}/users`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (userRes.ok) {
-            const allUsers = await userRes.json();
-            const usersList = allUsers.data || allUsers;
-            const userData = usersList.find(
-              (u) => u.username === currentUser.username,
-            );
-            if (userData) {
-              setUser(userData);
-              localStorage.setItem("user", JSON.stringify(userData));
-              window.dispatchEvent(new Event("userUpdated"));
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          const actualUser = userData.data || userData;
+          if (actualUser) {
+            setUser(actualUser);
+            localStorage.setItem("user", JSON.stringify(actualUser));
+            window.dispatchEvent(new Event("userUpdated"));
+
+            if (actualUser.type !== "user") {
+              setIsLoading(false);
+              return;
             }
           }
         }
 
-        const response = await fetch(`${getApi()}/artist-applications/has`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const res = await fetch(`${getApi()}/artist-applications/has`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await response.json();
-
-        if (
-          data.has_application ||
-          data.error === "Ya tienes una aplicación pendiente."
-        ) {
-          setHasApplication(true);
-        } else {
-          setHasApplication(false);
-        }
+        const data = await res.json();
+        setHasApplication(data.has_application || data.is_accepted);
       } catch {
         setHasApplication(false);
       } finally {
@@ -61,11 +49,10 @@ export default function ApplicationComponent() {
       }
     };
 
-    checkApplication();
+    checkStatus();
   }, []);
 
-  if (!user || user.type !== "user") return <ApplicationAccepted />;
-
+  if (user && user.type !== "user") return <ApplicationAccepted user={user} />;
   if (isLoading) {
     return <LoaderScreen text="Comprobando solicitudes... " inline={true} />;
   }
