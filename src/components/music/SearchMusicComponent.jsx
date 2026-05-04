@@ -32,14 +32,14 @@ export default function SearchMusicComponent({ onSelect }) {
             "Content-Type": "application/json",
             Authorization: "Bearer " + token,
           },
-          body: JSON.stringify({ name: query }),
+          body: JSON.stringify({ name: query, limit: 5 }),
           signal: controller.signal,
         });
 
         if (!response.ok) throw new Error("Search failed");
 
         const data = await response.json();
-        setResults(data.data || []);
+        setResults((data.data || []).slice(0, 5));
         setMessage(data.message || "");
         setLoading(false);
       } catch (error) {

@@ -1921,3 +1921,38 @@ body {
     transform: translateX(-50%) translateY(0);
   }
 }
+
+.search-query {
+  padding: 15px;
+  text-align: center;
+  color: #4a84ff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search-query:hover {
+  background: #252a36;
+}
+.search-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search-music-item {
+  width: 100%;
+  margin-bottom: 0 !important;
+}
+
+.music-stats-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.rating-count {
+  font-size: 11px;
+  color: #8b96b0;
+}
+

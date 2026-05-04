@@ -75,6 +75,13 @@ export default function UserSearchComponent({ onSelect }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && query.trim().length >= 1) {
+      navigate(`/search?q=${query}`);
+      setQuery("");
+    }
+  };
+
   const showPanel = query.trim().length >= 1;
 
   return (
@@ -88,6 +95,7 @@ export default function UserSearchComponent({ onSelect }) {
           className="rythme-search-field"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <span className="material-symbols-outlined search-icon">search</span>
       </form>
@@ -127,6 +135,15 @@ export default function UserSearchComponent({ onSelect }) {
               No se han encontrado usuarios
             </div>
           )}
+          <div
+            className="search-query"
+            onClick={function () {
+              navigate(`/search?q=${query}`);
+              setQuery("");
+            }}
+          >
+            Buscar {query}
+          </div>
         </div>
       )}
     </div>

@@ -9,6 +9,7 @@ import PublicRoute from "./routes/PublicRoute";
 import { AuthProvider } from "./auth/AuthProvider";
 import FollowedsPosts from "./routes/FollowedsPosts";
 import Feed from "./routes/Feed";
+import SearchPage from "./routes/SearchPage";
 import ProfilePage from "./routes/ProfilePage";
 import GlobalEventPage from "./routes/GlobalEventPage";
 import ApplicationPage from "./routes/ApplicationPage";
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
           {
             path: "/request/form",
             element: <ApplicationForm />,
+          },
+          {
+            path: "/search",
+            element: <SearchPage />,
           },
           {
             path: ":username",
