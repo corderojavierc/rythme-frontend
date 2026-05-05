@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function ApplicationAccepted() {
+export default function ApplicationAccepted({ user: initialUser }) {
   const navigate = useNavigate();
   const [user] = useState(() => {
+    if (initialUser) return initialUser;
     const userString = localStorage.getItem("user");
     return userString ? JSON.parse(userString) : null;
   });

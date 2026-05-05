@@ -1148,6 +1148,7 @@ body {
 .music-search-integrated {
   margin-bottom: 24px;
   width: 100%;
+  position: relative;
 }
 
 .music-search-integrated .search-group {
@@ -1156,7 +1157,16 @@ body {
 
 .search-results-panel {
   background: #1a202f;
-  border-radius: 3%;
+  border-radius: 12px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin-top: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .search-status-inline {
@@ -1910,4 +1920,38 @@ body {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+}
+
+.search-query {
+  padding: 15px;
+  text-align: center;
+  color: #4a84ff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.search-query:hover {
+  background: #252a36;
+}
+.search-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search-music-item {
+  width: 100%;
+  margin-bottom: 0 !important;
+}
+
+.music-stats-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.rating-count {
+  font-size: 11px;
+  color: #8b96b0;
 }

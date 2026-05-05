@@ -138,7 +138,7 @@ export default function ProfilePage() {
             if (found.username === me.username) {
               localStorage.setItem("user", JSON.stringify(found));
             }
-          } else {
+          } else if (!isOwnProfile) {
             setNotFound(true);
           }
           return;
