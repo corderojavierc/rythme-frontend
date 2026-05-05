@@ -17,6 +17,10 @@ export default function UsersToFollow() {
         name: user.name,
         profile_image: user.profile_image,
         type: user.type,
+        followers: user.followers,
+        following: user.following,
+        posts: user.posts,
+        musics: user.musics || 0,
       },
     });
   }

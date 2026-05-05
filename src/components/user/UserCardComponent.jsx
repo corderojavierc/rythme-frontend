@@ -78,8 +78,18 @@ export default function UserCardComponent({ user, onFollowChange }) {
             </div>
             <div className="stat-item">
               <span className="stat-count">{user.posts || "0"}</span>
-              <span className="stat-label">Valoraciones</span>
+              <span className="stat-label">
+                {user.posts === 1 ? "Valoracion" : "Valoraciones"}
+              </span>
             </div>
+            {user.type === "artist" && (
+              <div className="stat-item">
+                <span className="stat-count">{user.musics || "0"}</span>
+                <span className="stat-label">
+                  {user.musics === 1 ? "Cancion" : "Canciones"}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="profile-social-links">{}</div>
