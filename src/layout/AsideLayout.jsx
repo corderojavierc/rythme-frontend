@@ -108,6 +108,15 @@ export default function AsideLayout() {
           Solicitar
         </Link>
       )}
+      {user.type === "admin" && (
+        <Link
+          className={getLinkClass("/admin")}
+          to="http://localhost:8000/admin"
+        >
+          <span class="material-symbols-outlined">admin_panel_settings</span>
+          Admin
+        </Link>
+      )}
       <Link
         className={getLinkClass(`/${user.username}`)}
         to={`/${user.username}`}
