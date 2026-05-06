@@ -6,6 +6,7 @@ import UserCommentsComponent from "../components/user/UserCommentsComponent";
 import UserLikedComponent from "../components/user/UserLikedComponent";
 import UserCardComponent from "../components/user/UserCardComponent";
 import UserNavigationComponent from "../components/user/UserNavigationComponent";
+import UserArtistMusicsComponent from "../components/user/UserArtistMusicsComponent";
 import NotFoundPage from "./NotFoundPage";
 import LoaderScreen from "../components/LoaderScreen";
 
@@ -14,8 +15,6 @@ export default function ProfilePage() {
   const { username } = useParams();
   const location = useLocation();
   const userJson = localStorage.getItem("user");
-
-  const [activeTab, setActiveTab] = useState("ratings");
   const [notFound, setNotFound] = useState(false);
   const storedUserInit = userJson ? JSON.parse(userJson) : {};
   const isOwnProfile = username === storedUserInit.username;
@@ -31,6 +30,7 @@ export default function ProfilePage() {
         following: location.state.following || "0",
         posts: location.state.posts || "0",
         type: location.state.type || "",
+        musics: location.state.musics || "0",
       };
     }
     const storedUser = userJson ? JSON.parse(userJson) : {};
@@ -62,6 +62,7 @@ export default function ProfilePage() {
           location.state.following || (isMe ? storedUser.following : "0"),
         posts: location.state.posts || (isMe ? storedUser.posts : "0"),
         type: location.state.type || (isMe ? storedUser.type : ""),
+        musics: location.state.musics || (isMe ? storedUser.musics : ""),
       });
     } else {
       if (isMe) {
@@ -102,9 +103,16 @@ export default function ProfilePage() {
         posts:
           location.state.posts || prev.posts || (isMe ? storedUser.posts : "0"),
         type: location.state.type || prev.type || (isMe ? storedUser.type : ""),
+        musics:
+          location.state.musics ||
+          prev.musics ||
+          (isMe ? storedUser.musics : ""),
       };
     });
   }
+  const [activeTab, setActiveTab] = useState(
+    user.type == "artist" ? "musics" : "ratings",
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -125,20 +133,7 @@ export default function ProfilePage() {
         });
 
         if (!response.ok) {
-          const allUsersRes = await fetch(`${getApi()}/users`, {
-            headers,
-            signal,
-          });
-          const allUsers = await allUsersRes.json();
-          const usersList = allUsers.data || allUsers;
-          const found = usersList.find((u) => u.username === username);
-          if (found) {
-            setUser(found);
-            const me = userJson ? JSON.parse(userJson) : {};
-            if (found.username === me.username) {
-              localStorage.setItem("user", JSON.stringify(found));
-            }
-          } else if (!isOwnProfile) {
+          if (!isOwnProfile) {
             setNotFound(true);
           }
           return;
@@ -179,6 +174,8 @@ export default function ProfilePage() {
     }));
   };
 
+  console.log(user.type);
+
   if (loading) {
     return <LoaderScreen text="Cargando perfil..." inline={true} />;
   }
@@ -205,9 +202,13 @@ export default function ProfilePage() {
       <UserNavigationComponent
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        userType={user.type}
       />
 
       <div className="profile-content-area">
+        {activeTab === "musics" && (
+          <UserArtistMusicsComponent id={user.id} isMe={isMe} />
+        )}
         {activeTab === "ratings" && (
           <UserPostsComponent id={user.id} isMe={isMe} />
         )}

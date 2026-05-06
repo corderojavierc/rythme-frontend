@@ -31,9 +31,34 @@ export default function MusicPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
     const fetchMusic = async () => {
       try {
         const token = localStorage.getItem("token");
+        const songIsExternal = !Number.isInteger(Number(id));
+
+        if (songIsExternal) {
+          const response = await fetch(getApi() + "/music", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+              name: music?.title + " " + music?.artist,
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            navigate(`/music/${data.data.id}`, {
+              state: data.data,
+              replace: true,
+            });
+          }
+          return;
+        }
+
         const response = await fetch(`${getApi()}/music/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -49,7 +74,9 @@ export default function MusicPage() {
     };
 
     fetchMusic();
-    fetchMusicPosts(id);
+    if (Number.isInteger(Number(id))) {
+      fetchMusicPosts(id);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 

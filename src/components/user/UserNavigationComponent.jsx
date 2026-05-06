@@ -1,9 +1,19 @@
-export default function UserNavigationComponent({ activeTab, onTabChange }) {
-  const tabs = [
+export default function UserNavigationComponent({
+  activeTab,
+  onTabChange,
+  userType,
+}) {
+  const tabs = [];
+
+  if (userType === "artist") {
+    tabs.push({ id: "musics", label: "Música", icon: "music_note_2" });
+  }
+
+  tabs.push(
     { id: "ratings", label: "Valoraciones", icon: "star" },
     { id: "comments", label: "Comentarios", icon: "chat_bubble" },
     { id: "likes", label: "Likes", icon: "favorite" },
-  ];
+  );
 
   return (
     <div className="music-navigator full-width">

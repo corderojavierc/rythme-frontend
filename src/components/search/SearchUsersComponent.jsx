@@ -2,8 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { getApi } from "../../config";
 import UserCardComponent from "../user/UserCardComponent";
 import LoaderScreen from "../LoaderScreen";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchUsersComponent({ query }) {
+  const navigate = useNavigate();
+
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -83,6 +86,10 @@ export default function SearchUsersComponent({ query }) {
     return () => observer.disconnect();
   }, [isLoading, hasMore]);
 
+  const handleUserClick = (user) => {
+    navigate(`/user/${user.id}`);
+  };
+
   if (isLoading && page === 1)
     return <LoaderScreen text="Buscando usuarios..." inline />;
 
@@ -98,7 +105,11 @@ export default function SearchUsersComponent({ query }) {
   return (
     <div className="users-list-container">
       {users.map((user, idx) => (
-        <UserCardComponent key={`${user.id}-${idx}`} user={user} />
+        <UserCardComponent
+          key={`${user.id}-${idx}`}
+          user={user}
+          onClick={() => handleUserClick(user)}
+        />
       ))}
       {(hasMore || isLoading) && (
         <div ref={sentinelRef} style={{ height: 40 }} />

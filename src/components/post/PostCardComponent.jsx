@@ -33,6 +33,7 @@ export default function PostCardComponent({ post, type = "post" }) {
         following: post.following,
         posts: post.posts,
         type: post.user_type || post.type,
+        musics: post.musics || 0,
       },
     });
   }
