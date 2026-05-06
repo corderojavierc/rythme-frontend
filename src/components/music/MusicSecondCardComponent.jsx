@@ -6,21 +6,17 @@ export default function MusicSecondCardComponent({
 }) {
   const navigate = useNavigate();
 
-  const handleMusicClick = (music) => {
-    if (fromArtist) {
-      navigate(`/music/${music.id}`, {
-        state: {
-          songName: music.title,
-          artist: music.artist,
-          cover_url: music.cover_url,
-          global_rating: music.rating,
-          count_ratings: music.count_ratings,
-          is_valorated: music.is_valorated,
-        },
-      });
-    } else {
-      console.log("casi");
-    }
+  const handleMusicClick = () => {
+    navigate(`/music/${music.id}`, {
+      state: {
+        title: music.title,
+        artist: music.artist,
+        cover_url: music.cover_url,
+        rating: music.rating,
+        count_ratings: music.count_ratings,
+        is_valorated: music.is_valorated,
+      },
+    });
   };
 
   const renderStars = (rating) => {
@@ -52,11 +48,12 @@ export default function MusicSecondCardComponent({
     }
     return stars;
   };
+
   return (
     <div
       key={`${music.id}`}
       className="rating-card search-music-item"
-      onClick={() => handleMusicClick(music)}
+      onClick={handleMusicClick}
       style={{
         padding: "24px",
         marginTop: "24px",

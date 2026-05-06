@@ -177,7 +177,7 @@ export function DataProvider({ children }) {
 
       const recommendations = allUsers
         .filter((u) => u.id !== user.id && !followedIds.includes(u.id))
-        .slice(0, 3);
+        .slice(0, 5);
 
       setRecommendedUsers(recommendations);
     } catch (e) {
