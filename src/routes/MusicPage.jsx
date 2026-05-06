@@ -11,7 +11,8 @@ export default function MusicPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const { musicPosts, loadingMusicPosts, fetchMusicPosts } = useData();
+  const { musicPosts, loadingMusicPosts, fetchMusicPosts, resetMusicPosts } =
+    useData();
 
   const [music, setMusic] = useState(() => {
     if (location.state) {
@@ -31,11 +32,13 @@ export default function MusicPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    resetMusicPosts();
 
     const fetchMusic = async () => {
       try {
         const token = localStorage.getItem("token");
-        const songIsExternal = !Number.isInteger(Number(id));
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        const songIsExternal = !Number.isInteger(Number(id)) && !isUUID;
 
         if (songIsExternal) {
           const response = await fetch(getApi() + "/music", {
@@ -74,7 +77,8 @@ export default function MusicPage() {
     };
 
     fetchMusic();
-    if (Number.isInteger(Number(id))) {
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (Number.isInteger(Number(id)) || isUUID) {
       fetchMusicPosts(id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,7 +159,7 @@ export default function MusicPage() {
       </div>
 
       <div className="music-posts-container">
-        {loadingMusicPosts ? (
+        {loadingMusicPosts || !music || String(music.id) !== String(id) ? (
           <LoaderScreen inline small text="Cargando valoraciones..." />
         ) : musicPosts.length > 0 ? (
           musicPosts.map((post) => (
