@@ -301,6 +301,11 @@ export function DataProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
+  function resetMusicPosts() {
+    setMusicPosts([]);
+    setLoadingMusicPosts(true);
+  }
+
   return (
     <DataContext.Provider
       value={{
@@ -336,6 +341,7 @@ export function DataProvider({ children }) {
         musicPosts,
         loadingMusicPosts,
         fetchMusicPosts,
+        resetMusicPosts,
       }}
     >
       {children}

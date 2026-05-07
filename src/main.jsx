@@ -1,7 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-
 import Login from "./routes/Login";
 import Register from "./routes/Register";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -10,7 +9,7 @@ import { AuthProvider } from "./auth/AuthProvider";
 import FollowedsPosts from "./routes/FollowedsPosts";
 import Feed from "./routes/Feed";
 import SearchPage from "./routes/SearchPage";
-import ProfilePage from "./routes/ProfilePage";
+import ProfilePageWrapper from "./routes/ProfilePageWrapper";
 import GlobalEventPage from "./routes/GlobalEventPage";
 import ApplicationPage from "./routes/ApplicationPage";
 import GlobalMusicPage from "./routes/GlobalMusicPage";
@@ -76,7 +75,7 @@ const router = createBrowserRouter([
           },
           {
             path: ":username",
-            element: <ProfilePage />,
+            element: <ProfilePageWrapper />,
           },
         ],
       },
