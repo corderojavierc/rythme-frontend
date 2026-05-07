@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { getApi } from "../../config";
 import LoaderScreen from "../LoaderScreen";
-import { useNavigate } from "react-router-dom";
 import MusicSecondCardComponent from "../music/MusicSecondCardComponent";
 
 export default function SearchMusicsComponent({ query }) {
@@ -10,7 +9,6 @@ export default function SearchMusicsComponent({ query }) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const sentinelRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMusics = async (pageNum = 1) => {

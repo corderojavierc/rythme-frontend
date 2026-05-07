@@ -1,9 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function MusicSecondCardComponent({
-  music,
-  fromArtist = false,
-}) {
+export default function MusicSecondCardComponent({ music }) {
   const navigate = useNavigate();
 
   const handleMusicClick = () => {

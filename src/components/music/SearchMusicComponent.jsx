@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MusicCardComponent from "./MusicCardComponent";
-import LoaderScreen from "../LoaderScreen";
 import { getApi } from "../../config";
 
 export default function SearchMusicComponent({ onSelect }) {
