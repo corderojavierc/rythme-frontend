@@ -4,6 +4,7 @@ import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
 import { useData } from "../../providers/DataProvider";
 import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
+import StarsComponent from "../music/StarsComponent";
 
 export default function PostCardComponent({ post, type = "post" }) {
   const { updatePost } = useData();
@@ -54,40 +55,6 @@ export default function PostCardComponent({ post, type = "post" }) {
 
   const rating = post.rating ? parseFloat(post.rating) : 0;
 
-  const renderStars = () => {
-    const stars = [];
-
-    for (let i = 1; i <= 5; i++) {
-      const isFull = rating >= i;
-      const isHalf = rating > i - 0.51;
-
-      if (isFull) {
-        stars.push(
-          <span key={i} className="material-symbols-outlined star-filled">
-            star
-          </span>,
-        );
-      } else if (isHalf) {
-        stars.push(
-          <div key={i} className="star-half-wrapper">
-            <span className="material-symbols-outlined star-empty">star</span>
-            <span className="material-symbols-outlined star-filled star-half-overlay">
-              star
-            </span>
-          </div>,
-        );
-      } else {
-        stars.push(
-          <span key={i} className="material-symbols-outlined star-empty">
-            star
-          </span>,
-        );
-      }
-    }
-
-    return stars;
-  };
-
   return (
     <PostProvider post={post} onUpdate={updatePost}>
       <div className="rating-card" onClick={redirectToPost}>
@@ -129,7 +96,7 @@ export default function PostCardComponent({ post, type = "post" }) {
 
         <div className="rating-content">
           <div className="stars-display-row">
-            <div className="stars-container">{renderStars()}</div>
+            <StarsComponent rating={rating} />
             <span className="rating-score-display">{rating.toFixed(2)}</span>
           </div>
           <div className="comment">{post.title}</div>
