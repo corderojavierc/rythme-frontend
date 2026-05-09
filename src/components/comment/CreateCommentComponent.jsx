@@ -1,4 +1,4 @@
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import { useData } from "../../providers/DataProvider";
 import { useNavigate } from "react-router-dom";
 import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
@@ -11,7 +11,6 @@ export default function CreateCommentComponent({ post }) {
 
   const userJson = localStorage.getItem("user");
   const user = userJson ? JSON.parse(userJson) : {};
-  const token = localStorage.getItem("token");
 
   let fullName = user.username || "Usuario";
   if (user.name) {
@@ -32,10 +31,7 @@ export default function CreateCommentComponent({ post }) {
     try {
       const response = await fetch(API_COMMENT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+        headers: getAuthHeaders("application/json"),
         body: JSON.stringify({
           post_id: post.id,
           text: text,

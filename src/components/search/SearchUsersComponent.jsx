@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import UserCardComponent from "../user/UserCardComponent";
 import LoaderScreen from "../LoaderScreen";
 import { useNavigate } from "react-router-dom";
@@ -18,13 +18,10 @@ export default function SearchUsersComponent({ query }) {
       if (!query) return;
       if (pageNum === 1) setIsLoading(true);
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch(
           `${getApi()}/users/search?text=${query}&page=${pageNum}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: getAuthHeaders(),
           },
         );
         const data = await response.json();
@@ -47,13 +44,10 @@ export default function SearchUsersComponent({ query }) {
       const fetchNextPage = async () => {
         setIsLoading(true);
         try {
-          const token = localStorage.getItem("token");
           const response = await fetch(
             `${getApi()}/users/search?text=${query}&page=${page}`,
             {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+              headers: getAuthHeaders(),
             },
           );
           const data = await response.json();

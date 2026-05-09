@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useAuth } from "../auth/AuthProvider";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders } from "../config";
 
 const DataContext = createContext();
 
@@ -36,11 +36,6 @@ export function DataProvider({ children }) {
   const [error, setError] = useState(null);
 
   const isTogglingFollow = useRef(false);
-
-  function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return { Authorization: "Bearer " + token };
-  }
 
   async function fetchPosts(url = getApi() + "/posts") {
     setLoadingPosts(true);

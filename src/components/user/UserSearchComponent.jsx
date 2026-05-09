@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoaderScreen from "../LoaderScreen";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 
 export default function UserSearchComponent({ onSelect }) {
   const navigate = useNavigate();
@@ -21,14 +21,11 @@ export default function UserSearchComponent({ onSelect }) {
 
     const timeoutId = setTimeout(async () => {
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch(
           getApi() + "/users/search?text=" + encodeURIComponent(query),
           {
             method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
+            headers: getAuthHeaders(),
             signal: controller.signal,
           },
         );

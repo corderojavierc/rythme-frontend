@@ -4,6 +4,7 @@ import { useAuth } from "../auth/AuthProvider";
 import VerifiedBadgeComponent from "../components/VerifiedBadgeComponent";
 import "../App.css";
 import logoImg from "../logo-removebg-preview-effect.png";
+import { getApi, getAuthHeaders } from "../config";
 
 export default function AsideLayout() {
   const auth = useAuth();
@@ -41,12 +42,9 @@ export default function AsideLayout() {
     try {
       const token = localStorage.getItem("token");
 
-      await fetch("http://127.0.0.1:8000/api/logout", {
+      await fetch(`${getApi()}/logout`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+        headers: getAuthHeaders("application/json"),
       });
 
       localStorage.removeItem("token");

@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders } from "../config";
 import UserPostsComponent from "../components/user/UserPostsComponent";
 import UserCommentsComponent from "../components/user/UserCommentsComponent";
 import UserLikedComponent from "../components/user/UserLikedComponent";
@@ -123,12 +123,9 @@ export default function ProfilePage() {
     const { signal } = controller;
 
     const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
-
       try {
         let response = await fetch(`${getApi()}/users/${username}`, {
-          headers,
+          headers: getAuthHeaders(),
           signal,
         });
 

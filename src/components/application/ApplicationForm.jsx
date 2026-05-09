@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import ApplicationSent from "./ApplicationSent";
 import LoaderScreen from "../LoaderScreen";
 import ApplicationAccepted from "./ApplicationAccepted";
@@ -26,10 +26,8 @@ export default function ApplicationForm() {
   useEffect(() => {
     const check = async () => {
       try {
-        const token = localStorage.getItem("token");
-
         const userRes = await fetch(`${getApi()}/users/me`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: getAuthHeaders(),
         });
 
         if (userRes.ok) {
@@ -48,7 +46,7 @@ export default function ApplicationForm() {
         }
 
         const res = await fetch(`${getApi()}/artist-applications/has`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: getAuthHeaders(),
         });
         const data = await res.json();
         setAlreadyHas(data.has_application || data.is_accepted);
@@ -83,13 +81,9 @@ export default function ApplicationForm() {
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(`${getApi()}/artist-applications`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders("application/json"),
         body: JSON.stringify({
           type,
           followers: followers ? parseInt(followers) : 0,

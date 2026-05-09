@@ -3,7 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import PostCardComponent from "../components/post/PostCardComponent";
 import CreateCommentComponent from "../components/comment/CreateCommentComponent";
 import LoaderScreen from "../components/LoaderScreen";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders } from "../config";
 import { useData } from "../providers/DataProvider";
 
 const API_POST_URL = getApi() + "/posts";
@@ -35,9 +35,8 @@ export default function CommentPage() {
     if (id && !loadingPosts && !post) {
       async function fetchPost() {
         try {
-          const token = localStorage.getItem("token");
           const response = await fetch(API_POST_URL + "/" + id, {
-            headers: { Authorization: "Bearer " + token },
+            headers: getAuthHeaders(),
           });
           const data = await response.json();
 

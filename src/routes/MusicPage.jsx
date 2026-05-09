@@ -1,6 +1,6 @@
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders } from "../config";
 import LoaderScreen from "../components/LoaderScreen";
 import MusicNavegator from "../components/music/MusicNavegator";
 import PostCardComponent from "../components/post/PostCardComponent";
@@ -36,17 +36,16 @@ export default function MusicPage() {
 
     const fetchMusic = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        const isUUID =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            id,
+          );
         const songIsExternal = !Number.isInteger(Number(id)) && !isUUID;
 
         if (songIsExternal) {
           const response = await fetch(getApi() + "/music", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + token,
-            },
+            headers: getAuthHeaders("application/json"),
             body: JSON.stringify({
               name: music?.title + " " + music?.artist,
             }),
@@ -63,7 +62,7 @@ export default function MusicPage() {
         }
 
         const response = await fetch(`${getApi()}/music/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: getAuthHeaders(),
         });
         if (response.ok) {
           const data = await response.json();
@@ -77,7 +76,10 @@ export default function MusicPage() {
     };
 
     fetchMusic();
-    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    const isUUID =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        id,
+      );
     if (Number.isInteger(Number(id)) || isUUID) {
       fetchMusicPosts(id);
     }

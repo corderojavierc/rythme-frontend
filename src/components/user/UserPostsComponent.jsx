@@ -1,4 +1,4 @@
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import LoaderScreen from "../LoaderScreen";
 import PostCardComponent from "../post/PostCardComponent";
 import { useState, useEffect, useRef } from "react";
@@ -16,9 +16,7 @@ export default function UserPostsComponent({ id, isMe }) {
     if (loading) return;
     setLoading(true);
     try {
-      const response = await fetch(url, {
-        headers: { Authorization: "Bearer " + token },
-      });
+      const response = await fetch(url, { headers: getAuthHeaders() });
       const data = await response.json();
 
       const newPosts = data.data || (Array.isArray(data) ? data : []);
