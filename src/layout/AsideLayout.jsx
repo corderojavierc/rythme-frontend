@@ -4,7 +4,7 @@ import { useAuth } from "../auth/AuthProvider";
 import VerifiedBadgeComponent from "../components/VerifiedBadgeComponent";
 import "../App.css";
 import logoImg from "../logo-removebg-preview-effect.png";
-import { getApi, getAuthHeaders } from "../config";
+import { getApi, getAuthHeaders, getUser } from "../config";
 
 export default function AsideLayout() {
   const auth = useAuth();
@@ -14,16 +14,10 @@ export default function AsideLayout() {
 
   const currentPath = location.pathname;
 
-  const [user, setUser] = useState(() => {
-    const userJson = localStorage.getItem("user");
-    return userJson ? JSON.parse(userJson) : {};
-  });
+  const [user, setUser] = useState(() => getUser() || {});
 
   useEffect(() => {
-    const handleUserUpdate = () => {
-      const userJson = localStorage.getItem("user");
-      setUser(userJson ? JSON.parse(userJson) : {});
-    };
+    const handleUserUpdate = () => setUser(getUser() || {});
     window.addEventListener("userUpdated", handleUserUpdate);
     return () => window.removeEventListener("userUpdated", handleUserUpdate);
   }, []);
@@ -40,8 +34,6 @@ export default function AsideLayout() {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("token");
-
       await fetch(`${getApi()}/logout`, {
         method: "POST",
         headers: getAuthHeaders("application/json"),
@@ -68,6 +60,8 @@ export default function AsideLayout() {
     chevronIcon = "expand_less";
   }
 
+  console.log(user);
+
   return (
     <aside className="sidebar">
       <Link className="brand-link" to="/">
@@ -87,10 +81,6 @@ export default function AsideLayout() {
       <Link className={getLinkClass("/followed")} to="/followed">
         <span className="material-symbols-outlined">group</span>
         Seguidos
-      </Link>
-      <Link className={getLinkClass("/rate")} to="/rate">
-        <span className="material-symbols-outlined">add_ad</span>
-        Valorar
       </Link>
       <Link className={getLinkClass("/music")} to="/music">
         <span className="material-symbols-outlined">music_note_2</span>

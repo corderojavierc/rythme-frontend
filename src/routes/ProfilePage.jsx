@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getApi, getAuthHeaders } from "../config";
+import { getApi, getAuthHeaders, getUser } from "../config";
 import UserPostsComponent from "../components/user/UserPostsComponent";
 import UserCommentsComponent from "../components/user/UserCommentsComponent";
 import UserLikedComponent from "../components/user/UserLikedComponent";
@@ -14,9 +14,8 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { username } = useParams();
   const location = useLocation();
-  const userJson = localStorage.getItem("user");
   const [notFound, setNotFound] = useState(false);
-  const storedUserInit = userJson ? JSON.parse(userJson) : {};
+  const storedUserInit = getUser() || {};
   const isOwnProfile = username === storedUserInit.username;
   const [loading, setLoading] = useState(!location.state && !isOwnProfile);
   const [user, setUser] = useState(() => {
@@ -33,7 +32,7 @@ export default function ProfilePage() {
         musics: location.state.musics || "0",
       };
     }
-    const storedUser = userJson ? JSON.parse(userJson) : {};
+    const storedUser = getUser() || {};
     return username === storedUser.username ? storedUser : { username };
   });
 
@@ -42,7 +41,7 @@ export default function ProfilePage() {
 
   if (username !== prevUsername) {
     setPrevUsername(username);
-    const storedUser = userJson ? JSON.parse(userJson) : {};
+    const storedUser = getUser() || {};
     const isMe = username === storedUser.username;
 
     if (location.state && location.state.username === username) {
@@ -78,7 +77,7 @@ export default function ProfilePage() {
   ) {
     setPrevLocationState(location.state);
     setUser((prev) => {
-      const storedUser = userJson ? JSON.parse(userJson) : {};
+      const storedUser = getUser() || {};
       const isMe = username === storedUser.username;
       return {
         ...prev,
@@ -140,7 +139,7 @@ export default function ProfilePage() {
         const userData = data.data || data;
         setUser(userData);
 
-        const me = userJson ? JSON.parse(userJson) : {};
+        const me = getUser() || {};
         if (userData.username === me.username) {
           localStorage.setItem("user", JSON.stringify(userData));
         }
@@ -159,7 +158,7 @@ export default function ProfilePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
-  const loggedInUser = userJson ? JSON.parse(userJson) : {};
+  const loggedInUser = getUser() || {};
   const isMe = loggedInUser.id && String(user.id) === String(loggedInUser.id);
 
   const handleFollowChange = (nextFollowingState) => {

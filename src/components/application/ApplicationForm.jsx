@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getApi, getAuthHeaders } from "../../config";
+import { getApi, getAuthHeaders, getUser } from "../../config";
 import ApplicationSent from "./ApplicationSent";
 import LoaderScreen from "../LoaderScreen";
 import ApplicationAccepted from "./ApplicationAccepted";
@@ -12,10 +12,7 @@ const TYPE_OPTIONS = [
 
 export default function ApplicationForm() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(() => {
-    const userString = localStorage.getItem("user");
-    return userString ? JSON.parse(userString) : null;
-  });
+  const [user, setUser] = useState(() => getUser() || null);
 
   const [type, setType] = useState("");
   const [error, setError] = useState("");

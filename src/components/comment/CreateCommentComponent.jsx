@@ -1,4 +1,4 @@
-import { getApi, getAuthHeaders } from "../../config";
+import { getApi, getAuthHeaders, getUser } from "../../config";
 import { useData } from "../../providers/DataProvider";
 import { useNavigate } from "react-router-dom";
 import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
@@ -9,8 +9,7 @@ export default function CreateCommentComponent({ post }) {
   const { updatePost } = useData();
   const navigate = useNavigate();
 
-  const userJson = localStorage.getItem("user");
-  const user = userJson ? JSON.parse(userJson) : {};
+  const user = getUser() || {};
 
   let fullName = user.username || "Usuario";
   if (user.name) {

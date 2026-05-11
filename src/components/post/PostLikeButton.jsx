@@ -1,12 +1,11 @@
 import { usePostContext } from "../../providers/PostProvider";
 import { useState, useRef } from "react";
-import { getApi, getAuthHeaders } from "../../config";
+import { getApi, getAuthHeaders, getUser } from "../../config";
 
 const API_LIKES_URL = getApi() + "/likes";
 
 export default function PostLikeButton() {
-  const userJson = localStorage.getItem("user");
-  const currentUser = userJson ? JSON.parse(userJson) : {};
+  const currentUser = getUser() || {};
   const token = localStorage.getItem("token");
 
   const { post, updatePost } = usePostContext();

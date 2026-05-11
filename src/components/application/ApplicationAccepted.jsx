@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { getUser } from "../../config";
 
 export default function ApplicationAccepted({ user: initialUser }) {
   const navigate = useNavigate();
-  const [user] = useState(() => {
-    if (initialUser) return initialUser;
-    const userString = localStorage.getItem("user");
-    return userString ? JSON.parse(userString) : null;
-  });
+  const [user] = useState(() =>
+    initialUser ? initialUser : getUser() || null,
+  );
 
   let translatedType = user?.type || "";
   if (user?.type === "artist") translatedType = "artista";

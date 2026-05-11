@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MusicCardComponent from "./MusicCardComponent";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 
 export default function SearchMusicComponent({ onSelect }) {
   const navigate = useNavigate();
@@ -22,13 +22,9 @@ export default function SearchMusicComponent({ onSelect }) {
     const timeoutId = setTimeout(async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch(getApi() + "/music/search", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
+          headers: getAuthHeaders("application/json"),
           body: JSON.stringify({ name: query, limit: 5 }),
           signal: controller.signal,
         });
