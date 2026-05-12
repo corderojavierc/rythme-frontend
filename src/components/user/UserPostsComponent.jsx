@@ -1,72 +1,43 @@
 import { getApi, getAuthHeaders } from "../../config";
 import LoaderScreen from "../LoaderScreen";
 import PostCardComponent from "../post/PostCardComponent";
-import { useState, useEffect, useRef } from "react";
+import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 
 const API_URL = getApi();
 
 export default function UserPostsComponent({ id, isMe }) {
-  let token = localStorage.getItem("token");
-  const [loading, setLoading] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [nextPageUrl, setNextPageUrl] = useState(null);
-  const sentinelRef = useRef(null);
+  const loader = async (cursor, signal) => {
+    if (!id) return { items: [], next: null };
+    const url =
+      typeof cursor === "string" &&
+      (cursor.startsWith("http") || cursor.startsWith("/"))
+        ? cursor
+        : `${API_URL}/${id}/posts`;
 
-  async function fetchPosts(url = `${API_URL}/${id}/posts`) {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const response = await fetch(url, { headers: getAuthHeaders() });
-      const data = await response.json();
+    const response = await fetch(url, { headers: getAuthHeaders(), signal });
+    if (!response.ok) throw new Error("Failed to fetch posts");
+    const data = await response.json();
 
-      const newPosts = data.data || (Array.isArray(data) ? data : []);
-      const nextUrl = data.links?.next || null;
+    const items = data.data || (Array.isArray(data) ? data : []);
+    return { items, next: data.links?.next || null };
+  };
 
-      if (url === `${API_URL}/${id}/posts`) {
-        setPosts(newPosts);
-      } else {
-        setPosts((prev) => [...prev, ...newPosts]);
-      }
-      setNextPageUrl(nextUrl);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    if (id) {
-      setPosts([]);
-      setNextPageUrl(null);
-      fetchPosts();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  useEffect(() => {
-    if (loading || !nextPageUrl) return;
-
-    const element = sentinelRef.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchPosts(nextPageUrl);
-        }
-      },
-      { rootMargin: "200px" },
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, nextPageUrl]);
+  const {
+    items: posts,
+    loading,
+    initialLoading,
+    hasMore,
+    sentinelRef,
+  } = usePaginatedFetch({
+    loader,
+    deps: [id],
+    initialParam: `${API_URL}/${id}/posts`,
+    rootMargin: "200px",
+  });
 
   const noPosts = posts.length === 0;
 
-  if (loading && noPosts) {
+  if (initialLoading && noPosts) {
     return <LoaderScreen text="Cargando opiniones..." inline={true} />;
   }
 
@@ -91,7 +62,7 @@ export default function UserPostsComponent({ id, isMe }) {
         <PostCardComponent key={p.id} post={p} />
       ))}
 
-      {nextPageUrl && <div ref={sentinelRef} style={{ height: 10 }} />}
+      {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
 
       {loading && !noPosts && (
         <div style={{ textAlign: "center", padding: "20px" }}>
@@ -99,7 +70,7 @@ export default function UserPostsComponent({ id, isMe }) {
         </div>
       )}
 
-      {!nextPageUrl && !noPosts && !loading && (
+      {!hasMore && !noPosts && !loading && (
         <div className="feed-end">
           <span className="material-symbols-outlined">music_note</span>
           Has llegado al final de todas las opiniones.
