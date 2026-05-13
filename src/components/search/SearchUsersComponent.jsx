@@ -41,7 +41,7 @@ export default function SearchUsersComponent({ query }) {
   });
 
   const handleUserClick = (user) => {
-    navigate(`/user/${user.id}`);
+    navigate(`/${user.username}`);
   };
 
   if (initialLoading)
