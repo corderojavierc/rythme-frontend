@@ -3,7 +3,7 @@ import { useData } from "../../providers/DataProvider";
 import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
 import { getUser } from "../../config";
 
-export default function UserCardComponent({ user, onFollowChange }) {
+export default function UserCardComponent({ user, onFollowChange, onClick }) {
   const { follows, toggleFollow } = useData();
   const [hoveredUserId, setHoveredUserId] = useState(null);
 
@@ -30,7 +30,7 @@ export default function UserCardComponent({ user, onFollowChange }) {
   }
 
   return (
-    <div className="rating-card profile-main-card">
+    <div className="rating-card profile-main-card" onClick={onClick} style={onClick ? { cursor: "pointer" } : undefined}>
       <div className="profile-info-header">
         <div className="profile-avatar-wrapper">
           <img
@@ -54,7 +54,7 @@ export default function UserCardComponent({ user, onFollowChange }) {
                 className={buttonClass}
                 onMouseEnter={() => setHoveredUserId(user.id)}
                 onMouseLeave={() => setHoveredUserId(null)}
-                onClick={handleToggle}
+                onClick={(e) => { e.stopPropagation(); handleToggle(); }}
               >
                 {buttonText}
               </button>
