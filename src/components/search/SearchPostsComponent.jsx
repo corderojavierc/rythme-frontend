@@ -1,98 +1,46 @@
-import { useState, useEffect, useRef } from "react";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import PostCardComponent from "../post/PostCardComponent";
 import LoaderScreen from "../LoaderScreen";
+import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 
 export default function SearchPostsComponent({ query }) {
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
-  const sentinelRef = useRef(null);
+  const loader = async (cursor, signal) => {
+    if (!query) return { items: [], next: null };
+    const isUrl =
+      typeof cursor === "string" &&
+      (cursor.startsWith("http") || cursor.startsWith("/"));
+    const url = isUrl ? cursor : `${getApi()}/posts/search?page=${cursor}`;
 
-  useEffect(() => {
-    const fetchPosts = async (pageNum = 1) => {
-      if (!query) return;
-      if (pageNum === 1) setIsLoading(true);
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${getApi()}/posts/search?page=${pageNum}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ text: query }),
-          },
-        );
-        const data = await response.json();
-        const results = data.data || [];
-        setPosts((prev) => (pageNum === 1 ? results : [...prev, ...results]));
-        setHasMore(!!data.links?.next);
-      } catch (error) {
-        console.error("Error searching posts:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    const response = await fetch(url, {
+      method: "POST",
+      headers: getAuthHeaders("application/json"),
+      body: JSON.stringify({ text: query }),
+      signal,
+    });
 
-    setPage(1);
-    fetchPosts(1);
-  }, [query]);
+    if (!response.ok) throw new Error("Search failed");
+    const data = await response.json();
 
-  useEffect(() => {
-    if (page > 1) {
-      const fetchNextPage = async () => {
-        setIsLoading(true);
-        try {
-          const token = localStorage.getItem("token");
-          const response = await fetch(
-            `${getApi()}/posts/search?page=${page}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ text: query }),
-            },
-          );
-          const data = await response.json();
-          const results = data.data || [];
-          setPosts((prev) => [...prev, ...results]);
-          setHasMore(!!data.links?.next);
-        } catch (error) {
-          console.error("Error fetching next page:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchNextPage();
-    }
-  }, [page, query]);
+    return { items: data.data || [], next: data.links?.next || null };
+  };
 
-  useEffect(() => {
-    if (isLoading || !hasMore) return;
+  const {
+    items: posts,
+    loading,
+    initialLoading,
+    hasMore,
+    sentinelRef,
+  } = usePaginatedFetch({
+    loader,
+    deps: [query],
+    initialParam: 1,
+    rootMargin: "400px",
+  });
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { rootMargin: "400px" },
-    );
-
-    if (sentinelRef.current) observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
-  }, [isLoading, hasMore]);
-
-  if (isLoading && page === 1)
+  if (initialLoading)
     return <LoaderScreen text="Buscando valoraciones..." inline />;
 
-  if (posts.length === 0 && !isLoading) {
+  if (posts.length === 0 && !loading) {
     return (
       <div className="feed-state">
         <span className="material-symbols-outlined wip-icon">
@@ -110,10 +58,10 @@ export default function SearchPostsComponent({ query }) {
       {posts.map((post, idx) => (
         <PostCardComponent key={`${post.id}-${idx}`} post={post} />
       ))}
-      {(hasMore || isLoading) && (
-        <div ref={sentinelRef} style={{ height: 40 }} />
-      )}
-      {isLoading && page > 1 && (
+
+      {(hasMore || loading) && <div ref={sentinelRef} style={{ height: 40 }} />}
+
+      {loading && !initialLoading && (
         <div
           style={{
             display: "flex",
@@ -125,7 +73,8 @@ export default function SearchPostsComponent({ query }) {
           <LoaderScreen inline small text="Buscando más valoraciones..." />
         </div>
       )}
-      {!hasMore && !isLoading && posts.length > 0 && (
+
+      {!hasMore && !loading && posts.length > 0 && (
         <div className="feed-end" style={{ marginTop: "20px" }}>
           <span className="material-symbols-outlined">music_note</span>
           Has llegado al final de los resultados.

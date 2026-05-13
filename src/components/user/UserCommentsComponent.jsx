@@ -1,74 +1,43 @@
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import LoaderScreen from "../LoaderScreen";
 import CommentCardComponent from "../comment/CommentCardComponent";
-import { useState, useEffect, useRef } from "react";
+import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 
 const API_URL = getApi();
 
 export default function UserCommentsComponent({ id, isMe }) {
-  let token = localStorage.getItem("token");
-  const [loading, setLoading] = useState(false);
-  const [comments, setComments] = useState([]);
-  const [nextPageUrl, setNextPageUrl] = useState(null);
-  const sentinelRef = useRef(null);
+  const loader = async (cursor, signal) => {
+    if (!id) return { items: [], next: null };
+    const url =
+      typeof cursor === "string" &&
+      (cursor.startsWith("http") || cursor.startsWith("/"))
+        ? cursor
+        : `${API_URL}/${id}/comments`;
 
-  async function fetchComments(url = `${API_URL}/${id}/comments`) {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const response = await fetch(url, {
-        headers: { Authorization: "Bearer " + token },
-      });
-      const data = await response.json();
+    const response = await fetch(url, { headers: getAuthHeaders(), signal });
+    if (!response.ok) throw new Error("Failed to fetch comments");
+    const data = await response.json();
 
-      const newComments = data.data || (Array.isArray(data) ? data : []);
-      const nextUrl = data.links?.next || null;
+    const items = data.data || (Array.isArray(data) ? data : []);
+    return { items, next: data.links?.next || null };
+  };
 
-      if (url === `${API_URL}/${id}/comments`) {
-        setComments(newComments);
-      } else {
-        setComments((prev) => [...prev, ...newComments]);
-      }
-      setNextPageUrl(nextUrl);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    if (id) {
-      setComments([]);
-      setNextPageUrl(null);
-      fetchComments();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  useEffect(() => {
-    if (loading || !nextPageUrl) return;
-
-    const element = sentinelRef.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchComments(nextPageUrl);
-        }
-      },
-      { rootMargin: "200px" },
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, nextPageUrl]);
+  const {
+    items: comments,
+    loading,
+    initialLoading,
+    hasMore,
+    sentinelRef,
+  } = usePaginatedFetch({
+    loader,
+    deps: [id],
+    initialParam: `${API_URL}/${id}/comments`,
+    rootMargin: "200px",
+  });
 
   const noComments = comments.length === 0;
 
-  if (loading && noComments) {
+  if (initialLoading && noComments) {
     return <LoaderScreen text="Cargando comentarios..." inline={true} />;
   }
 
@@ -93,7 +62,7 @@ export default function UserCommentsComponent({ id, isMe }) {
         <CommentCardComponent key={p.id} comment={p} />
       ))}
 
-      {nextPageUrl && <div ref={sentinelRef} style={{ height: 10 }} />}
+      {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
 
       {loading && !noComments && (
         <div style={{ textAlign: "center", padding: "20px" }}>
@@ -101,7 +70,7 @@ export default function UserCommentsComponent({ id, isMe }) {
         </div>
       )}
 
-      {!nextPageUrl && !noComments && !loading && (
+      {!hasMore && !noComments && !loading && (
         <div className="feed-end">
           <span className="material-symbols-outlined">chat</span>
           Has llegado al final de los comentarios.

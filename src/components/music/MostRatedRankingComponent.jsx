@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import RankingListComponent from "./RankingListComponent";
 import LoaderScreen from "../LoaderScreen";
 
@@ -10,9 +10,8 @@ export default function MostRatedRankingComponent({ period }) {
   useEffect(() => {
     const fetchRankings = async () => {
       setLoading(true);
-      const token = localStorage.getItem("token");
       let url = `${getApi()}/musics/most-rated`;
-      
+
       if (period === "actual") {
         url = `${getApi()}/musics/most-rated/actual`;
       } else if (period !== "global") {
@@ -21,7 +20,7 @@ export default function MostRatedRankingComponent({ period }) {
 
       try {
         const response = await fetch(url, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: getAuthHeaders(),
         });
         const data = await response.json();
         setRankings(data.data || []);
@@ -36,7 +35,8 @@ export default function MostRatedRankingComponent({ period }) {
     fetchRankings();
   }, [period]);
 
-  if (loading) return <LoaderScreen text="Actualizando más valoradas..." inline />;
+  if (loading)
+    return <LoaderScreen text="Actualizando más valoradas..." inline />;
 
   return <RankingListComponent rankings={rankings} />;
 }

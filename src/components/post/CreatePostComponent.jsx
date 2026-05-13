@@ -1,13 +1,12 @@
 import { useState } from "react";
 import SearchMusicComponent from "../music/SearchMusicComponent";
 import MusicCardComponent from "../music/MusicCardComponent";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const API_POST_URL = getApi() + "/posts";
 
 export default function CreatePostComponent() {
-  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,10 +30,7 @@ export default function CreatePostComponent() {
     try {
       const response = await fetch(API_POST_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+        headers: getAuthHeaders("application/json"),
         body: JSON.stringify({
           music_id: selectedMusic.id,
           text: text,

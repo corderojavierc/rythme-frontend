@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders, getUser } from "../../config";
 import LoaderScreen from "../LoaderScreen";
 import ApplicationPending from "./ApplicationPending";
 import ApplicationStart from "./ApplicationStart";
@@ -8,18 +8,13 @@ import ApplicationAccepted from "./ApplicationAccepted";
 export default function ApplicationComponent() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasApplication, setHasApplication] = useState(false);
-  const [user, setUser] = useState(() => {
-    const userString = localStorage.getItem("user");
-    return userString ? JSON.parse(userString) : null;
-  });
+  const [user, setUser] = useState(() => getUser() || null);
 
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const token = localStorage.getItem("token");
-
         const userRes = await fetch(`${getApi()}/users/me`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: getAuthHeaders(),
         });
 
         if (userRes.ok) {
@@ -38,7 +33,7 @@ export default function ApplicationComponent() {
         }
 
         const res = await fetch(`${getApi()}/artist-applications/has`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: getAuthHeaders(),
         });
         const data = await res.json();
         setHasApplication(data.has_application || data.is_accepted);

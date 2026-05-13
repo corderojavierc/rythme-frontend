@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useAuth } from "../auth/AuthProvider";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders, getUser } from "../config";
 
 const DataContext = createContext();
 
@@ -36,11 +36,6 @@ export function DataProvider({ children }) {
   const [error, setError] = useState(null);
 
   const isTogglingFollow = useRef(false);
-
-  function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return { Authorization: "Bearer " + token };
-  }
 
   async function fetchPosts(url = getApi() + "/posts") {
     setLoadingPosts(true);
@@ -155,8 +150,7 @@ export function DataProvider({ children }) {
   }
 
   async function fetchRecommendedUsers() {
-    const userJson = localStorage.getItem("user");
-    const user = userJson ? JSON.parse(userJson) : null;
+    const user = getUser();
 
     if (!user) return;
 
@@ -206,8 +200,7 @@ export function DataProvider({ children }) {
   }
 
   async function toggleFollow(userId) {
-    const userJson = localStorage.getItem("user");
-    const user = userJson ? JSON.parse(userJson) : null;
+    const user = getUser();
 
     if (!user || isTogglingFollow.current) return;
     isTogglingFollow.current = true;
@@ -298,7 +291,6 @@ export function DataProvider({ children }) {
       setFollows([]);
       setComments([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   function resetMusicPosts() {

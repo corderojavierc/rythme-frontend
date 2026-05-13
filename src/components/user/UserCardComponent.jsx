@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useData } from "../../providers/DataProvider";
 import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
+import { getUser } from "../../config";
 
 export default function UserCardComponent({ user, onFollowChange }) {
   const { follows, toggleFollow } = useData();
   const [hoveredUserId, setHoveredUserId] = useState(null);
 
-  const currentUserJson = localStorage.getItem("user");
-  const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
+  const currentUser = getUser();
 
   if (!user) return null;
 

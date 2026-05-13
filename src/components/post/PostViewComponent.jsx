@@ -4,7 +4,7 @@ import AsideLayout from "./asideLayout";
 import RightAsideLayout from "./rightAsideLayout";
 import PostCardComponent from "../components/post/PostCardComponent";
 import LoaderScreen from "../components/LoaderScreen";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders } from "../config";
 
 const API_POST_URL = `${getApi()}/posts`;
 
@@ -20,7 +20,7 @@ export default function CreateCommentComponent() {
     async function fetchPost() {
       try {
         const response = await fetch(`${API_POST_URL}/${id}`, {
-          headers: { Authorization: "Bearer " + token },
+          headers: getAuthHeaders(),
         });
         const data = await response.json();
 

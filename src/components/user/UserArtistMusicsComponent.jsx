@@ -1,74 +1,43 @@
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import LoaderScreen from "../LoaderScreen";
 import MusicSecondCardComponent from "../music/MusicSecondCardComponent";
-import { useState, useEffect, useRef } from "react";
+import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 
 const API_URL = getApi();
 
 export default function UserArtistMusicsComponent({ id, isMe }) {
-  let token = localStorage.getItem("token");
-  const [loading, setLoading] = useState(false);
-  const [musics, setMusics] = useState([]);
-  const [nextPageUrl, setNextPageUrl] = useState(null);
-  const sentinelRef = useRef(null);
+  const loader = async (cursor, signal) => {
+    if (!id) return { items: [], next: null };
+    const url =
+      typeof cursor === "string" &&
+      (cursor.startsWith("http") || cursor.startsWith("/"))
+        ? cursor
+        : `${API_URL}/music/${id}/musics`;
 
-  async function fetchPosts(url = `${API_URL}/music/${id}/musics`) {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const response = await fetch(url, {
-        headers: { Authorization: "Bearer " + token },
-      });
-      const data = await response.json();
+    const response = await fetch(url, { headers: getAuthHeaders(), signal });
+    if (!response.ok) throw new Error("Failed to fetch musics");
+    const data = await response.json();
 
-      const newMusics = data.data || (Array.isArray(data) ? data : []);
-      const nextUrl = data.links?.next || null;
+    const items = data.data || (Array.isArray(data) ? data : []);
+    return { items, next: data.links?.next || null };
+  };
 
-      if (url === `${API_URL}/music/${id}/musics`) {
-        setMusics(newMusics);
-      } else {
-        setMusics((prev) => [...prev, ...newMusics]);
-      }
-      setNextPageUrl(nextUrl);
-    } catch (error) {
-      console.error("Error fetching musics:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    if (id) {
-      setMusics([]);
-      setNextPageUrl(null);
-      fetchPosts();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  useEffect(() => {
-    if (loading || !nextPageUrl) return;
-
-    const element = sentinelRef.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchPosts(nextPageUrl);
-        }
-      },
-      { rootMargin: "200px" },
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, nextPageUrl]);
+  const {
+    items: musics,
+    loading,
+    initialLoading,
+    hasMore,
+    sentinelRef,
+  } = usePaginatedFetch({
+    loader,
+    deps: [id],
+    initialParam: `${API_URL}/music/${id}/musics`,
+    rootMargin: "200px",
+  });
 
   const noMusics = musics.length === 0;
 
-  if (loading && noMusics) {
+  if (initialLoading && noMusics) {
     return <LoaderScreen text="Cargando canciones..." inline={true} />;
   }
 
@@ -93,7 +62,7 @@ export default function UserArtistMusicsComponent({ id, isMe }) {
         <MusicSecondCardComponent music={p} fromArtist={true} />
       ))}
 
-      {nextPageUrl && <div ref={sentinelRef} style={{ height: 10 }} />}
+      {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
 
       {loading && !noMusics && (
         <div style={{ textAlign: "center", padding: "20px" }}>
@@ -101,7 +70,7 @@ export default function UserArtistMusicsComponent({ id, isMe }) {
         </div>
       )}
 
-      {!nextPageUrl && !noMusics && !loading && (
+      {!hasMore && !noMusics && !loading && (
         <div className="feed-end">
           <span className="material-symbols-outlined">music_note_2</span>
           Has llegado al final de todas las canciones.

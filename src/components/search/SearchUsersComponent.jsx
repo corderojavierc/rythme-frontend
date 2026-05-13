@@ -1,99 +1,53 @@
-import { useState, useEffect, useRef } from "react";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders } from "../../config";
 import UserCardComponent from "../user/UserCardComponent";
 import LoaderScreen from "../LoaderScreen";
 import { useNavigate } from "react-router-dom";
+import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 
 export default function SearchUsersComponent({ query }) {
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
-  const sentinelRef = useRef(null);
+  const loader = async (cursor, signal) => {
+    if (!query) return { items: [], next: null };
+    const isUrl =
+      typeof cursor === "string" &&
+      (cursor.startsWith("http") || cursor.startsWith("/"));
+    const url = isUrl
+      ? cursor
+      : `${getApi()}/users/search?text=${query}&page=${cursor}`;
 
-  useEffect(() => {
-    const fetchUsers = async (pageNum = 1) => {
-      if (!query) return;
-      if (pageNum === 1) setIsLoading(true);
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${getApi()}/users/search?text=${query}&page=${pageNum}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-        const data = await response.json();
-        const results = data.data || [];
-        setUsers((prev) => (pageNum === 1 ? results : [...prev, ...results]));
-        setHasMore(!!data.links?.next);
-      } catch (error) {
-        console.error("Error searching users:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    const response = await fetch(url, {
+      headers: getAuthHeaders(),
+      signal,
+    });
 
-    setPage(1);
-    fetchUsers(1);
-  }, [query]);
+    if (!response.ok) throw new Error("Search failed");
+    const data = await response.json();
 
-  useEffect(() => {
-    if (page > 1) {
-      const fetchNextPage = async () => {
-        setIsLoading(true);
-        try {
-          const token = localStorage.getItem("token");
-          const response = await fetch(
-            `${getApi()}/users/search?text=${query}&page=${page}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
-          const data = await response.json();
-          const results = data.data || [];
-          setUsers((prev) => [...prev, ...results]);
-          setHasMore(!!data.links?.next);
-        } catch (error) {
-          console.error("Error fetching next page:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchNextPage();
-    }
-  }, [page, query]);
+    return { items: data.data || [], next: data.links?.next || null };
+  };
 
-  useEffect(() => {
-    if (isLoading || !hasMore) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { rootMargin: "400px" },
-    );
-
-    if (sentinelRef.current) observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
-  }, [isLoading, hasMore]);
+  const {
+    items: users,
+    loading,
+    initialLoading,
+    hasMore,
+    sentinelRef,
+  } = usePaginatedFetch({
+    loader,
+    deps: [query],
+    initialParam: 1,
+    rootMargin: "400px",
+  });
 
   const handleUserClick = (user) => {
     navigate(`/user/${user.id}`);
   };
 
-  if (isLoading && page === 1)
+  if (initialLoading)
     return <LoaderScreen text="Buscando usuarios..." inline />;
 
-  if (users.length === 0 && !isLoading) {
+  if (users.length === 0 && !loading) {
     return (
       <div className="feed-state">
         <span className="material-symbols-outlined wip-icon">person_off</span>
@@ -111,10 +65,10 @@ export default function SearchUsersComponent({ query }) {
           onClick={() => handleUserClick(user)}
         />
       ))}
-      {(hasMore || isLoading) && (
-        <div ref={sentinelRef} style={{ height: 40 }} />
-      )}
-      {isLoading && page > 1 && (
+
+      {(hasMore || loading) && <div ref={sentinelRef} style={{ height: 40 }} />}
+
+      {loading && !initialLoading && (
         <div
           style={{
             display: "flex",
@@ -126,7 +80,8 @@ export default function SearchUsersComponent({ query }) {
           <LoaderScreen inline small text="Buscando más usuarios..." />
         </div>
       )}
-      {!hasMore && !isLoading && users.length > 0 && (
+
+      {!hasMore && !loading && users.length > 0 && (
         <div className="feed-end" style={{ marginTop: "20px" }}>
           <span className="material-symbols-outlined">music_note</span>
           Has llegado al final de los resultados.
