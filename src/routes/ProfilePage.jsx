@@ -1,11 +1,12 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders, getUser } from "../config";
 import UserPostsComponent from "../components/user/UserPostsComponent";
 import UserCommentsComponent from "../components/user/UserCommentsComponent";
 import UserLikedComponent from "../components/user/UserLikedComponent";
 import UserCardComponent from "../components/user/UserCardComponent";
 import UserNavigationComponent from "../components/user/UserNavigationComponent";
+import UserArtistMusicsComponent from "../components/user/UserArtistMusicsComponent";
 import NotFoundPage from "./NotFoundPage";
 import LoaderScreen from "../components/LoaderScreen";
 
@@ -13,25 +14,25 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { username } = useParams();
   const location = useLocation();
-  const userJson = localStorage.getItem("user");
-
-  const [activeTab, setActiveTab] = useState("ratings");
   const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(!location.state);
+  const storedUserInit = getUser() || {};
+  const isOwnProfile = username === storedUserInit.username;
+  const [loading, setLoading] = useState(!location.state && !isOwnProfile);
   const [user, setUser] = useState(() => {
     if (location.state && location.state.username === username) {
       return {
         id: location.state.user_id || location.state.id || "",
         name: location.state.name || "",
-        second_name: location.state.second_name || "",
         profile_image: location.state.profile_image || "",
         username: location.state.username || username,
         followers: location.state.followers || "0",
         following: location.state.following || "0",
         posts: location.state.posts || "0",
+        type: location.state.type || "",
+        musics: location.state.musics || "0",
       };
     }
-    const storedUser = userJson ? JSON.parse(userJson) : {};
+    const storedUser = getUser() || {};
     return username === storedUser.username ? storedUser : { username };
   });
 
@@ -40,7 +41,7 @@ export default function ProfilePage() {
 
   if (username !== prevUsername) {
     setPrevUsername(username);
-    const storedUser = userJson ? JSON.parse(userJson) : {};
+    const storedUser = getUser() || {};
     const isMe = username === storedUser.username;
 
     if (location.state && location.state.username === username) {
@@ -50,8 +51,6 @@ export default function ProfilePage() {
           location.state.id ||
           (isMe ? storedUser.id : ""),
         name: location.state.name || (isMe ? storedUser.name : ""),
-        second_name:
-          location.state.second_name || (isMe ? storedUser.second_name : ""),
         profile_image:
           location.state.profile_image ||
           (isMe ? storedUser.profile_image : ""),
@@ -61,6 +60,8 @@ export default function ProfilePage() {
         following:
           location.state.following || (isMe ? storedUser.following : "0"),
         posts: location.state.posts || (isMe ? storedUser.posts : "0"),
+        type: location.state.type || (isMe ? storedUser.type : ""),
+        musics: location.state.musics || (isMe ? storedUser.musics : ""),
       });
     } else {
       if (isMe) {
@@ -76,7 +77,7 @@ export default function ProfilePage() {
   ) {
     setPrevLocationState(location.state);
     setUser((prev) => {
-      const storedUser = userJson ? JSON.parse(userJson) : {};
+      const storedUser = getUser() || {};
       const isMe = username === storedUser.username;
       return {
         ...prev,
@@ -86,10 +87,6 @@ export default function ProfilePage() {
           prev.id ||
           (isMe ? storedUser.id : ""),
         name: location.state.name || prev.name || (isMe ? storedUser.name : ""),
-        second_name:
-          location.state.second_name ||
-          prev.second_name ||
-          (isMe ? storedUser.second_name : ""),
         profile_image:
           location.state.profile_image ||
           prev.profile_image ||
@@ -104,43 +101,35 @@ export default function ProfilePage() {
           (isMe ? storedUser.following : "0"),
         posts:
           location.state.posts || prev.posts || (isMe ? storedUser.posts : "0"),
+        type: location.state.type || prev.type || (isMe ? storedUser.type : ""),
+        musics:
+          location.state.musics ||
+          prev.musics ||
+          (isMe ? storedUser.musics : ""),
       };
     });
   }
+  const [activeTab, setActiveTab] = useState(
+    user.type == "artist" ? "musics" : "ratings",
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
     setNotFound(false);
-    setLoading((prev) => prev || !user.id);
+    if (!user.id) setLoading(true);
 
     const controller = new AbortController();
     const { signal } = controller;
 
     const fetchUser = async () => {
-      const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
-
       try {
         let response = await fetch(`${getApi()}/users/${username}`, {
-          headers,
+          headers: getAuthHeaders(),
           signal,
         });
 
         if (!response.ok) {
-          const allUsersRes = await fetch(`${getApi()}/users`, {
-            headers,
-            signal,
-          });
-          const allUsers = await allUsersRes.json();
-          const usersList = allUsers.data || allUsers;
-          const found = usersList.find((u) => u.username === username);
-          if (found) {
-            setUser(found);
-            const me = userJson ? JSON.parse(userJson) : {};
-            if (found.username === me.username) {
-              localStorage.setItem("user", JSON.stringify(found));
-            }
-          } else {
+          if (!isOwnProfile) {
             setNotFound(true);
           }
           return;
@@ -150,7 +139,7 @@ export default function ProfilePage() {
         const userData = data.data || data;
         setUser(userData);
 
-        const me = userJson ? JSON.parse(userJson) : {};
+        const me = getUser() || {};
         if (userData.username === me.username) {
           localStorage.setItem("user", JSON.stringify(userData));
         }
@@ -169,7 +158,7 @@ export default function ProfilePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
-  const loggedInUser = userJson ? JSON.parse(userJson) : {};
+  const loggedInUser = getUser() || {};
   const isMe = loggedInUser.id && String(user.id) === String(loggedInUser.id);
 
   const handleFollowChange = (nextFollowingState) => {
@@ -181,8 +170,10 @@ export default function ProfilePage() {
     }));
   };
 
+  console.log(user.type);
+
   if (loading) {
-    return <LoaderScreen text="Cargando perfil..." />;
+    return <LoaderScreen text="Cargando perfil..." inline={true} />;
   }
 
   if (notFound) {
@@ -207,9 +198,13 @@ export default function ProfilePage() {
       <UserNavigationComponent
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        userType={user.type}
       />
 
       <div className="profile-content-area">
+        {activeTab === "musics" && (
+          <UserArtistMusicsComponent id={user.id} isMe={isMe} />
+        )}
         {activeTab === "ratings" && (
           <UserPostsComponent id={user.id} isMe={isMe} />
         )}

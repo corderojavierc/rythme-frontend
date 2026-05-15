@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useData } from "../../providers/DataProvider";
+import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
+import { getUser } from "../../config";
 
-export default function UserCardComponent({ user, onFollowChange }) {
+export default function UserCardComponent({ user, onFollowChange, onClick }) {
   const { follows, toggleFollow } = useData();
   const [hoveredUserId, setHoveredUserId] = useState(null);
 
-  const currentUserJson = localStorage.getItem("user");
-  const currentUser = currentUserJson ? JSON.parse(currentUserJson) : null;
+  const currentUser = getUser();
 
   if (!user) return null;
 
@@ -29,7 +30,7 @@ export default function UserCardComponent({ user, onFollowChange }) {
   }
 
   return (
-    <div className="rating-card profile-main-card">
+    <div className="rating-card profile-main-card" onClick={onClick} style={onClick ? { cursor: "pointer" } : undefined}>
       <div className="profile-info-header">
         <div className="profile-avatar-wrapper">
           <img
@@ -43,7 +44,8 @@ export default function UserCardComponent({ user, onFollowChange }) {
           <div className="profile-name-row">
             <div className="profile-titles">
               <h1 className="profile-display-name">
-                {user.name} {user.second_name}
+                {user.name}
+                <VerifiedBadgeComponent type={user.type} />
               </h1>
               <span className="profile-username">@{user.username}</span>
             </div>
@@ -52,7 +54,7 @@ export default function UserCardComponent({ user, onFollowChange }) {
                 className={buttonClass}
                 onMouseEnter={() => setHoveredUserId(user.id)}
                 onMouseLeave={() => setHoveredUserId(null)}
-                onClick={handleToggle}
+                onClick={(e) => { e.stopPropagation(); handleToggle(); }}
               >
                 {buttonText}
               </button>
@@ -76,8 +78,18 @@ export default function UserCardComponent({ user, onFollowChange }) {
             </div>
             <div className="stat-item">
               <span className="stat-count">{user.posts || "0"}</span>
-              <span className="stat-label">Valoraciones</span>
+              <span className="stat-label">
+                {user.posts === 1 ? "Valoracion" : "Valoraciones"}
+              </span>
             </div>
+            {user.type === "artist" && (
+              <div className="stat-item">
+                <span className="stat-count">{user.musics || "0"}</span>
+                <span className="stat-label">
+                  {user.musics === 1 ? "Cancion" : "Canciones"}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="profile-social-links">{}</div>

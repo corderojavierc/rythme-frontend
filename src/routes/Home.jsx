@@ -12,6 +12,10 @@ export default function Home() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
+
   const [showNotification, setShowNotification] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [notificationType, setNotificationType] = useState(null);

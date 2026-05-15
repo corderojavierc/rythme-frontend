@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
+import VerifiedBadgeComponent from "../components/VerifiedBadgeComponent";
 import "../App.css";
 import logoImg from "../logo-removebg-preview-effect.png";
+import { getApi, getAuthHeaders, getUser } from "../config";
 
 export default function AsideLayout() {
   const auth = useAuth();
@@ -12,31 +14,29 @@ export default function AsideLayout() {
 
   const currentPath = location.pathname;
 
-  const userJson = localStorage.getItem("user");
-  const user = userJson ? JSON.parse(userJson) : {};
+  const [user, setUser] = useState(() => getUser() || {});
+
+  useEffect(() => {
+    const handleUserUpdate = () => setUser(getUser() || {});
+    window.addEventListener("userUpdated", handleUserUpdate);
+    return () => window.removeEventListener("userUpdated", handleUserUpdate);
+  }, []);
 
   let fullName = user.username || "Usuario";
   if (user.name) {
-    fullName = user.name + (user.second_name ? " " + user.second_name : "");
+    fullName = user.name;
   }
 
   let initials = "?";
-  if (user.name || user.second_name) {
-    initials = (
-      (user.name?.[0] || "") + (user.second_name?.[0] || "")
-    ).toUpperCase();
+  if (user.name) {
+    initials = (user.name?.[0] || "").toUpperCase();
   }
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      await fetch("http://127.0.0.1:8000/api/logout", {
+      await fetch(`${getApi()}/logout`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+        headers: getAuthHeaders("application/json"),
       });
 
       localStorage.removeItem("token");
@@ -60,6 +60,8 @@ export default function AsideLayout() {
     chevronIcon = "expand_less";
   }
 
+  console.log(user);
+
   return (
     <aside className="sidebar">
       <Link className="brand-link" to="/">
@@ -80,10 +82,6 @@ export default function AsideLayout() {
         <span className="material-symbols-outlined">group</span>
         Seguidos
       </Link>
-      <Link className={getLinkClass("/rate")} to="/rate">
-        <span className="material-symbols-outlined">add_ad</span>
-        Valorar
-      </Link>
       <Link className={getLinkClass("/music")} to="/music">
         <span className="material-symbols-outlined">music_note_2</span>
         Música
@@ -92,10 +90,21 @@ export default function AsideLayout() {
         <span className="material-symbols-outlined">calendar_today</span>
         Eventos
       </Link>
-      <Link className={getLinkClass("/request")} to="/request">
-        <span className="material-symbols-outlined">pan_tool_alt</span>
-        Solicitar
-      </Link>
+      {user.type === "user" && (
+        <Link className={getLinkClass("/request")} to="/request">
+          <span className="material-symbols-outlined">pan_tool_alt</span>
+          Solicitar
+        </Link>
+      )}
+      {user.type === "admin" && (
+        <Link
+          className={getLinkClass("/admin")}
+          to="http://localhost:8000/admin"
+        >
+          <span class="material-symbols-outlined">admin_panel_settings</span>
+          Admin
+        </Link>
+      )}
       <Link
         className={getLinkClass(`/${user.username}`)}
         to={`/${user.username}`}
@@ -115,7 +124,10 @@ export default function AsideLayout() {
           )}
         </div>
         <div className="user-card-info">
-          <div className="user-card-name">{fullName}</div>
+          <div className="user-card-name">
+            {fullName}
+            <VerifiedBadgeComponent type={user.type} />
+          </div>
           <div className="user-card-handle">@{user.username || "usuario"}</div>
         </div>
         <span className="material-symbols-outlined user-card-chevron">

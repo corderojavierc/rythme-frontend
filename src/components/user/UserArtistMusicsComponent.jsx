@@ -1,22 +1,21 @@
 import { getApi, getAuthHeaders } from "../../config";
 import LoaderScreen from "../LoaderScreen";
-import CommentCardComponent from "../comment/CommentCardComponent";
-import PostCardComponent from "../post/PostCardComponent";
+import MusicSecondCardComponent from "../music/MusicSecondCardComponent";
 import usePaginatedFetch from "../../hooks/usePaginatedFetch";
 
 const API_URL = getApi();
 
-export default function UserLikedComponent({ id, isMe }) {
+export default function UserArtistMusicsComponent({ id, isMe }) {
   const loader = async (cursor, signal) => {
     if (!id) return { items: [], next: null };
     const url =
       typeof cursor === "string" &&
       (cursor.startsWith("http") || cursor.startsWith("/"))
         ? cursor
-        : `${API_URL}/${id}/likes`;
+        : `${API_URL}/music/${id}/musics`;
 
     const response = await fetch(url, { headers: getAuthHeaders(), signal });
-    if (!response.ok) throw new Error("Failed to fetch likes");
+    if (!response.ok) throw new Error("Failed to fetch musics");
     const data = await response.json();
 
     const items = data.data || (Array.isArray(data) ? data : []);
@@ -24,7 +23,7 @@ export default function UserLikedComponent({ id, isMe }) {
   };
 
   const {
-    items: likes,
+    items: musics,
     loading,
     initialLoading,
     hasMore,
@@ -32,26 +31,26 @@ export default function UserLikedComponent({ id, isMe }) {
   } = usePaginatedFetch({
     loader,
     deps: [id],
-    initialParam: `${API_URL}/${id}/likes`,
+    initialParam: `${API_URL}/music/${id}/musics`,
     rootMargin: "200px",
   });
 
-  const noLikes = likes.length === 0;
+  const noMusics = musics.length === 0;
 
-  if (initialLoading && noLikes) {
-    return <LoaderScreen text="Cargando likes..." inline={true} />;
+  if (initialLoading && noMusics) {
+    return <LoaderScreen text="Cargando canciones..." inline={true} />;
   }
 
-  if (noLikes && !loading) {
+  if (noMusics && !loading) {
     return (
       <div className="feed-state">
         <span className="material-symbols-outlined" style={{ fontSize: 32 }}>
-          favorite_border
+          music_off
         </span>
         <span>
           {isMe
-            ? "Parece que todavía no has encontrado tu ritmo ideal. ¡Explora y dale 'me gusta'!"
-            : "Aún no hay canciones que hayan hecho vibrar este perfil."}
+            ? "El silencio domina este perfil. ¿Qué tal si compartes tu primer ritmo?"
+            : "Este perfil está en silencio... por ahora."}
         </span>
       </div>
     );
@@ -59,26 +58,22 @@ export default function UserLikedComponent({ id, isMe }) {
 
   return (
     <div>
-      {likes.map((p) =>
-        p.type === "post" ? (
-          <PostCardComponent key={p.id} post={p} />
-        ) : (
-          <CommentCardComponent key={p.id} comment={p} />
-        ),
-      )}
+      {musics.map((p) => (
+        <MusicSecondCardComponent music={p} fromArtist={true} />
+      ))}
 
       {hasMore && <div ref={sentinelRef} style={{ height: 10 }} />}
 
-      {loading && !noLikes && (
+      {loading && !noMusics && (
         <div style={{ textAlign: "center", padding: "20px" }}>
           <LoaderScreen inline small text="Cargando más..." />
         </div>
       )}
 
-      {!hasMore && !noLikes && !loading && (
+      {!hasMore && !noMusics && !loading && (
         <div className="feed-end">
-          <span className="material-symbols-outlined">favorite</span>
-          Has llegado al final de todos los likes.
+          <span className="material-symbols-outlined">music_note_2</span>
+          Has llegado al final de todas las canciones.
         </div>
       )}
     </div>

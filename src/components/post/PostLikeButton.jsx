@@ -1,12 +1,11 @@
 import { usePostContext } from "../../providers/PostProvider";
 import { useState, useRef } from "react";
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders, getUser } from "../../config";
 
 const API_LIKES_URL = getApi() + "/likes";
 
 export default function PostLikeButton() {
-  const userJson = localStorage.getItem("user");
-  const currentUser = userJson ? JSON.parse(userJson) : {};
+  const currentUser = getUser() || {};
   const token = localStorage.getItem("token");
 
   const { post, updatePost } = usePostContext();
@@ -42,10 +41,7 @@ export default function PostLikeButton() {
     try {
       const response = await fetch(API_LIKES_URL, {
         method: method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+        headers: getAuthHeaders("application/json"),
         body: JSON.stringify({
           user_id: currentUser.id,
           likeable_type: "post",

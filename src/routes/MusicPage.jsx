@@ -1,6 +1,6 @@
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders } from "../config";
 import LoaderScreen from "../components/LoaderScreen";
 import MusicNavegator from "../components/music/MusicNavegator";
 import PostCardComponent from "../components/post/PostCardComponent";
@@ -11,7 +11,8 @@ export default function MusicPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const { musicPosts, loadingMusicPosts, fetchMusicPosts } = useData();
+  const { musicPosts, loadingMusicPosts, fetchMusicPosts, resetMusicPosts } =
+    useData();
 
   const [music, setMusic] = useState(() => {
     if (location.state) {
@@ -31,11 +32,37 @@ export default function MusicPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    resetMusicPosts();
+
     const fetchMusic = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const isUUID =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            id,
+          );
+        const songIsExternal = !Number.isInteger(Number(id)) && !isUUID;
+
+        if (songIsExternal) {
+          const response = await fetch(getApi() + "/music", {
+            method: "POST",
+            headers: getAuthHeaders("application/json"),
+            body: JSON.stringify({
+              name: music?.title + " " + music?.artist,
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            navigate(`/music/${data.data.id}`, {
+              state: data.data,
+              replace: true,
+            });
+          }
+          return;
+        }
+
         const response = await fetch(`${getApi()}/music/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: getAuthHeaders(),
         });
         if (response.ok) {
           const data = await response.json();
@@ -49,12 +76,18 @@ export default function MusicPage() {
     };
 
     fetchMusic();
-    fetchMusicPosts(id);
+    const isUUID =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        id,
+      );
+    if (Number.isInteger(Number(id)) || isUUID) {
+      fetchMusicPosts(id);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (loading && !music) {
-    return <LoaderScreen text="Cargando canción..." />;
+    return <LoaderScreen text="Cargando canción..." inline={true} />;
   }
 
   if (!music) {
@@ -101,13 +134,6 @@ export default function MusicPage() {
               {music.count_ratings === 1 ? "valoración" : "valoraciones"}
             </span>
           </div>
-        </div>
-      </div>
-
-      <div className="music-page-tabs-row">
-        <div className="tabs-placeholder"></div>
-        <MusicNavegator />
-        <div className="tabs-action">
           {!music.is_valorated && (
             <button
               className="comment-button"
@@ -128,8 +154,14 @@ export default function MusicPage() {
         </div>
       </div>
 
+      <div className="music-page-tabs-row">
+        <div className="tabs-placeholder"></div>
+        <MusicNavegator />
+        <div className="tabs-action"></div>
+      </div>
+
       <div className="music-posts-container">
-        {loadingMusicPosts ? (
+        {loadingMusicPosts || !music || String(music.id) !== String(id) ? (
           <LoaderScreen inline small text="Cargando valoraciones..." />
         ) : musicPosts.length > 0 ? (
           musicPosts.map((post) => (

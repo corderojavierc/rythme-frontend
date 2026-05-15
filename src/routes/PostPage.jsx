@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import PostCardComponent from "../components/post/PostCardComponent";
 import CommentComponent from "../components/comment/CommentComponent";
 import LoaderScreen from "../components/LoaderScreen";
-import { getApi } from "../config";
+import { getApi, getAuthHeaders } from "../config";
 import { useData } from "../providers/DataProvider";
 
 export default function PostPage() {
@@ -60,7 +60,7 @@ export default function PostPage() {
       isLoadingPost
     ) {
       fetch(getApi() + "/posts/" + id, {
-        headers: { Authorization: "Bearer " + token },
+        headers: getAuthHeaders(),
       })
         .then((res) => res.json())
         .then((data) => {

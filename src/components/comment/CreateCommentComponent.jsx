@@ -1,6 +1,7 @@
-import { getApi } from "../../config";
+import { getApi, getAuthHeaders, getUser } from "../../config";
 import { useData } from "../../providers/DataProvider";
 import { useNavigate } from "react-router-dom";
+import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
 
 const API_COMMENT_URL = getApi() + "/comments";
 
@@ -8,20 +9,16 @@ export default function CreateCommentComponent({ post }) {
   const { updatePost } = useData();
   const navigate = useNavigate();
 
-  const userJson = localStorage.getItem("user");
-  const user = userJson ? JSON.parse(userJson) : {};
-  const token = localStorage.getItem("token");
+  const user = getUser() || {};
 
   let fullName = user.username || "Usuario";
   if (user.name) {
-    fullName = user.name + (user.second_name ? " " + user.second_name : "");
+    fullName = user.name;
   }
 
   let initials = "?";
-  if (user.name || user.second_name) {
-    initials = (
-      (user.name?.[0] || "") + (user.second_name?.[0] || "")
-    ).toUpperCase();
+  if (user.name) {
+    initials = (user.name?.[0] || "").toUpperCase();
   }
 
   const handleSubmit = async (e) => {
@@ -33,10 +30,7 @@ export default function CreateCommentComponent({ post }) {
     try {
       const response = await fetch(API_COMMENT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
+        headers: getAuthHeaders("application/json"),
         body: JSON.stringify({
           post_id: post.id,
           text: text,
@@ -78,7 +72,10 @@ export default function CreateCommentComponent({ post }) {
           )}
         </div>
         <div className="user-info">
-          <div className="user-name">{fullName}</div>
+          <div className="user-name">
+            {fullName}
+            <VerifiedBadgeComponent type={user.type} />
+          </div>
           <div className="user-handle">
             @{user.username ? user.username : "user"}
           </div>

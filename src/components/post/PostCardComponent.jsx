@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import PostLikeButton from "./PostLikeButton";
 import PostCommentButton from "./PostCommentButton";
 import { useData } from "../../providers/DataProvider";
+import VerifiedBadgeComponent from "../VerifiedBadgeComponent";
+import StarsComponent from "../music/StarsComponent";
 
 export default function PostCardComponent({ post, type = "post" }) {
   const { updatePost } = useData();
@@ -10,7 +12,7 @@ export default function PostCardComponent({ post, type = "post" }) {
 
   let fullName = post.user_name || "Usuario";
   if (post.name) {
-    fullName = post.name + (post.second_name ? " " + post.second_name : "");
+    fullName = post.name;
   }
 
   function redirectToPost() {
@@ -27,11 +29,12 @@ export default function PostCardComponent({ post, type = "post" }) {
         id: post.user_id,
         username: post.user_name,
         name: post.name,
-        second_name: post.second_name,
         profile_image: post.profile_image,
         followers: post.followers,
         following: post.following,
         posts: post.posts,
+        type: post.user_type || post.type,
+        musics: post.musics || 0,
       },
     });
   }
@@ -52,40 +55,6 @@ export default function PostCardComponent({ post, type = "post" }) {
 
   const rating = post.rating ? parseFloat(post.rating) : 0;
 
-  const renderStars = () => {
-    const stars = [];
-
-    for (let i = 1; i <= 5; i++) {
-      const isFull = rating >= i;
-      const isHalf = rating > i - 0.51;
-
-      if (isFull) {
-        stars.push(
-          <span key={i} className="material-symbols-outlined star-filled">
-            star
-          </span>,
-        );
-      } else if (isHalf) {
-        stars.push(
-          <div key={i} className="star-half-wrapper">
-            <span className="material-symbols-outlined star-empty">star</span>
-            <span className="material-symbols-outlined star-filled star-half-overlay">
-              star
-            </span>
-          </div>,
-        );
-      } else {
-        stars.push(
-          <span key={i} className="material-symbols-outlined star-empty">
-            star
-          </span>,
-        );
-      }
-    }
-
-    return stars;
-  };
-
   return (
     <PostProvider post={post} onUpdate={updatePost}>
       <div className="rating-card" onClick={redirectToPost}>
@@ -100,7 +69,10 @@ export default function PostCardComponent({ post, type = "post" }) {
             <img src={post.profile_image} alt={fullName} />
           </div>
           <div className="user-info">
-            <div className="user-name">{fullName}</div>
+            <div className="user-name">
+              {fullName}
+              <VerifiedBadgeComponent type={post.user_type || post.type} />
+            </div>
             <div className="user-handle">@{post.user_name}</div>
           </div>
         </div>
@@ -124,7 +96,7 @@ export default function PostCardComponent({ post, type = "post" }) {
 
         <div className="rating-content">
           <div className="stars-display-row">
-            <div className="stars-container">{renderStars()}</div>
+            <StarsComponent rating={rating} />
             <span className="rating-score-display">{rating.toFixed(2)}</span>
           </div>
           <div className="comment">{post.title}</div>
