@@ -1,3 +1,6 @@
+// Formulario para crear una valoración de canción.
+// Flujo: buscar canción → seleccionarla → elegir estrellas (media estrella incluida) → escribir opinión → publicar.
+// La canción puede venir pre-seleccionada si se navega aquí desde la página de una canción (location.state).
 import { useState } from "react";
 import SearchMusicComponent from "../music/SearchMusicComponent";
 import MusicCardComponent from "../music/MusicCardComponent";
@@ -57,6 +60,9 @@ export default function CreatePostComponent() {
     }
   };
 
+  // Detecta si el cursor está en la mitad izquierda de la estrella (media estrella)
+  // o en la mitad derecha (estrella entera). El umbral 0.45 en vez de 0.5 da una zona
+  // de clic de estrella entera ligeramente más grande para mejor usabilidad.
   const handleMouseMove = (e, index) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;

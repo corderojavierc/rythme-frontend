@@ -1,3 +1,6 @@
+// Lista de comentarios de un post con scroll infinito y paginación.
+// Sigue el mismo patrón que PostComponent: combina paginación del servidor
+// con una capa de paginación virtual local (STEP elementos a la vez).
 import { useState, useEffect, useRef } from "react";
 import CommentCardComponent from "./CommentCardComponent";
 import LoaderScreen from "../LoaderScreen";

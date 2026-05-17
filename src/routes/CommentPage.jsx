@@ -1,3 +1,6 @@
+// Página para escribir un comentario sobre un post.
+// Muestra la tarjeta del post como contexto visual y el formulario de comentario debajo.
+// Igual que PostPage, prioriza location.state y caché de DataProvider antes de ir a la API.
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import PostCardComponent from "../components/post/PostCardComponent";

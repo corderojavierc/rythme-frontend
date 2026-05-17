@@ -1,3 +1,6 @@
+// Formulario de solicitud de verificación (artista o creador de contenido).
+// Al montar comprueba si el usuario ya tiene una solicitud o ya fue verificado,
+// para mostrar el estado correcto sin dejar que vuelva a enviar otra solicitud.
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApi, getAuthHeaders, getUser } from "../../config";
@@ -56,6 +59,8 @@ export default function ApplicationForm() {
     check();
   }, []);
 
+  // El usuario puede pegar una URL de Spotify completa (ej: open.spotify.com/artist/ABC123)
+  // o solo el ID. Esta función extrae el ID del artista de cualquiera de los dos formatos.
   const extractSpotifyId = (value) => {
     const match = value.match(/artist\/([a-zA-Z0-9]+)/);
     return match ? match[1] : value;

@@ -1,3 +1,6 @@
+// Página de resultados de búsqueda con tres pestañas: canciones, posts y usuarios.
+// La query viene en el param ?q= de la URL para que el resultado sea enlazable y
+// funcione con el botón atrás del navegador.
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SearchNavigationComponent from "../components/search/SearchNavigationComponent";

@@ -1,3 +1,6 @@
+// Barra de navegación lateral izquierda. Muestra los links principales y la tarjeta del usuario.
+// Se suscribe al evento "userUpdated" (disparado desde ApplicationForm y otros) para refrescar
+// el nombre, avatar y tipo de cuenta sin necesidad de recargar la página.
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
@@ -48,6 +51,7 @@ export default function AsideLayout() {
     }
   };
 
+  // Marca el link activo comparando con la ruta actual para el resaltado visual del menú.
   function getLinkClass(path) {
     if (currentPath === path) {
       return "nav-item active";

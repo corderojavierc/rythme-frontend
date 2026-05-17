@@ -1,3 +1,8 @@
+// Lista de posts con scroll infinito en dos modos: feed global y feed de seguidos.
+// Combina dos capas de paginación:
+//   1. Paginación del servidor: solicita la siguiente página a la API cuando se llega al final de los datos cargados.
+//   2. Paginación virtual local: aunque ya tengamos los datos en memoria, solo mostramos
+//      STEP elementos más por vez para no renderizar cientos de tarjetas a la vez.
 import { useState, useEffect, useRef } from "react";
 import PostCardComponent from "./PostCardComponent";
 import LoaderScreen from "../LoaderScreen";
@@ -47,12 +52,17 @@ export default function PostComponent({ fromFollowed = false }) {
   useEffect(() => {
     if (config.loading) return;
 
+    // IntersectionObserver detecta cuando el elemento sentinel (div invisible al final de la lista)
+    // entra en el viewport. rootMargin: "400px" lo activa 400px antes de llegar al borde
+    // real, dando tiempo a cargar antes de que el usuario llegue al final.
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           if (visibleCount < config.data.length) {
+            // Aún hay posts cargados que no se están mostrando: aumentamos visibleCount
             setVisibleCount((prev) => prev + STEP);
           } else if (config.hasMore) {
+            // Ya mostramos todos los posts en memoria: pedimos la siguiente página al servidor
             config.load();
           }
         }

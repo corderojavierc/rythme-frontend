@@ -1,3 +1,6 @@
+// Tarjeta de perfil de usuario: avatar, nombre, stats y botón de seguir/dejar de seguir.
+// El botón cambia de texto al hacer hover ("Siguiendo" → "Dejar de seguir") para mejorar la UX.
+// No se muestra el botón si el perfil pertenece al propio usuario logueado (isMe).
 import { useState } from "react";
 import { useData } from "../../providers/DataProvider";
 import VerifiedBadgeComponent from "../VerifiedBadgeComponent";

@@ -1,3 +1,5 @@
+// Sidebar derecho: buscador de usuarios, eventos destacados (datos hardcodeados de momento)
+// y sugerencias de usuarios a seguir.
 import UsersToFollow from "../components/UsersToFollowComponent";
 import UserSearchComponent from "../components/user/UserSearchComponent";
 import "../App.css";

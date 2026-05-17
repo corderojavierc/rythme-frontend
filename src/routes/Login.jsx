@@ -1,3 +1,5 @@
+// Página de inicio de sesión. Al hacer login correctamente guarda el token y el usuario
+// en localStorage y marca la sesión como activa en AuthProvider.
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 import LoginLayout from "../layout/LoginLayout";
@@ -42,6 +44,7 @@ export default function Login() {
         return;
       }
 
+      // Guardamos token y usuario para que getAuthHeaders() y getUser() funcionen en toda la app.
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       auth.setIsAuthenticated(true);

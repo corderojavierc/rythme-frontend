@@ -1,3 +1,4 @@
+// Punto de entrada de la aplicación: define el árbol de rutas y envuelve todo en los providers globales.
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
@@ -21,12 +22,18 @@ import ApplicationForm from "./components/application/ApplicationForm";
 import CreatePost from "./routes/CreatePost";
 import Home from "./routes/Home";
 
+// createBrowserRouter usa la History API del navegador (URLs limpias sin #).
+// La jerarquía de rutas refleja la jerarquía de layouts:
+//   ProtectedRoute → Home (sidebar + main) → página concreta.
 const router = createBrowserRouter([
   {
     path: "/",
+    // ProtectedRoute redirige a /login si no hay sesión activa
     element: <ProtectedRoute />,
     children: [
       {
+        // Home es el layout principal (sidebar izquierdo, contenido central, sidebar derecho).
+        // Outlet renderiza la ruta hija activa dentro del <main>.
         element: <Home />,
         children: [
           {
@@ -99,6 +106,8 @@ const router = createBrowserRouter([
   },
 ]);
 
+// AuthProvider va por fuera de DataProvider porque DataProvider necesita leer isAuthenticated
+// para decidir si debe cargar datos o limpiarlos.
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AuthProvider>
     <DataProvider>

@@ -1,3 +1,5 @@
+// Layout compartido por Login y Register: panel izquierdo con logo/slogan
+// y panel derecho con el formulario pasado como children.
 import "./Auth.css";
 import logoImg from "../logo-removebg-preview-effect.png";
 

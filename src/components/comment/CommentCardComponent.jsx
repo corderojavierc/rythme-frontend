@@ -1,3 +1,5 @@
+// Tarjeta de un comentario individual. Reutiliza PostProvider para que CommentLikeButton
+// pueda leer y actualizar el comentario sin necesidad de pasar props manualmente.
 import { useData } from "../../providers/DataProvider";
 import { PostProvider } from "../../providers/PostProvider";
 import CommentLikeButton from "./CommentLikeButton";

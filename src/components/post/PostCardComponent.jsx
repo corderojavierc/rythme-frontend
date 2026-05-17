@@ -1,3 +1,5 @@
+// Tarjeta de una valoración. Hace de contenedor para PostProvider (estado local del post)
+// y gestiona la navegación al perfil de usuario, detalle del post o detalle de la canción.
 import { PostProvider } from "../../providers/PostProvider";
 import { useNavigate } from "react-router-dom";
 import PostLikeButton from "./PostLikeButton";
@@ -22,6 +24,8 @@ export default function PostCardComponent({ post, type = "post" }) {
     });
   }
 
+  // stopPropagation en los clicks de perfil y música evita que se active también
+  // el onClick del contenedor padre (que navega al detalle del post).
   function redirectToProfile(e) {
     e.stopPropagation();
     navigate(`/${post.user_name}`, {

@@ -1,3 +1,6 @@
+// Formulario para escribir un comentario en un post.
+// Tras publicar, incrementa count_comments en DataProvider (actualización optimista)
+// y navega al feed pasando from="comment" para que Home muestre la notificación de éxito.
 import { getApi, getAuthHeaders, getUser } from "../../config";
 import { useData } from "../../providers/DataProvider";
 import { useNavigate } from "react-router-dom";

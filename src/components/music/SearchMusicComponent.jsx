@@ -1,3 +1,6 @@
+// Buscador de canciones con debounce de 400ms: no llama a la API en cada tecla,
+// sino que espera a que el usuario pare de escribir para reducir peticiones.
+// Usa AbortController para cancelar la petición anterior si el usuario sigue escribiendo.
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MusicCardComponent from "./MusicCardComponent";
@@ -44,6 +47,8 @@ export default function SearchMusicComponent({ onSelect }) {
       }
     }, 400);
 
+    // Cleanup: si query cambia antes de los 400ms, cancelamos el timeout pendiente
+    // y abortamos cualquier petición fetch que ya estuviera en vuelo.
     return () => {
       clearTimeout(timeoutId);
       controller.abort();

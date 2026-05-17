@@ -1,3 +1,5 @@
+// Muestra de 1 a 5 estrellas (incluyendo medias estrellas) para una puntuación numérica.
+// Lógica: si rating >= i → estrella llena; si rating > i-0.5 → media estrella; si no → vacía.
 export default function StarsComponent({ rating }) {
   const r = parseFloat(rating) || 0;
   const stars = [];

@@ -1,3 +1,6 @@
+// Página de registro. Valida que las contraseñas coincidan antes de llamar a la API.
+// Al registrarse correctamente el backend devuelve token + usuario, igual que el login,
+// por lo que el usuario queda autenticado directamente sin pasar por /login.
 import LoginLayout from "../layout/LoginLayout";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";

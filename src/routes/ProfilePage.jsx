@@ -1,3 +1,6 @@
+// Página de perfil. Muestra la info de cualquier usuario (propio o ajeno).
+// Para evitar un flash de pantalla vacía, intenta leer los datos del perfil desde
+// location.state (pasado por el componente que navegó aquí) antes de ir a la API.
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getApi, getAuthHeaders, getUser } from "../config";
@@ -109,6 +112,8 @@ export default function ProfilePage() {
       };
     });
   }
+  // Los artistas tienen una pestaña "Músicas" que los usuarios normales no tienen.
+  // Por eso la pestaña activa por defecto depende del tipo de cuenta.
   const [activeTab, setActiveTab] = useState(
     user.type == "artist" ? "musics" : "ratings",
   );
@@ -118,6 +123,8 @@ export default function ProfilePage() {
     setNotFound(false);
     if (!user.id) setLoading(true);
 
+    // AbortController permite cancelar la petición si el usuario navega a otro perfil
+    // antes de que la anterior termine, evitando actualizar el estado con datos obsoletos.
     const controller = new AbortController();
     const { signal } = controller;
 
@@ -161,6 +168,8 @@ export default function ProfilePage() {
   const loggedInUser = getUser() || {};
   const isMe = loggedInUser.id && String(user.id) === String(loggedInUser.id);
 
+  // Actualiza el contador de seguidores en la UI cuando el usuario logueado
+  // sigue o deja de seguir este perfil, sin necesidad de volver a llamar a la API.
   const handleFollowChange = (nextFollowingState) => {
     setUser((prev) => ({
       ...prev,

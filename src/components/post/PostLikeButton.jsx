@@ -1,3 +1,6 @@
+// Botón de "me gusta" con actualización optimista: cambia la UI antes de que responda la API.
+// Si la petición falla, revierte el estado al valor anterior.
+// isTogglingLike es una ref (no un estado) para actuar como mutex sin causar re-renders extra.
 import { usePostContext } from "../../providers/PostProvider";
 import { useState, useRef } from "react";
 import { getApi, getAuthHeaders, getUser } from "../../config";
@@ -27,6 +30,7 @@ export default function PostLikeButton() {
 
     setIsLoading(true);
 
+    // La animación de partículas solo se dispara al dar like, no al quitarlo
     if (willBeLiked) {
       setIsAnimating(true);
       setTimeout(() => setIsAnimating(false), 600);

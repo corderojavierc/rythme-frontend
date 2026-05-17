@@ -1,9 +1,14 @@
+// Badge de verificación que muestra un popover al hacer clic con el tipo de cuenta.
+// Escucha clicks fuera del componente para cerrar el popover automáticamente.
 import { useState, useRef, useEffect } from "react";
 
 export default function VerifiedBadgeComponent({ type }) {
   const [showInfo, setShowInfo] = useState(false);
   const containerRef = useRef(null);
 
+  // Cierra el popover cuando el usuario hace clic fuera del badge.
+  // Se usa mousedown (no click) porque mousedown se dispara antes, evitando
+  // conflictos con otros eventos click en elementos padre.
   useEffect(() => {
     function handleClickOutside(event) {
       if (

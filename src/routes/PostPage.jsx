@@ -1,3 +1,8 @@
+// Página de detalle de un post con sus comentarios.
+// Intenta obtener el post en este orden para evitar un loader innecesario:
+//   1. location.state (pasado al navegar desde la tarjeta)
+//   2. Caché de DataProvider (posts ya cargados en memoria)
+//   3. Petición directa a la API (acceso directo por URL)
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import PostCardComponent from "../components/post/PostCardComponent";

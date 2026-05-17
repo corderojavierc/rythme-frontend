@@ -1,10 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
+// Contexto global que centraliza posts, usuarios recomendados, follows y comentarios.
+// Evita hacer las mismas peticiones a la API desde múltiples componentes
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useAuth } from "../auth/AuthProvider";
 import { getApi, getAuthHeaders, getUser } from "../config";
 
 const DataContext = createContext();
 
+// La API puede devolver { data: [...] } o directamente un array; esto normaliza ambos casos
 function extractList(responseData) {
   if (responseData.data) return responseData.data;
   if (Array.isArray(responseData)) return responseData;
@@ -43,10 +46,14 @@ export function DataProvider({ children }) {
       const response = await fetch(url, { headers: getAuthHeaders() });
       const data = await response.json();
       const newPosts = extractList(data);
+      // data.links.next contiene la URL de la siguiente página que devuelve Laravel.
+      // Si es null, no hay más páginas (scroll infinito terminado).
       const nextUrl = data.links?.next ?? null;
 
       setNextPageUrl(nextUrl);
 
+      // Si es la primera página, reemplazamos la lista entera (refresco).
+      // Si es una página siguiente (scroll infinito), añadimos al final.
       const isFirstPage = url === getApi() + "/posts";
       if (isFirstPage) {
         setPosts(newPosts);
@@ -199,16 +206,22 @@ export function DataProvider({ children }) {
     );
   }
 
+  // Sigue/deja de seguir a un usuario con actualización optimista (UI cambia antes de que responda la API)
   async function toggleFollow(userId) {
     const user = getUser();
 
+    // isTogglingFollow.current es una ref (no causa re-render) que actúa como mutex:
+    // evita que el usuario haga doble click y mande dos peticiones a la vez.
     if (!user || isTogglingFollow.current) return;
     isTogglingFollow.current = true;
 
     const isFollowing = follows.includes(userId);
 
+    // Actualización optimista: cambiamos el estado local ANTES de esperar la respuesta de la API.
+    // Así el botón cambia al instante y la UX parece más rápida.
     if (isFollowing) {
       setFollows((prev) => prev.filter((id) => id !== userId));
+      // Si dejamos de seguir, quitamos sus posts del feed de seguidos
       setFollowedPosts((prev) =>
         prev.filter((post) => String(post.user_id) !== String(userId)),
       );
@@ -216,6 +229,8 @@ export function DataProvider({ children }) {
       setFollows((prev) => [...prev, userId]);
     }
 
+    // Actualizamos el contador de "following" del usuario en localStorage para que
+    // el perfil muestre el número correcto sin necesidad de volver a pedir el perfil.
     const updatedUser = { ...user };
     updatedUser.following = isFollowing
       ? (parseInt(user.following) || 1) - 1
@@ -240,6 +255,7 @@ export function DataProvider({ children }) {
         throw new Error("Failed to toggle follow");
       }
 
+      // Si acabamos de seguir a alguien, pedimos sus posts y los añadimos al feed
       if (!isFollowing) {
         setLoadingFollowedPosts(true);
         const postsResponse = await fetch(getApi() + "/posts/followed", {
@@ -252,10 +268,12 @@ export function DataProvider({ children }) {
 
         if (newUserPosts.length > 0) {
           setFollowedPosts((prev) => {
+            // Set para buscar en O(1) si ya teníamos ese post (evita duplicados)
             const existingIds = new Set(prev.map((post) => post.id));
             const toAdd = newUserPosts.filter(
               (post) => !existingIds.has(post.id),
             );
+            // Añadimos al principio y reordenamos por fecha para mantener el feed cronológico
             return [...toAdd, ...prev].sort(
               (a, b) => new Date(b.created_at) - new Date(a.created_at),
             );
@@ -265,6 +283,7 @@ export function DataProvider({ children }) {
         setLoadingFollowedPosts(false);
       }
     } catch (err) {
+      // Si la API falla, revertimos el estado optimista para que la UI quede consistente
       console.error(err);
       setFollows(
         isFollowing

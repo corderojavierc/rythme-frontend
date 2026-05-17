@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
+// Contexto global que guarda si el usuario está autenticado, sincronizado con localStorage
 import { useContext, createContext, useState, useEffect } from "react";
 
 const AuthContext = createContext({

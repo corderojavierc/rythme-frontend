@@ -1,3 +1,8 @@
+// Página de detalle de una canción: muestra portada, rating global y las valoraciones de usuarios.
+// El id del param puede ser:
+//   - un número entero (canción en nuestra BD)
+//   - un UUID (id externo de Spotify importado)
+//   - un string libre (cuando se viene desde un ranking y la canción aún no existe en la BD)
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getApi, getAuthHeaders } from "../config";
@@ -40,6 +45,8 @@ export default function MusicPage() {
           /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
             id,
           );
+        // Si el id no es un número ni un UUID, es el nombre de la canción (viene del ranking).
+        // En ese caso la creamos/buscamos en la BD y redirigimos a la URL con el id real.
         const songIsExternal = !Number.isInteger(Number(id)) && !isUUID;
 
         if (songIsExternal) {

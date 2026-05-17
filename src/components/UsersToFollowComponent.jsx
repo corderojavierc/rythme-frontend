@@ -1,3 +1,6 @@
+// Panel del sidebar derecho: sugiere hasta 5 usuarios a seguir (los calcula DataProvider,
+// filtrando el propio usuario y los que ya se siguen).
+// Al seguir a alguien el botón cambia en tiempo real porque lee "follows" del contexto global.
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoaderScreen from "./LoaderScreen";
