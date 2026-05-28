@@ -13,7 +13,8 @@
 }
 
 .loader {
-  width: 900px;
+  max-width: 500px;
+  width: 100%;
   display: flex;
   justify-content: space-evenly;
   padding: 0;

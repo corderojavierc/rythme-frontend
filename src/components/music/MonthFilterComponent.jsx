@@ -44,34 +44,16 @@ export default function MonthFilterComponent({ onPeriodChange }) {
   };
 
   return (
-    <div
-      className="month-filter-container"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "12px",
-        overflowX: "auto",
-        padding: "4px 0",
-      }}
-    >
-      <span
-        className="material-symbols-outlined"
-        style={{ color: "#8b96b0", fontSize: "20px" }}
-      >
-        calendar_today
-      </span>
-      <div className="music-navigator" style={{ margin: 0, padding: "2px" }}>
-        {months.map((m) => (
-          <button
-            key={m.value}
-            className={`music-nav-btn ${selectedPeriod === m.value ? "active" : ""}`}
-            onClick={() => handleSelect(m.value)}
-            style={{ padding: "6px 16px", fontSize: "13px" }}
-          >
-            {m.label}
-          </button>
-        ))}
-      </div>
+    <div className="music-navigator full-width">
+      {months.map((m) => (
+        <button
+          key={m.value}
+          className={`music-nav-btn ${selectedPeriod === m.value ? "active" : ""}`}
+          onClick={() => handleSelect(m.value)}
+        >
+          {m.label}
+        </button>
+      ))}
     </div>
   );
 }

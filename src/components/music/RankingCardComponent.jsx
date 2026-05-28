@@ -19,11 +19,6 @@ export default function RankingCardComponent({ item, index }) {
     <div
       className="rating-card search-music-item"
       onClick={handleMusicClick}
-      style={{
-        padding: "24px",
-        borderRadius: "24px",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
-      }}
     >
       <div
         className="song-block no-margin"
@@ -32,9 +27,6 @@ export default function RankingCardComponent({ item, index }) {
           border: "none",
           background: "transparent",
           padding: 0,
-          gap: "24px",
-          display: "flex",
-          alignItems: "center",
         }}
       >
         <div

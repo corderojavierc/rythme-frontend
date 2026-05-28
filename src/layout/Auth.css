@@ -1,8 +1,20 @@
+/* Colores propios de la pantalla de auth
+   (ligeramente distintos al fondo principal para dar profundidad) */
+:root {
+  --auth-bg:      #0f141f;
+  --auth-surface: #1c2230;
+  --auth-input:   #2a3243;
+  --auth-blue:    #5c8fff;
+  --auth-pink:    #ff5da2;
+  --auth-text:    #e4e7ee;
+  --auth-muted:   #a0a7ba;
+}
+
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background: #0f141f;
-  color: #e4e7ee;
+  background: var(--auth-bg);
+  color: var(--auth-text);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,8 +24,8 @@ body {
 }
 
 .card {
-  background: #1c2230;
-  width: 80%;
+  background: var(--auth-surface);
+  width: 90%;
   max-width: 900px;
   padding: 40px;
   border-radius: 20px;
@@ -51,17 +63,17 @@ body {
 }
 
 .blue {
-  color: #5c8fff;
+  color: var(--auth-blue);
 }
 
 .pink {
-  color: #ff5da2;
+  color: var(--auth-pink);
 }
 
 .slogan {
   font-size: 18px;
   margin-top: 8px;
-  color: #a0a7ba;
+  color: var(--auth-muted);
 }
 
 .right {
@@ -72,7 +84,7 @@ body {
   font-family: "Poppins", sans-serif;
   font-size: 28px;
   font-weight: 700;
-  color: #ff5da2;
+  color: var(--auth-pink);
   margin-bottom: 25px;
 }
 
@@ -80,18 +92,18 @@ body {
   width: 100%;
   box-sizing: border-box;
   padding: 14px;
-  background: #2a3243;
+  background: var(--auth-input);
   border: 1px solid transparent;
   outline: none;
   border-radius: 14px;
   margin-bottom: 15px;
-  color: #e4e7ee;
+  color: var(--auth-text);
   font-size: 15px;
   transition: all 0.2s;
 }
 
 .right input:focus {
-  border: 1px solid #5c8fff;
+  border: 1px solid var(--auth-blue);
   box-shadow: 0 0 0 2px rgba(92, 143, 255, 0.2);
 }
 
@@ -100,7 +112,7 @@ body {
   box-sizing: border-box;
   padding: 14px;
   border-radius: 14px;
-  background: #5c8fff;
+  background: var(--auth-blue);
   color: white;
   border: none;
   font-weight: 600;
@@ -117,11 +129,11 @@ body {
 .register {
   margin-top: 12px;
   font-size: 14px;
-  color: #a0a7ba;
+  color: var(--auth-muted);
 }
 
 .register a {
-  color: #5c8fff;
+  color: var(--auth-blue);
   text-decoration: none;
   font-weight: 600;
   transition: 0.2s;
@@ -129,4 +141,64 @@ body {
 
 .register a:hover {
   text-decoration: underline;
+}
+
+/* ============================================================
+   RESPONSIVE AUTH
+   ============================================================ */
+
+/* Tablet pequeña / móvil grande (≤ 700px) */
+@media (max-width: 700px) {
+  body {
+    align-items: flex-start;
+    padding: 24px 16px;
+  }
+
+  .card {
+    flex-direction: column;
+    width: 100%;
+    padding: 32px 24px;
+    gap: 28px;
+    border-radius: 16px;
+  }
+
+  .left,
+  .right {
+    width: 100%;
+  }
+
+  .logo {
+    width: 68px;
+    height: 68px;
+  }
+
+  .brand-text {
+    font-size: 30px;
+  }
+
+  .slogan {
+    font-size: 15px;
+  }
+
+  .right .title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Móvil pequeño (≤ 380px) */
+@media (max-width: 380px) {
+  .card {
+    padding: 24px 16px;
+  }
+
+  .right .title {
+    font-size: 20px;
+  }
+
+  .right input,
+  .right .btn {
+    font-size: 14px;
+    padding: 12px;
+  }
 }

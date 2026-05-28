@@ -1,3 +1,46 @@
+/* ============================================================
+   VARIABLES DE DISEÑO (Design Tokens)
+   Úsalas siempre en lugar de valores crudos.
+   ============================================================ */
+:root {
+  /* Fondos */
+  --bg:        #090b10;
+  --surface:   #151a26;
+  --surface-2: #1a202f;
+
+  /* Bordes */
+  --border:       rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+
+  /* Texto */
+  --text:       #f0f2f8;
+  --text-muted: #8b96b0;
+
+  /* Colores de marca */
+  --blue:   #4a84ff;
+  --pink:   #ff478e;
+  --purple: #a066ff;
+  --star:   #f5c842;
+
+  /* Versiones tintadas (fondo semitransparente) */
+  --blue-10:  rgba(74, 132, 255, 0.10);
+  --blue-20:  rgba(74, 132, 255, 0.20);
+  --pink-10:  rgba(255, 71, 142, 0.10);
+  --pink-20:  rgba(255, 71, 142, 0.20);
+
+  /* Estados */
+  --error:      #d65563;
+  --error-10:   rgba(214, 85, 99, 0.10);
+  --success:    #2b9875;
+  --success-10: rgba(43, 152, 117, 0.10);
+
+  /* Radios de borde */
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 20px;
+  --r-xl: 24px;
+}
+
 *,
 *::before,
 *::after {
@@ -9,8 +52,8 @@
 body {
   margin: 0;
   font-family: "DM Sans", sans-serif;
-  background: #090b10;
-  color: #f0f2f8;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -34,7 +77,7 @@ body {
 
 .sidebar {
   padding: 40px 20px;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -106,7 +149,7 @@ body {
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
-  color: #8b96b0;
+  color: var(--text-muted);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   background: transparent;
@@ -123,7 +166,7 @@ body {
 
 .nav-item:hover {
   background: rgba(255, 255, 255, 0.04);
-  color: #f0f2f8;
+  color: var(--text);
 }
 
 .nav-item:hover .material-symbols-outlined {
@@ -131,8 +174,8 @@ body {
 }
 
 .nav-item.active {
-  background: rgba(74, 132, 255, 0.1);
-  color: #4a84ff;
+  background: var(--blue-10);
+  color: var(--blue);
   font-weight: 600;
 }
 
@@ -145,18 +188,18 @@ body {
 }
 
 .action-btn.logout-btn {
-  color: #ff478e;
+  color: var(--pink);
   opacity: 0.8;
 }
 
 .action-btn.logout-btn:hover {
-  background: rgba(255, 71, 142, 0.08);
-  color: #ff478e;
+  background: var(--pink-10);
+  color: var(--pink);
   opacity: 1;
 }
 
 .action-btn.logout-btn .material-symbols-outlined {
-  color: #ff478e;
+  color: var(--pink);
 }
 
 .user-card {
@@ -166,14 +209,14 @@ body {
   padding: 12px 14px;
   border-radius: 14px;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: #151a26;
+  border: 1px solid var(--border);
+  background: var(--surface);
   transition: all 0.2s;
 }
 
 .user-card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: #1a202f;
+  border-color: var(--border-hover);
+  background: var(--surface-2);
 }
 
 .user-card-avatar {
@@ -215,7 +258,7 @@ body {
 
 .user-card-handle {
   font-size: 11px;
-  color: #8b96b0;
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -224,14 +267,15 @@ body {
 
 .user-card-chevron {
   font-size: 18px;
-  color: #8b96b0;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
 .main {
   padding: 40px 50px;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
-  width: 900px;
+  border-right: 1px solid var(--border);
+  max-width: 900px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -242,15 +286,15 @@ body {
   letter-spacing: -0.5px;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  color: #f0f2f8;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
 }
 
 .rating-card {
-  background: #151a26;
-  border-radius: 20px;
+  background: var(--surface);
+  border-radius: var(--r-lg);
   padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.3s;
@@ -260,7 +304,7 @@ body {
 .rating-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: var(--border-hover);
   cursor: pointer;
 }
 
@@ -321,8 +365,8 @@ body {
 .song-block {
   display: flex;
   gap: 16px;
-  background: #1a202f;
-  border-radius: 16px;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
   padding: 16px;
   margin-bottom: 16px;
   align-items: center;
@@ -331,8 +375,13 @@ body {
 }
 
 .song-block:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: var(--border-hover);
   cursor: pointer;
+}
+
+/* Cards de música con portada grande (MusicSecondCard, RankingCard) */
+.song-block.no-margin {
+  gap: 24px;
 }
 
 .cover {
@@ -373,12 +422,12 @@ body {
   font-weight: 700;
   font-size: 17px;
   margin-bottom: 4px;
-  color: #f0f2f8;
+  color: var(--text);
 }
 
 .song-artist {
   font-size: 13px;
-  color: #8b96b0;
+  color: var(--text-muted);
   margin-bottom: 8px;
   font-weight: 500;
 }
@@ -421,7 +470,7 @@ body {
 }
 
 .star-filled {
-  color: #f5c842;
+  color: var(--star);
   font-variation-settings: "FILL" 1;
 }
 
@@ -443,7 +492,7 @@ body {
 }
 
 .star-empty {
-  color: #8b96b0;
+  color: var(--text-muted);
   opacity: 0.3;
 }
 
@@ -451,7 +500,7 @@ body {
   font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 800;
-  color: #ff478e;
+  color: var(--pink);
 }
 
 .feed-state {
@@ -481,6 +530,12 @@ body {
   font-size: 13px;
   font-weight: 500;
   opacity: 0.6;
+}
+
+.users-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .rating-score {
@@ -514,8 +569,8 @@ body {
   padding: 8px 16px;
   border-radius: 20px;
   border: none;
-  background: #090b10;
-  color: #8b96b0;
+  background: var(--bg);
+  color: var(--text-muted);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -536,18 +591,18 @@ body {
 }
 
 .action-btn:hover {
-  background: #1a202f;
-  color: #f0f2f8;
+  background: var(--surface-2);
+  color: var(--text);
   transform: translateY(-1px);
 }
 
 .action-btn.liked {
-  color: #ff478e;
-  background: rgba(255, 71, 142, 0.08);
+  color: var(--pink);
+  background: var(--pink-10);
 }
 
 .action-btn.liked:hover {
-  background: rgba(255, 71, 142, 0.15);
+  background: var(--pink-20);
 }
 
 @keyframes heartPop {
@@ -622,6 +677,7 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow-y: auto;
 }
 
 .section-title {
@@ -791,17 +847,55 @@ body {
   box-shadow: 0 4px 12px rgba(74, 132, 255, 0.3);
 }
 
-@media (max-width: 1100px) {
+/* === TABLET (768px – 1024px): sidebar colapsado, solo iconos === */
+@media (max-width: 1024px) {
   .app-container {
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 72px 1fr;
   }
 
   .right-sidebar {
     display: none;
   }
+
+  .sidebar {
+    padding: 24px 8px;
+  }
+
+  .sidebar .brand-link {
+    padding: 0 4px 24px;
+    justify-content: center;
+  }
+
+  /* Oculta el texto "RythMe" junto al logo */
+  .sidebar .brand-text {
+    display: none;
+  }
+
+  /* Oculta las etiquetas de texto de cada link (Feed, Música…) */
+  .nav-label {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 14px 8px;
+    gap: 0;
+  }
+
+  /* Colapsa la tarjeta de usuario a solo el avatar */
+  .user-card {
+    justify-content: center;
+    padding: 12px 8px;
+  }
+
+  .user-card-info,
+  .user-card-chevron {
+    display: none;
+  }
 }
 
-@media (max-width: 768px) {
+/* === MÓVIL (< 768px): navbar fija en la parte inferior === */
+@media (max-width: 767px) {
   .app-container {
     grid-template-columns: 1fr;
   }
@@ -815,28 +909,39 @@ body {
     height: auto;
     flex-direction: row;
     align-items: center;
-    justify-content: space-around;
-    padding: 12px;
+    justify-content: flex-start;
+    padding: 8px 4px;
     border-right: none;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(21, 26, 38, 0.8);
+    background: rgba(21, 26, 38, 0.92);
+    backdrop-filter: blur(12px);
     z-index: 100;
     gap: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
 
-  .brand-link,
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Oculta elementos que no caben en la navbar inferior */
+  .sidebar .brand-link,
   .nav-spacer,
-  .action-btn.logout-btn {
+  .action-btn.logout-btn,
+  .user-card {
     display: none;
   }
 
   .nav-item {
-    flex: 1;
+    flex: 0 0 auto;
+    min-width: 62px;
     flex-direction: column;
     gap: 4px;
-    padding: 8px 4px;
+    padding: 8px 6px;
     font-size: 10px;
-    border-radius: 12px;
+    border-radius: 10px;
     justify-content: center;
     text-align: center;
   }
@@ -857,10 +962,17 @@ body {
   .main {
     padding: 24px 16px;
     padding-bottom: 100px;
+    border-right: none;
+    overflow-x: hidden;
   }
 
   .rating-card {
     padding: 20px;
+  }
+
+  /* Sube la notificación toast por encima de la navbar inferior */
+  .notification-wrapper {
+    bottom: 80px;
   }
 }
 
@@ -925,10 +1037,10 @@ body {
   width: 100%;
   min-height: 120px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
   padding: 16px;
-  color: #f0f2f8;
+  color: var(--text);
   font-family: "DM Sans", sans-serif;
   font-size: 15px;
   resize: none;
@@ -941,12 +1053,12 @@ body {
 
 .rythme-comment-area:focus {
   background: rgba(255, 255, 255, 0.05);
-  border-color: #4a84ff;
-  box-shadow: 0 0 0 4px rgba(74, 132, 255, 0.1);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px var(--blue-10);
 }
 
 .rythme-comment-area::placeholder {
-  color: #8b96b0;
+  color: var(--text-muted);
   opacity: 0.6;
 }
 
@@ -979,8 +1091,8 @@ body {
 }
 
 .done-icon-box {
-  background: rgba(43, 152, 117, 0.1);
-  color: #2b9875;
+  background: var(--success-10);
+  color: var(--success);
   padding: 8px;
   border-radius: 12px;
   display: flex;
@@ -1038,8 +1150,8 @@ body {
 }
 
 .error-icon-box {
-  background: rgba(214, 85, 99, 0.1);
-  color: #d65563;
+  background: var(--error-10);
+  color: var(--error);
   padding: 8px;
   border-radius: 12px;
   display: flex;
@@ -1106,8 +1218,8 @@ body {
   padding: 0 16px 0 48px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  color: #f0f2f8;
+  border-radius: var(--r-md);
+  color: var(--text);
   font-size: 15px;
   font-family: inherit;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1115,14 +1227,14 @@ body {
 }
 
 .rythme-search-field::placeholder {
-  color: #8b96b0;
+  color: var(--text-muted);
   opacity: 0.5;
 }
 
 .rythme-search-field:focus {
   background: rgba(255, 255, 255, 0.05);
-  border-color: #4a84ff;
-  box-shadow: 0 0 0 4px rgba(74, 132, 255, 0.1);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px var(--blue-10);
 }
 
 .search-icon {
@@ -1154,8 +1266,8 @@ body {
 }
 
 .search-results-panel {
-  background: #1a202f;
-  border-radius: 12px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
   position: absolute;
   top: 100%;
   left: 0;
@@ -1165,6 +1277,8 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .search-status-inline {
@@ -1299,10 +1413,10 @@ body {
 }
 
 .post-error-message {
-  background: rgba(214, 85, 99, 0.1);
-  color: #d65563;
+  background: var(--error-10);
+  color: var(--error);
   padding: 12px 16px;
-  border-radius: 12px;
+  border-radius: var(--r-sm);
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 20px;
@@ -1947,5 +2061,360 @@ body {
 
 .rating-count {
   font-size: 11px;
-  color: #8b96b0;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   BÚSQUEDA EN MÓVIL
+   El icono de búsqueda solo existe en la navbar inferior.
+   En tablet y desktop la búsqueda está en el sidebar derecho.
+   ============================================================ */
+.mobile-search-nav {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-search-nav {
+    display: flex;
+  }
+}
+
+/* ============================================================
+   BARRA DE FILTRO DE PERÍODO (GlobalMusicPage)
+   ============================================================ */
+.ranking-filter-bar {
+  margin-bottom: 24px;
+}
+
+/* ============================================================
+   CLASE HELPER
+   ============================================================ */
+.profile-content-area {
+  min-height: 200px;
+}
+
+/* ============================================================
+   RESPONSIVE TABLET ADICIONAL (768px – 1024px)
+   min-width asegura que estas reglas NO afecten al móvil.
+   ============================================================ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .feed-header {
+    font-size: 22px;
+  }
+
+  .cover-large {
+    width: 130px;
+    height: 130px;
+  }
+
+  .song-title-large {
+    font-size: 26px;
+  }
+
+  .profile-display-name {
+    font-size: 20px;
+  }
+
+  .main {
+    padding: 32px 32px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE MÓVIL ADICIONAL (< 768px)
+   Complementa las reglas ya existentes en el bloque anterior.
+   ============================================================ */
+@media (max-width: 767px) {
+
+  /* --- Tipografía --- */
+  .feed-header {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 15px;
+  }
+
+  .wip-title {
+    font-size: 20px;
+  }
+
+  .wip-icon {
+    font-size: 72px;
+  }
+
+  .wip-text {
+    font-size: 14px;
+    padding: 0 8px;
+  }
+
+  /* --- Cabecera de página --- */
+  .page-header-container {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  /* --- Tarjetas de post --- */
+  .rating-card {
+    border-radius: var(--r-md);
+  }
+
+  /* --- Página de detalle de canción (MusicPage) --- */
+  /* Grid: [portada | info] arriba, [rating full-width] abajo */
+  .song-block-static {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    grid-template-rows: auto auto;
+    gap: 12px 16px;
+    padding: 16px;
+  }
+
+  .song-block-static .cover-large {
+    width: 96px;
+    height: 96px;
+    grid-row: 1;
+    grid-column: 1;
+    align-self: start;
+  }
+
+  .song-block-static .song-info {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: center;
+    min-width: 0;
+  }
+
+  .song-block-static .rating-container-static {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .song-title-large {
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .song-artist-large {
+    font-size: 13px;
+  }
+
+  .rating-box {
+    padding: 14px 16px;
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rating-score-row {
+    font-size: 22px;
+  }
+
+  /* Fila de pestañas (navigator centrado, placeholders ocultos) */
+  .music-page-tabs-row {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .tabs-placeholder,
+  .tabs-action {
+    display: none;
+  }
+
+  /* --- Perfil de usuario --- */
+  .profile-info-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .profile-name-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .profile-display-name {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  .profile-avatar-large {
+    width: 76px;
+    height: 76px;
+  }
+
+  .profile-stats {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .profile-follow-btn-large {
+    padding: 8px 20px;
+    font-size: 13px;
+  }
+
+  /* --- Tarjetas de música en listas (MusicSecondCard, RankingCard) --- */
+  /* Grid: [portada 80px | info] fila 1 · [rating full-width] fila 2   */
+  .song-block.no-margin {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px 12px;
+  }
+
+  /* primer hijo = div de portada — sobreescribe width: 100px inline */
+  .song-block.no-margin > :first-child {
+    grid-row: 1;
+    grid-column: 1;
+    width: 80px !important;
+    height: 80px !important;
+    align-self: center;
+  }
+
+  .song-block.no-margin .song-info {
+    grid-row: 1;
+    grid-column: 2;
+    align-self: center;
+    min-width: 0;
+  }
+
+  /* sobreescribe fontSize: "22px" / "16px" inline */
+  .song-block.no-margin .song-title {
+    font-size: 15px !important;
+    margin-bottom: 4px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .song-block.no-margin .song-artist {
+    font-size: 12px !important;
+  }
+
+  /* rating ocupa las dos columnas en la fila inferior */
+  .song-block.no-margin .music-stats-column {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-left: 0;
+  }
+
+  /* --- Formulario de solicitud de artista --- */
+  .app-row,
+  .app-socials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-type-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .app-form-intro {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .app-form-intro-icon {
+    font-size: 32px;
+  }
+
+  /* --- Navegador de pestañas: solo full-width es deslizable --- */
+  /* Los navegadores normales (MonthFilter) los gestiona su contenedor */
+  .music-navigator.full-width {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 12px 0;
+  }
+
+  .music-navigator.full-width::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* flex:1 rellena si caben; min-width fuerza scroll cuando hay más de 3 */
+  .music-navigator.full-width .music-nav-btn {
+    flex: 1;
+    min-width: calc(100% / 3);
+  }
+
+  .music-nav-btn {
+    padding: 10px 6px;
+    font-size: 11px;
+    gap: 4px;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .music-nav-btn .material-symbols-outlined {
+    font-size: 16px;
+  }
+
+  /* --- Lista de usuarios en búsqueda --- */
+  .users-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* --- Barra de filtros (meses) --- */
+  .ranking-filter-bar {
+    margin-bottom: 16px;
+  }
+
+  /* --- Panel de resultados de búsqueda (limita altura) --- */
+  .search-results-panel {
+    max-height: 260px;
+  }
+
+  /* --- Notificaciones toast (sube encima de la navbar inferior) --- */
+  .done-notification,
+  .error-notification {
+    min-width: unset;
+    width: calc(100vw - 48px);
+    box-sizing: border-box;
+  }
+
+  /* --- Página de ranking: badge posición más pequeño --- */
+  .rating-score {
+    font-size: 16px;
+  }
+
+  /* --- Botón valorar en MusicPage --- */
+  .comment-button {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  /* --- Área de rating interactiva (CreatePost) --- */
+  .rating-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .interactive-rating-score {
+    font-size: 20px;
+  }
+
+  /* --- Estadísticas de perfil --- */
+  .stat-item {
+    font-size: 13px;
+  }
 }

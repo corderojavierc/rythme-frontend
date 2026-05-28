@@ -21,7 +21,6 @@ export default function MusicSecondCardComponent({ music }) {
           border: "none",
           background: "transparent",
           padding: 0,
-          gap: "24px",
         }}
       >
         <div

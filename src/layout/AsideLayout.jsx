@@ -80,33 +80,39 @@ export default function AsideLayout() {
 
       <Link className={getLinkClass("/")} to="/">
         <span className="material-symbols-outlined">home</span>
-        Feed
+        <span className="nav-label">Feed</span>
       </Link>
       <Link className={getLinkClass("/followed")} to="/followed">
         <span className="material-symbols-outlined">group</span>
-        Seguidos
+        <span className="nav-label">Seguidos</span>
+      </Link>
+      {/* Solo visible en la navbar inferior de móvil (el desktop tiene búsqueda en el sidebar derecho) */}
+      <Link className={`${getLinkClass("/search")} mobile-search-nav`} to="/search">
+        <span className="material-symbols-outlined">search</span>
+        <span className="nav-label">Buscar</span>
       </Link>
       <Link className={getLinkClass("/music")} to="/music">
         <span className="material-symbols-outlined">music_note_2</span>
-        Música
+        <span className="nav-label">Música</span>
       </Link>
       <Link className={getLinkClass("/events")} to="/events">
         <span className="material-symbols-outlined">calendar_today</span>
-        Eventos
+        <span className="nav-label">Eventos</span>
       </Link>
+      {/* mobile-hide-nav: oculta estos ítems en la navbar inferior para que quepa el Perfil */}
       {user.type === "user" && (
-        <Link className={getLinkClass("/request")} to="/request">
+        <Link className={`${getLinkClass("/request")} mobile-hide-nav`} to="/request">
           <span className="material-symbols-outlined">pan_tool_alt</span>
-          Solicitar
+          <span className="nav-label">Solicitar</span>
         </Link>
       )}
       {user.type === "admin" && (
         <Link
-          className={getLinkClass("/admin")}
+          className={`${getLinkClass("/admin")} mobile-hide-nav`}
           to="http://localhost:8000/admin"
         >
-          <span class="material-symbols-outlined">admin_panel_settings</span>
-          Admin
+          <span className="material-symbols-outlined">admin_panel_settings</span>
+          <span className="nav-label">Admin</span>
         </Link>
       )}
       <Link
@@ -114,7 +120,7 @@ export default function AsideLayout() {
         to={`/${user.username}`}
       >
         <span className="material-symbols-outlined">person</span>
-        Perfil
+        <span className="nav-label">Perfil</span>
       </Link>
 
       <div className="nav-spacer"></div>
@@ -145,7 +151,7 @@ export default function AsideLayout() {
           className="nav-item action-btn logout-btn"
         >
           <span className="material-symbols-outlined">logout</span>
-          Cerrar sesión
+          <span className="nav-label">Cerrar sesión</span>
         </button>
       )}
     </aside>
